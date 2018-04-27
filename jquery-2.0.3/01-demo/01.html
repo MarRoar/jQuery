@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div>hello</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// var a = $("<p>", {
+		// 	text: 'hello world'
+		// }).appendTo('body')
+		// 
+		var str = "hello, <b>my name is</b> jQuery.",
+			html = $.parseHTML("<div>我是内容1</div><script>alert('我是解析出来的js');<\/script><div>我是内容2</div>",document,true);
+
+		console.log(html)
+
+	</script>
+</body>
+</html>

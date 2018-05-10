@@ -30,21 +30,22 @@ var
 	core_strundefined = typeof undefined,
 
 	// Use the correct document accordingly with window argument (sandbox)
-	location = window.location,
-	document = window.document,
-	docElem = document.documentElement,
+	location = window.location, //网址信息
+	document = window.document, // documnet
+	docElem = document.documentElement, // HTML 标签
 
 	// Map over jQuery in case of overwrite
-	_jQuery = window.jQuery,
+	_jQuery = window.jQuery, // 方冲突
 
 	// Map over the $ in case of overwrite
-	_$ = window.$,
+	_$ = window.$, // 防冲突
 
 	// [[Class]] -> type pairs
 	class2type = {},
+	// class2type  在 $.type() 里面使用  ,进行类型判断
 
 	// List of deleted data cache ids, so we can reuse them
-	core_deletedIds = [],
+	core_deletedIds = [], // 缓存数据有关
 
 	core_version = "2.0.3",
 
@@ -72,22 +73,23 @@ var
 	// A simple way to check for HTML strings
 	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
 	// Strict HTML recognition (#11290: must start with <)
-	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/,
+	rquickExpr = /^(?:\s*(<[\w\W]+>)[^>]*|#([\w-]*))$/, //标签和id <p>aaa 或者 #div1
 
 	// Match a standalone tag
-	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+	rsingleTag = /^<(\w+)\s*\/?>(?:<\/\1>|)$/, // <p></p>
 
 	// Matches dashed string for camelizing
-	rmsPrefix = /^-ms-/,
-	rdashAlpha = /-([\da-z])/gi,
+	rmsPrefix = /^-ms-/, // IE 浏览器的前缀 -webkit-margin-left => webkitMarginLeft
+						// 但是 IE -ms-margin-left => MsMarginLeft 第一个m必须大写
+	rdashAlpha = /-([\da-z])/gi, //去转大小写
 
 	// Used by jQuery.camelCase as callback to replace()
-	fcamelCase = function( all, letter ) {
+	fcamelCase = function( all, letter ) { // 转驼峰的回调函数
 		return letter.toUpperCase();
 	},
 
 	// The ready event handler and self cleanup method
-	completed = function() {
+	completed = function() { // DOM 加载成功后触发的
 		document.removeEventListener( "DOMContentLoaded", completed, false );
 		window.removeEventListener( "load", completed, false );
 		jQuery.ready();
@@ -95,7 +97,7 @@ var
 
 jQuery.fn = jQuery.prototype = {
 	// The current version of jQuery being used
-	jquery: core_version,
+	jquery: core_version, // 版本号
 
 	constructor: jQuery,
 	init: function( selector, context, rootjQuery ) {
@@ -2716,6 +2718,11 @@ function multipleContexts( selector, contexts, results ) {
 function select( selector, context, results, seed ) {
 	var i, tokens, token, type, find,
 		match = tokenize( selector );
+
+	console.log('selector', selector)
+	console.log('context', context)
+	console.log('results', results)
+	console.log('seed', seed)
 
 	if ( !seed ) {
 		// Try to minimize operations if there is only one group

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<p>(21, 94)  定义一些变脸和函数 jQuery = function () {}</p>
+	<script>
+		// 为什么要放在 匿名函数自执函数里面？
+		// 防止变量名冲入
+		/**
+		 * (function( window, undefined ) {
+		 * 		window
+		 * 		undefined
+		 * })( window );
+		 * 
+		 * 为什么要传window?
+		 * 1 查找速度快，因为window在作用域的顶端，作为一个参数传递进来可以查找更快。
+		 * 2 在压缩版本里面,可以被压缩。
+		 *
+		 * 为什么要传递 undefined ? 
+		 * 防止 undefined 被修改
+		 */
+		/**
+			var undefined = 10;
+			alert(undefined)
+		 */
+		
+
+		/**
+		 * "use strict"
+		 * 严格模式
+		 */
+		/**
+			"use strict"
+			var a = 010;
+			// Uncaught SyntaxError: Octal literals are not allowed in strict mode.
+		 */
+		
+		/**
+		 * var rootjQuery
+		 * rootjQuery = jQuery(document);
+		 *
+		 * 
+		 */
+		
+		/**
+		 * readyList 
+		 * DOM 加载有关
+		 */
+		
+		/**
+		 * core_strundefined = typeof undefined,
+		 */
+		// window.a = undefined
+		// typeof window.a = 'undefined'
+		
+
+
+		/*
+			function People(argument) {
+				
+			}
+			People.prototype.say = function () {}
+			var people = new People()
+			people.say()
+			只有对象后面才能,有方法
+
+			// Define a local copy of jQuery
+			jQuery = function( selector, context ) {
+				// The jQuery object is actually just the init constructor 'enhanced'
+				return new jQuery.fn.init( selector, context, rootjQuery );
+			},
+
+			283  jQuery.fn.init.prototype = jQuery.fn;
+		*/
+	</script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<script src="../src/jquery-2.0.3.js"></script>
+	<script>
+		/**
+		 * jquery 
+		 */
+		
+		/**
+		 * $ 是个函数 
+		 * 	jQuery = function( selector, context ) {
+				// The jQuery object is actually just the init constructor 'enhanced'
+				return new jQuery.fn.init( selector, context, rootjQuery );
+			},
+		 */
+		/**
+		 * return 出来的是个实例化对象
+		 * 
+		 */
+		// $('div').css();
+		// $.ajax() 这种用法就叫做静态方法
+		// 
+		
+		var dfd = $.Deferred()
+		setTimeout(function () {
+			alert(1)
+			dfd.resolve()
+		}, 1000)
+
+		dfd.done(function () {
+			alert(2)
+		})
+	</script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+	<div id="text">
+		<p>
+			<input type="text" />
+		</p>
+		<div class="aaron">
+			<input type="checkbox" name="readme" value="Submit" />
+			<p>Sizzle</p>
+		</div>
+	</div>
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var oDiv = document.getElementById('text');
+		var node = oDiv.getAttributeNode('id')
+		console.log(node.value)
+	</script>
+</body>
+</html>

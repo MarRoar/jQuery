@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery.fn.init.prototype</title>
+</head>
+<body>
+	<script src="../src/jquery-2.0.3.js"></script>
+	<script>
+		/**
+		 * 普通的构造函数怎么写?
+		 */
+		function People() {
+			
+		}
+		People.prototype.Say = function () {
+			
+		}
+		var p1 = new People()
+		p1.Say()
+
+		/**
+		 * 上面在调用的时候，首先实例化一个 p1对象，然后这个对象就可以调用构造函数原型上的方法或者属性
+		 */
+		
+		/**
+		 * 我们可以再看看，jQuery是怎么调用的
+		 */
+		$('div').show()
+		// 如果要像jQuery那样调用的话构造函数应该怎么写呢?
+		
+		function Animal() { }
+		Animal().Say()
+
+		// 比如上面的情况改怎么写呢
+		
+		function Animal() {
+			return new Animal.prototype.init
+		}
+		Animal.prototype.init = function () {}
+		Animal.prototype.Say = function () {}
+
+
+		Animal().Say()
+		// 第一步可以想到就是应该就是这样， 在 Animal 函数执行的 return 里面返回 一个实例化函数
+		// 那么就会又有一个问题，就是在看jQuery源码的时候发现原型上的方法都是添加在 Animal 的原型上的并不是在 Animal.prototype.init 这个函数上。
+		
+		// 对于上面的问题，要知道一点原型对象是可以被引用的，就是说我没有，但是我可以用别人的
+		//所以要实现上面就需要再加一句话
+		Animal.prototype.init.prototype = Animal.prototype
+		// 就是把 Animal 的原型对象赋值给 函数 Animal.prototype.init的原型对象上，这样Animal() return 的对象就会有在Animal原型对象上添加的方法或者属性了。
+		
+	</script>
+</body>
+</html>

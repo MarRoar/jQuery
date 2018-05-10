@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery.parseHTML</title>
+</head>
+<body>
+	<ul></ul>
+	<script src="../src/jquery-2.0.3.js"></script>
+	<script>
+		var str = "<li>111</li><li>222</li><li>333</li><script>alert(123)<\/script>"
+
+		/**
+		 * jQuery.parseHTML(str, 上下文, 是否渲染 script标签)
+		 */
+
+		var m1 = jQuery.parseHTML(str, document, true)
+		console.log(m1)
+
+		var m2 = jQuery.parseHTML(str, document)
+		console.log(m2)
+
+
+		// jQuery.merge
+		// 不仅仅可以合并数组，还可以合并json 数据
+		// 
+		// var arr = ['a', 'b']
+		// 
+		var arr = {
+			0: 'a',
+			1: 'b',
+			length: 2
+		}
+		var arr1 = ['c', 'd']
+		console.log($.merge(arr, arr1))
+
+
+		// 还有一种这样的情况
+		
+	</script>
+</body>
+</html>

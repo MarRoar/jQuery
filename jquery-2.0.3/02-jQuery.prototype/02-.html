@@ -11,6 +11,168 @@
 		//console.log($().jquery) // 返回版本号
 	
 	// constructor
+		// js 原型 constructor的东西 ？ 
+
+	/**
+	 * [jQuery description]
+	 * selector
+	 * context   前面selector  的执行上下文
+	
+		jQuery = function( selector, context ) {
+			// The jQuery object is actually just the init constructor 'enhanced'
+			return new jQuery.fn.init( selector, context, rootjQuery );
+		}
+	 */
+	
+	// 进入 init 
+	// $(""), $(null), $(undefined), $(false)
+	// 
+	// 字符串操作
+	// 选择
+	// $("#div") $('.div') $(div) $(div div.box)
+	// 创建
+	// $('<li>')
+	// 
+	
+	init: function( selector, context, rootjQuery ) {
+		var match, elem;
+
+		// HANDLE: $(""), $(null), $(undefined), $(false)
+		if ( !selector ) {
+			return this;
+		}
+
+		// Handle HTML strings
+		// 字符串的操作
+		if ( typeof selector === "string" ) {
+			
+			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
+				// Assume that strings that start and end with <> are HTML and skip the regex check
+				match = [ null, selector, null ];
+
+			} else {
+				match = rquickExpr.exec( selector );
+			}
+
+			// Match html or make sure no context is specified for #id
+			// 创建标签或者ID选择进入if
+			if ( match && (match[1] || !context) ) {
+
+				// HANDLE: $(html) -> $(array)
+				// 创建标签
+				if ( match[1] ) {
+					// 创建的时候上下文 一般是 自己
+					// documnet.createElement()
+					// 在 iframe 里面创建的 content
+					// context 可能会是 $(content) 可能是jQuery对象
+					context = context instanceof jQuery ? context[0] : context;
+
+					// scripts is true for back-compat 
+					// 合并两个数组到第一个数组
+					// var str = "<li>111</li><script>alert(123)<\/script>"
+					// 用 parseHTML 解析 str
+					jQuery.merge( this, jQuery.parseHTML(
+						match[1],
+						context && context.nodeType ? context.ownerDocument || context : document,
+						true
+					) );
+
+					// HANDLE: $(html, props)
+					// $('<li>', {title: 'hi', html: 'abcdefg'}).appendTo('ul');
+					if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
+						for ( match in context ) {
+							// Properties of context are called as methods if possible
+							if ( jQuery.isFunction( this[ match ] ) ) {
+								// html 这个是调用的方法
+								this[ match ]( context[ match ] );
+
+							// ...and otherwise set as attributes
+							} else {
+								// 如果没有函数的话，这里设置属性
+								this.attr( match, context[ match ] );
+							}
+						}
+					}
+
+					return this;
+
+				// HANDLE: $(#id)
+				} else {
+					elem = document.getElementById( match[2] );
+
+					// Check parentNode to catch when Blackberry 4.6 returns
+					// nodes that are no longer in the document #6963
+					if ( elem && elem.parentNode ) {
+						// Inject the element directly into the jQuery object
+						this.length = 1;
+						this[0] = elem;
+					}
+
+					this.context = document;
+					this.selector = selector;
+					return this;
+				}
+
+			// HANDLE: $(expr, $(...))
+			} else if ( !context || context.jquery ) {
+				return ( context || rootjQuery ).find( selector );
+
+			// HANDLE: $(expr, context)
+			// (which is just equivalent to: $(context).find(expr)
+			} else {
+				return this.constructor( context ).find( selector );
+			}
+
+		// HANDLE: $(DOMElement)
+		// 对DOM 元素的的处理
+		} else if ( selector.nodeType ) {
+			this.context = this[0] = selector;
+			this.length = 1;
+			return this;
+
+		// HANDLE: $(function)
+		// Shortcut for document ready
+		// 传函数
+		} else if ( jQuery.isFunction( selector ) ) {
+			return rootjQuery.ready( selector );
+		}
+
+		if ( selector.selector !== undefined ) {
+			this.selector = selector.selector;
+			this.context = selector.context;
+		}
+
+		return jQuery.makeArray( selector, this );
+	},
+
+
+	//typeof selector === "string"
+	if () {
+		$('<li>') $('<li>111</li><li>222</li>')
+
+		match = [ null, selector, null ];
+
+
+	} else {
+		$("#div") $('.div') $('div') $('#div div.box')
+		$("<li>hello")
+		// $("<li>hello").appendTo(document) // 这样可以把 li添加到 body里面
+		// 
+		match = null  //$('.div') $('div') $('#div div.box')
+
+		match = ['#div1', null, 'div1'] // $('#div1')
+
+		match = ['<li>hello', '<li>', null] //$('<li>hello')
+	}
+
+
+	if() $('<li>')  $("#div")
+		if () {
+			$('<li>')
+		} else {
+			$("#div")
+		}
+
 	</script>
 </body>
 </html>

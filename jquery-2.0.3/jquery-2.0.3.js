@@ -298,6 +298,8 @@ jQuery.fn = jQuery.prototype = {
 // Give the init function the jQuery prototype for later instantiation
 jQuery.fn.init.prototype = jQuery.fn;
 
+// 扩展到 jQuery 函数上是扩展静态方法
+// 扩展到 fn 原型上 是扩展实例方法
 jQuery.extend = jQuery.fn.extend = function() {
 	var options, name, src, copy, copyIsArray, clone,
 		target = arguments[0] || {},
@@ -306,8 +308,12 @@ jQuery.extend = jQuery.fn.extend = function() {
 		deep = false;
 
 	// Handle a deep copy situation
+	// 根据第一个参数是否是布尔类型，来判断是否是深拷贝
+	// 然后把布尔值传给 deep 
+	// 此时 target 目标值是 第二个
+	
 	if ( typeof target === "boolean" ) {
-		deep = target;
+		deep = target; 
 		target = arguments[1] || {};
 		// skip the boolean and the target
 		i = 2;
@@ -319,6 +325,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 	}
 
 	// extend jQuery itself if only one argument is passed
+	// 扩展插件的情况
 	if ( length === i ) {
 		target = this;
 		--i;
@@ -333,6 +340,11 @@ jQuery.extend = jQuery.fn.extend = function() {
 				copy = options[ name ];
 
 				// Prevent never-ending loop
+				// 防止循环引用的情况
+				// var a = {}
+				// $.extend(true, a, { name: a})
+				// 防止上面的情况
+				
 				if ( target === copy ) {
 					continue;
 				}
@@ -344,6 +356,9 @@ jQuery.extend = jQuery.fn.extend = function() {
 						clone = src && jQuery.isArray(src) ? src : [];
 
 					} else {
+						// 为什么
+						// var a = {name: {a: 'a'}}
+						// var b = {name: {b: 'b'}}
 						clone = src && jQuery.isPlainObject(src) ? src : {};
 					}
 

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>extend方法的使用</title>
+</head>
+<body>
+	<p>扩展静态方法和实例方法</p>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$.extend();
+
+		$.fn.extend();
+
+		// 1> 扩展插件（当只有一个变量的时候）
+
+		// 2>  当写多个对象的时候， 都是扩展到第一个对象上
+		
+		//--------------------------------------------------------------------------------------
+		// var a = {};
+		// $.extend(a, { name: 'helo'});
+		// console.log(a)
+		
+			// 深拷贝和浅拷贝
+			
+			// 浅拷贝
+			// var a = {};
+			// var b = {
+			// 	name: {
+			// 		age: 30
+			// 	}
+			// }
+
+			// $.extend(a, b);
+			// a.name.age = 'aaa'; // 因为这个时候是浅拷贝
+			// console.log(a)
+			// console.log(b)
+
+			// -----------------------------------------------------------------------------------------------
+			// 深拷贝
+			
+			var a = {};
+			var b = {
+				name: {
+					age: 30
+				}
+			}
+
+			$.extend(true, a, b);
+			a.name.age = 'aaa'; // 因为这个时候是浅
+			console.log(a)
+			console.log(b)
+	</script>
+</body>
+</html>

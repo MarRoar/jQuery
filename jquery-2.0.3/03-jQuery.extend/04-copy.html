@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>拷贝</title>
+</head>
+<body>
+	<script>
+
+		var a = {name: 'a'}
+		var b = {age: {
+			age1: {
+				age2: 2
+			}
+		}};
+
+		var t = extend(a, b)
+		console.log(t)
+
+		function extend() {
+			/*
+			if (true) {} // 看是不是深拷贝情况
+			if (true) {} // 看参数正确不
+			if (true) {} // 看是不是插件情况
+			for (var i = 0; i < Things.length; i++) { // 可能有多个对象情况
+				if (true) {} // 防止循环引用
+				if (true) {
+					// 深拷贝
+				} else {
+					// 浅拷贝
+				}
+			}
+			*/
+			var options, name, src, copy,
+				deep = false,
+				length = arguments.length,
+				target = arguments[0] || {},
+				i = 1;
+
+			if (typeof target === 'boolean') {
+				deep = arguments[0];
+				target = arguments[1];
+				i = 2;
+			}
+
+			if (typeof target !== 'object') {
+				target = {};
+			}
+
+			for (; i < length; i++) {
+				if ( (options = arguments[i]) != null ) {
+					for(name in options) {
+						src = target[ name ]
+						copy = options[ name ]
+
+						if (target == copy) {
+							continue;
+						}
+
+						if (deep && copy) { // 深拷贝
+
+							// 需要判断是数组还是对象
+							copy = src && (typeof src == 'object') ? src : {}
+
+							target[name] = copy
+						} else if(copy != undefined) { // 浅拷贝
+							target[name] = copy
+						}
+					}
+				}
+			}
+
+			return target;
+		}
+	</script>
+</body>
+</html>

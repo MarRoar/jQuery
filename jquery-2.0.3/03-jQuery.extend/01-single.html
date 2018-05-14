@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>extend方法的使用</title>
+</head>
+<body>
+	<p>扩展静态方法和实例方法</p>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$.extend();
+
+		$.fn.extend();
+
+		// 1> 扩展插件（当只有一个变量的时候）
+			$.extend({
+				aaa: function () {
+					alert('aaa')
+				},
+				bbb: function () {
+					alert('bbb')	
+				}
+			})
+			// $.aaa()
+
+			$.fn.extend({
+				aaa: function () {
+					alert('fn111')
+				},
+				bbb: function () {
+					alert('fn222')	
+				}
+			})
+
+			// 如果在 fn 上扩展的话 是扩展的实例方法，调用方法是 
+			// $().aaa()
+			
+
+			// 为什么一个方法就可以实现不同的呢, 以为 this 不同
+			// $.extend() -> 这个是时候的 this -> $ -> this.aaa - >$.aaa()
+			// $.fn.extend() -> this -> $.fn -> this.aaa -> $().aaa()
+
+			// 以上两种方法没有冲突的
+				
+			// var teFn = function () {
+				
+			// }
+
+			// teFn.hello = function () {
+			// 	console.log("hello")
+			// }
+			// teFn.prototype.hello = function () {
+			// 	console.log("fn hello")
+			// }
+
+			// teFn.hello()
+
+			// var t = new teFn();
+			// t.hello()
+
+		// 2>  当写多个对象的时候， 都是扩展到第一个对象上
+		
+	</script>
+</body>
+</html>

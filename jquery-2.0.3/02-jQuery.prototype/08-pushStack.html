@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>pushStack</title>
+</head>
+<body>
+	<div>11111</div>
+	<div>11111</div>
+	<div>11111</div>
+	<div>11111</div>
+	<span>222222</span>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+	/**
+	 * 	// Take an array of elements and push it onto the stack
+		// (returning the new matched element set)
+		pushStack: function( elems ) {
+
+			// Build a new jQuery matched element set
+			var ret = jQuery.merge( this.constructor(), elems );
+
+			// Add the old object onto the stack (as a reference)
+			// 先存一下之前那个对象,比如这里是存一下 $('div')
+
+			ret.prevObject = this;
+			ret.context = this.context;
+
+			// Return the newly-formed element set
+			return ret;
+		},
+	 */
+		// 栈
+		$(function () {
+			console.log( $('div').pushStack( $('span') ) )
+
+		})
+
+
+		/**
+		 * 	end: function() {
+				return this.prevObject || this.constructor(null);
+			},
+		 */
+		
+
+		 // slice 就是 入栈
+		/**
+		 * 	slice: function() {
+				return this.pushStack( core_slice.apply( this, arguments ) );
+			},
+		 */
+		
+		$('div').slice(1, 3).css('background', 'red').end().html('end')
+
+
+		// 有很多用 pushStack eq map
+	</script>
+</body>
+</html>

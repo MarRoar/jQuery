@@ -114,16 +114,20 @@ jQuery.fn = jQuery.prototype = {
 			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
 				// Assume that strings that start and end with <> are HTML and skip the regex check
 				match = [ null, selector, null ];
+				// console.log("ggg")
 
 			} else {
 				match = rquickExpr.exec( selector );
 			}
+
+			// console.log('查看match', match)
 
 			// Match html or make sure no context is specified for #id
 			if ( match && (match[1] || !context) ) {
 
 				// HANDLE: $(html) -> $(array)
 				if ( match[1] ) {
+					// 上下文 context
 					context = context instanceof jQuery ? context[0] : context;
 
 					// scripts is true for back-compat 
@@ -227,7 +231,15 @@ jQuery.fn = jQuery.prototype = {
 		var ret = jQuery.merge( this.constructor(), elems );
 
 		// Add the old object onto the stack (as a reference)
+		// 先存一下之前那个对象
+		// 这里就是 在 要入栈的对象上挂载一个 之前的一个对象
+		// 为什么要用这个属性比如说
+		// $('div').pushStack( $('span').css().end().css()
+		// 我们在用 end() 方法的时候 就可以回溯到上一个
 		ret.prevObject = this;
+		
+		// 是属性上挂载 prevObject 属性 ！！！！
+		// 
 		ret.context = this.context;
 
 		// Return the newly-formed element set

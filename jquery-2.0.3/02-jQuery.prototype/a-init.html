@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>init</title>
+</head>
+<body>
+	
+	<!-- <script src="../src/jquery-2.0.3.js"></script> -->
+	<script>
+		/**
+		 * jQuery 里面在调用$() 时候，可以从源码中看到是返回了一个实例化的init对象，那么就进入 init 函数里面看看，init都做了哪些操作
+		 * 	jQuery = function( selector, context ) {
+				// The jQuery object is actually just the init constructor 'enhanced'
+				return new jQuery.fn.init( selector, context, rootjQuery );
+			}
+		 */
+		
+		// 首先看一些 $() 这里面的调用方式,如下。
+		/**
+		 * $(""), $(null), $(undefined), $(false)
+		 * 
+		 * $('#div1') $('.box') $('div')  $('#div1 div.box')
+		 * 
+		 * $('<li>')  $('<li>1</li><li>2</li>')
+		 *
+		 * $(this)  $(document)
+		 *
+		 * $(function(){})
+		 *
+		 * $([])  $({})
+		 *	
+		 */
+		
+		// 1> 首先看一下init函数的参数
+			/**
+			 * init: function( selector, context, rootjQuery ) { }
+			 * selector: 
+			 * context: 上下文作用域
+			 * rootjQuery: rootjQuery = jQuery(document); // 866行
+			 */
+		// 2> 函数里面各个 if() {} else {} 判断的条件
+			
+
+			// $(""), $(null), $(undefined), $(false) 
+			// 这几种情况进入到下面判断里面
+			if ( !selector ) {}
+
+	 
+	  		// 判断是字符串的情况
+	  		// $('#div1') $('.box') $('div')  $('#div1 div.box')
+	  		// $('<li>')  $('<li>1</li><li>2</li>')
+	  		if ( typeof selector === "string" ) {
+	 
+	  			// 进入后 首先判断
+	    		if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
+	    		
+	    			// $('<li>')  $('<li>1</li><li>2</li>')
+	    			// 这种情况
+	    			
+	    			match = [ null, selector, null ];
+	 
+	  				// $('<li>') => match = [null, "<li>", null]
+	  				// $('<li>1</li><li>2</li>') => match = [null, "<li>1</li><li>2</li>", null]
+	    		} else {
+	    		
+	    			match = rquickExpr.exec( selector );
+	    			
+	    			//$('#div1') $('.box') $('div')  $('#div1 div.box') $('<div>hello')
+		       		//
+		       		// $('#div1') -> match = ["#div1", undefined, "div1", index: 0, input: "#div1", groups: undefined]
+		       		// $('.box') -> match = null
+		       		// $('div')  -> match = null
+		       		// $('#div1 div.box') -> match = null
+		       		// 
+		       		// $('<div>hello') -> match = ["<div>hello", "<div>", undefined, index: 0, input: "<div>hello", groups: undefined]
+	       		
+	    		}
+
+	    		// 在判断完后 match 这个变量就有值了
+	    		// 创建标签或者 ID 选择器进入
+	    		if ( match && (match[1] || !context) ) {
+
+	    			// 
+	    			if ( match[1] ) {
+		    			if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
+
+		    			}
+		    		// 下面就是 id 选择器
+	    			} else {
+
+	    			}
+	    		} else if ( !context || context.jquery ) { 
+
+	    		} else {
+					return this.constructor( context ).find( selector );
+				}
+	 
+	  		// 判断是DOM节点的情况
+	  		// $(this)  $(document)
+	  		} else if( selector.nodeType ){
+	 
+	  		// 判断是函数的情况
+	  		// $(function(){})
+	  		} else if(){
+	  	
+	  		}
+	 
+	  		// 比如说当有$( $("#box") ) 这种情况的时候，这个 if 就是来处理这种情况的
+	  		if ( selector.selector !== undefined ) {}
+			 
+	</script>
+</body>
+</html>

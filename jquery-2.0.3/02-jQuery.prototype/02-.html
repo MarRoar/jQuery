@@ -24,16 +24,28 @@
 		}
 	 */
 	
-	// 进入 init 
-	// $(""), $(null), $(undefined), $(false)
-	// 
-	// 字符串操作
-	// 选择
-	// $("#div") $('.div') $(div) $(div div.box)
-	// 创建
-	// $('<li>')
-	// 
+	/*
+		进入 init 
+		$(""), $(null), $(undefined), $(false)
+		
+		字符串操作
+		选择
+		$("#div") $('.div') $(div) $(div div.box)
+		创建
+		$('<li>')
+		
+		节点的操作
+		$(this) $(document)
+		函数
+		$(function () {})
+		$(document).ready(function () {})
+
+		$([])  $({})
+	*/
 	
+
+
+
 	init: function( selector, context, rootjQuery ) {
 		var match, elem;
 
@@ -59,7 +71,7 @@
 			if ( match && (match[1] || !context) ) {
 
 				// HANDLE: $(html) -> $(array)
-				// 创建标签
+			// 创建标签
 				if ( match[1] ) {
 					// 创建的时候上下文 一般是 自己
 					// documnet.createElement()
@@ -71,6 +83,7 @@
 					// 合并两个数组到第一个数组
 					// var str = "<li>111</li><script>alert(123)<\/script>"
 					// 用 parseHTML 解析 str
+					// 
 					jQuery.merge( this, jQuery.parseHTML(
 						match[1],
 						context && context.nodeType ? context.ownerDocument || context : document,
@@ -96,7 +109,7 @@
 
 					return this;
 
-				// HANDLE: $(#id)
+			// HANDLE: $(#id)
 				} else {
 					elem = document.getElementById( match[2] );
 
@@ -114,6 +127,8 @@
 				}
 
 			// HANDLE: $(expr, $(...))
+			// 复杂选择器
+			// find ->  sizzle
 			} else if ( !context || context.jquery ) {
 				return ( context || rootjQuery ).find( selector );
 
@@ -125,6 +140,7 @@
 
 		// HANDLE: $(DOMElement)
 		// 对DOM 元素的的处理
+		// 选择节点
 		} else if ( selector.nodeType ) {
 			this.context = this[0] = selector;
 			this.length = 1;
@@ -142,6 +158,7 @@
 			this.context = selector.context;
 		}
 
+		//  makeArray 把数组转换成类数组的方法
 		return jQuery.makeArray( selector, this );
 	},
 

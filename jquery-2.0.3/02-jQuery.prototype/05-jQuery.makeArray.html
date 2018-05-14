@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>jQuery.makeArray</title>
+</head>
+<body>
+	<div></div>
+	<div></div>
+	<div></div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		//jQuery.makeArray 的用法
+		
+		var oDivs = document.getElementsByTagName('div')
+
+		// oDivs.push()
+		// 设个会报错
+		// $.makeArray(oDivs).push()
+		// 这样就不会报错了，也就是说这样就转成数组了
+		// 
+		// makeArray 这个可以转成数组
+	
+		console.log( $.makeArray(oDivs) )
+
+		// makeArray 还可以内部使用, 这样就转成了内部使用的json形式的
+		console.log( $.makeArray(oDivs, {length: 0}) )		
+	</script>
+</body>
+</html>

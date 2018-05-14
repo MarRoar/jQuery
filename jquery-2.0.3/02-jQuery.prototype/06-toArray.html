@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>toArray</title>
+</head>
+<body>
+	<div></div>
+	<div></div>
+	<div></div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		console.log( $('div') )
+		// 转成数组
+		console.log( $('div').toArray() )
+
+		var oDivs = document.getElementsByTagName('div')
+
+		console.log([].slice.call( $.makeArray(oDivs, {length: 0}) ))
+	</script>
+</body>
+</html>

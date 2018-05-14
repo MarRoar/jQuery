@@ -6,6 +6,7 @@
 </head>
 <body>
 	<ul></ul>
+	<p> parseHTML 和 merge </p>
 	<script src="../src/jquery-2.0.3.js"></script>
 	<script>
 		var str = "<li>111</li><li>222</li><li>333</li><script>alert(123)<\/script>"
@@ -34,8 +35,28 @@
 		var arr1 = ['c', 'd']
 		console.log($.merge(arr, arr1))
 
-
 		// 还有一种这样的情况
+		
+
+		// HANDLE: $(html, props)
+		$('<li>', {title: 'hi', html: 'abcdefg'}).appendTo('ul');
+		// 这一种调用方法在那个方法里面是怎么判断的
+		if ( rsingleTag.test( match[1] ) && jQuery.isPlainObject( context ) ) {
+			for ( match in context ) {
+				// Properties of context are called as methods if possible
+				if ( jQuery.isFunction( this[ match ] ) ) {
+					// html 这个是调用的方法
+					this[ match ]( context[ match ] );
+
+				// ...and otherwise set as attributes
+				} else {
+					// 如果没有函数的话，这里设置属性
+					this.attr( match, context[ match ] );
+				}
+			}
+		}
+		
+		
 		
 	</script>
 </body>

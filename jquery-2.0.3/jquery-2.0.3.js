@@ -356,7 +356,7 @@ jQuery.extend = jQuery.fn.extend = function() {
 						clone = src && jQuery.isArray(src) ? src : [];
 
 					} else {
-						// 为什么
+						// 为什么 jQuery.isPlainObject(src) ? src
 						// var a = {name: {a: 'a'}}
 						// var b = {name: {b: 'b'}}
 						clone = src && jQuery.isPlainObject(src) ? src : {};
@@ -379,8 +379,10 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 jQuery.extend({
 	// Unique for each copy of jQuery on the page
+	// 因为是唯一的，用在映射
 	expando: "jQuery" + ( core_version + Math.random() ).replace( /\D/g, "" ),
 
+	// 这个的正确的使用是在 引入 jquery 之前定义的 $
 	noConflict: function( deep ) {
 		if ( window.$ === jQuery ) {
 			window.$ = _$;
@@ -390,11 +392,12 @@ jQuery.extend({
 			window.jQuery = _jQuery;
 		}
 
+		// 返回接收的
 		return jQuery;
 	},
 
 	// Is the DOM ready to be used? Set to true once it occurs.
-	isReady: false,
+	isReady: false, // 跟DOM加载有关
 
 	// A counter to track how many items to wait for before
 	// the ready event fires. See #6781

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>expando</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// console.log($.expando)
+
+		var mar = $.noConflict()
+
+		var $ = 'test $';
+		mar(function () {
+			// console.log($)
+		})
+
+
+	</script>
+	<script>
+		var Mar = '防冲突';
+
+		// 防止冲突
+		(function () {
+			var _Mar = window.Mar
+			console.log('_Mar1', _Mar)
+
+			var Mar = function () {
+				console.log('Mar')
+			}
+
+			Mar.noConflict = function () {
+				console.log(window.Mar == Mar)
+				if (window.Mar == Mar) {
+					console.log('_Mar2', _Mar)
+					window.Mar = _Mar
+				}
+				return Mar
+			}
+
+			window.Mar = Mar;
+		})()
+
+		var t = Mar.noConflict();
+		// var Mar = 123;
+
+		t()
+		console.log(Mar)
+	</script>
+</body>
+</html>

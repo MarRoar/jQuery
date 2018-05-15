@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<p>DOM 加载</p>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// 下面两种加载有什么关系
+		$(function () {
+			
+		})
+
+		window.onload = function () {
+			
+		}
+
+		// 1>  原生的加载是等页面中所有的资源都加载完, $ 是等DOM 加载完
+		// ------------------------------------------------------------------------
+		
+		// jQuery 调用的是 DOMContentLoaded 方法
+		// document.addEventListener( "DOMContentLoaded", completed, false );
+		// 
+		
+		//$(function () {})
+		//    ->
+		// $(document).ready(function () {})
+		//    -> 
+		// $().ready()
+		//    ->
+		// jQuery.ready.promise().done( fn ); 
+		// jQuery.ready.promise() => 这是一个延迟对象
+		// 
+	</script>
+</body>
+</html>

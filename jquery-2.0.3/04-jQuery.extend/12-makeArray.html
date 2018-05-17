@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>makeArray</title>
+</head>
+<body>
+	<div>sdf</div>
+	<div>asdf</div>
+	<div>asdf</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var oDivs = $('div');
+		console.log( $.makeArray(oDivs) );
+
+
+
+		var arr = ['ad', '123', 12];
+		// makeArray 如果传递两个参数的话是内部使用的，
+		// 转成类数组的情况
+		console.log( $.makeArray(arr, {length: 0}))
+
+		// Object() 方法
+		// Object(number) 就成数字
+		// Object(string) 字符串就会被拆解
+
+	</script>
+</body>
+</html>

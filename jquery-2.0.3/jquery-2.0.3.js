@@ -677,10 +677,14 @@ jQuery.extend({
 	},
 
 	// results is for internal usage only
+	// 类数组转成数组
 	makeArray: function( arr, results ) {
+		// {} 或者 []
 		var ret = results || [];
 
 		if ( arr != null ) {
+			// 先把 arr 转成对象的形式
+			// 只要有长度 isArraylike 就是真
 			if ( isArraylike( Object(arr) ) ) {
 				jQuery.merge( ret,
 					typeof arr === "string" ?
@@ -699,14 +703,19 @@ jQuery.extend({
 	},
 
 	merge: function( first, second ) {
+		// 对外是转成数组
+		// 对内是转成特殊的对象
+		
 		var l = second.length,
 			i = first.length,
 			j = 0;
 
+		// $.merge(['a', 'b'], ['c','d'])
 		if ( typeof l === "number" ) {
 			for ( ; j < l; j++ ) {
 				first[ i++ ] = second[ j ];
 			}
+		// $merge(['a', 'b'], {0: 'c', 1: 'd'})
 		} else {
 			while ( second[j] !== undefined ) {
 				first[ i++ ] = second[ j++ ];

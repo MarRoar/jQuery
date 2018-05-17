@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>isNumeric</title>
+</head>
+<body>
+	<pre>
+	isNumeric: function( obj ) {
+		// 判断是否是数字
+		// 
+		return !isNaN( parseFloat(obj) ) && isFinite( obj );
+
+		// isFinite 判断是否是有限的数字
+	},
+	</pre>
+	<script>
+		console.log( isFinite(123) )
+	</script>
+
+</body>
+</html>

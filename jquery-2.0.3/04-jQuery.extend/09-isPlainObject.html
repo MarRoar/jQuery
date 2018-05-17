@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>isPlainObject</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// isPlainObject 对象自变量，就是判断对象的 {}
+		var obj = {},
+			obj1 = new Object();
+
+		console.log( $.isPlainObject(obj) )
+
+		// 
+		// 
+		
+		function A() {
+			
+		}
+
+		A.prototype.constructor = 'AA'
+		A.prototype.show = 'show'
+
+		// for in 原型本身有的一些方法和属性是不能 遍历到的
+		for(var n in A.prototype) {
+			console.log(n)
+		}
+		
+	</script>
+</body>
+</html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>parseXML</title>
+</head>
+<body>
+	<script>
+
+		var str = '<note><to>George</to><from>John</from><heading>Reminder</heading><body>Don forget the meeting!</body></note>';
+
+		var tmp = new DOMParser();
+		console.log('tmp', tmp);
+
+		var xml = tmp.parseFromString( str, 'text/xml');
+
+		console.log(xml.getElementsByTagName('note'))
+
+		var c = xml.getElementsByTagName('note')[0]
+			c =c.children;
+
+		for (var i = 0; i < c.length; i++) {
+			console.log(c[i])
+		}
+		
+		// console.log('xml', xml)
+	</script>
+</body>
+</html>

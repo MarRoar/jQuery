@@ -90,8 +90,11 @@ var
 
 	// The ready event handler and self cleanup method
 	completed = function() { // DOM 加载成功后触发的
+		// DOMContentLoaded, load
+		// 这两个事件哪个先完成哪个先执行，然后都取消，这个可以保证只有一个事件被执行
 		document.removeEventListener( "DOMContentLoaded", completed, false );
 		window.removeEventListener( "load", completed, false );
+		// 然后调用 ready() 事件
 		jQuery.ready();
 	};
 
@@ -404,9 +407,10 @@ jQuery.extend({
 	readyWait: 1,
 
 	// Hold (or release) the ready event
-	holdReady: function( hold ) {
+	holdReady: function( hold ) { // 推迟DOM 的触发
 		if ( hold ) {
 			jQuery.readyWait++;
+			// $.holdReady(true) 可能会 hold 多次
 		} else {
 			jQuery.ready( true );
 		}
@@ -429,9 +433,12 @@ jQuery.extend({
 		}
 
 		// If there are functions bound, to execute
+		// readyList.resolve()
 		readyList.resolveWith( document, [ jQuery ] );
 
 		// Trigger any bound ready events
+		// $(document).on('ready', function () {  })
+		// 上面这种情况可以触发下面
 		if ( jQuery.fn.trigger ) {
 			jQuery( document ).trigger("ready").off("ready");
 		}
@@ -447,11 +454,16 @@ jQuery.extend({
 	isArray: Array.isArray,
 
 	isWindow: function( obj ) {
+		// 前面是避免报错
 		return obj != null && obj === obj.window;
 	},
 
 	isNumeric: function( obj ) {
+		// 判断是否是数字
+		// 
 		return !isNaN( parseFloat(obj) ) && isFinite( obj );
+
+		// isFinite 判断是否是有限的数字
 	},
 
 	type: function( obj ) {
@@ -464,11 +476,13 @@ jQuery.extend({
 			typeof obj;
 	},
 
-	isPlainObject: function( obj ) {
+	isPlainObject: function( obj ) { // 是否是对象自变量 {} 或者 new Object()
 		// Not plain objects:
 		// - Any object or value whose internal [[Class]] property is not "[object Object]"
-		// - DOM nodes
+		// - DOM nodes 
 		// - window
+		// 
+		// DOM 节点，和window 的type是 object 
 		if ( jQuery.type( obj ) !== "object" || obj.nodeType || jQuery.isWindow( obj ) ) {
 			return false;
 		}
@@ -477,7 +491,11 @@ jQuery.extend({
 		// The try/catch suppresses exceptions thrown when attempting to access
 		// the "constructor" property of certain host objects, ie. |window.location|
 		// https://bugzilla.mozilla.org/show_bug.cgi?id=814622
+		
+		// core_hasOwn = class2type.hasOwnProperty,
 		try {
+
+			// 判断这个原型对象上是否有属性 isPrototypeOf
 			if ( obj.constructor &&
 					!core_hasOwn.call( obj.constructor.prototype, "isPrototypeOf" ) ) {
 				return false;
@@ -491,7 +509,7 @@ jQuery.extend({
 		return true;
 	},
 
-	isEmptyObject: function( obj ) {
+	isEmptyObject: function( obj ) { // 判断是否为空的
 		var name;
 		for ( name in obj ) {
 			return false;
@@ -526,6 +544,7 @@ jQuery.extend({
 			return [ context.createElement( parsed[1] ) ];
 		}
 
+		// 多标签的情况走这里， 创建一个文档碎片
 		parsed = jQuery.buildFragment( [ data ], context, scripts );
 
 		if ( scripts ) {
@@ -547,6 +566,7 @@ jQuery.extend({
 		}
 
 		// Support: IE9
+		// 在IE 6 7 8 里面 用 ActiveXobject 这个东西
 		try {
 			tmp = new DOMParser();
 			xml = tmp.parseFromString( data , "text/xml" );
@@ -554,13 +574,15 @@ jQuery.extend({
 			xml = undefined;
 		}
 
+		// parsererror 在错误的情况下会创建 这个标签，
+		// <parsererror>错误信息</parsererror>
 		if ( !xml || xml.getElementsByTagName( "parsererror" ).length ) {
 			jQuery.error( "Invalid XML: " + data );
 		}
 		return xml;
 	},
 
-	noop: function() {},
+	noop: function() {},  // 一个空函数
 
 	// Evaluates a script in a global context
 	globalEval: function( code ) {
@@ -580,15 +602,19 @@ jQuery.extend({
 			} else {
 			// Otherwise, avoid the DOM node creation, insertion
 			// and removal by using an indirect global eval
-				indirect( code );
+				indirect( code ); //eval()
 			}
 		}
 	},
 
 	// Convert dashed to camelCase; used by the css and data modules
 	// Microsoft forgot to hump their vendor prefix (#9572)
+	// 在IE 下面前缀的第一个字母是小写
+	// -ms-transform   => msTransform
+	// -moz-transform  => MozTransform
 	camelCase: function( string ) {
 		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
+		// replace 的第二个参数 fcamelCase 可以是回调函数
 	},
 
 	nodeName: function( elem, name ) {
@@ -596,6 +622,7 @@ jQuery.extend({
 	},
 
 	// args is for internal usage only
+	// each 第三个参数是jQuery内部使用的
 	each: function( obj, callback, args ) {
 		var value,
 			i = 0,
@@ -857,14 +884,15 @@ jQuery.extend({
 jQuery.ready.promise = function( obj ) {
 	if ( !readyList ) {
 
-		readyList = jQuery.Deferred();
+		readyList = jQuery.Deferred(); // 创建一个延迟对象
 
 		// Catch cases where $(document).ready() is called after the browser event has already occurred.
 		// we once tried to use readyState "interactive" here, but it caused issues like the one
 		// discovered by ChrisS here: http://bugs.jquery.com/ticket/12282#comment:15
-		if ( document.readyState === "complete" ) {
+		if ( document.readyState === "complete" ) { // DOM 加载完
 			// Handle it asynchronously to allow scripts the opportunity to delay ready
 			setTimeout( jQuery.ready );
+			// 防止IE 的问题
 
 		} else {
 
@@ -873,9 +901,10 @@ jQuery.ready.promise = function( obj ) {
 
 			// A fallback to window.onload, that will always work
 			window.addEventListener( "load", completed, false );
+			// 有些浏览器会缓存 load 事件
 		}
 	}
-	return readyList.promise( obj );
+	return readyList.promise( obj ); // 这个状态不能被修改
 };
 
 // Populate the class2type map

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>globalEval</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		function test() {
+		  jQuery.globalEval( "var newVar = true;" )
+		}
+		test();
+		console.log(newVar)
+
+
+		!(function t() {
+			// eval('var a = 1'); //这个时候创建的时候是在外面拿不到的
+			// 为什么这个时候不行呢
+			// 因为 eval 这个它也是一个关键字，在这个时候执行的时候，会有作用域的问题
+			// 所以不行
+
+			window.eval('var a = 1'); // 这个时候是可以的
+
+		})()
+
+		console.log("a", a)
+
+		var t = $.nodeName(document.documentElement, 'html')
+
+		// nodeName 节点的名字
+		console.log("t", t)
+
+		console.log(document.body.nodeName) // nodeName 在有的浏览器里面是大写的所以要转成小写
+
+	</script>
+</body>
+</html>

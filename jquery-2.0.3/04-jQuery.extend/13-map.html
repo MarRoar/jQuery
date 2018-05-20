@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>map</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var a = [1, 2, 3];
+		var t = $.map(a, function (n) {
+			return n + 1
+		})
+		console.log("t", t);
+
+		// map 经常用
+		// 自己写一下不得到复合数组的情况
+		
+		function test(n) {
+			var r = [];
+
+			for (var i = 0; i < n.length; i++) {
+				r[r.length] = n[i]
+			}
+
+			return [].concat.apply( [], r)
+			// return r
+		}
+
+		var t1 = test(a)
+		console.log( 't1', t1 )
+
+
+		var a2 = [ [2] ] // 这种情况下有可能得到复合数组
+
+		var t2 = test(a2)
+		console.log( 't2', t2 )
+
+	</script>
+</body>
+</html>

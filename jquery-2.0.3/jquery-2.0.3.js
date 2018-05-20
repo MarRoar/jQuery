@@ -776,10 +776,14 @@ jQuery.extend({
 		}
 
 		// Flatten any nested arrays
+		// 这样的操作是不想得到复合数组 [ [1], [2] ]
+		// 
 		return core_concat.apply( [], ret );
 	},
 
 	// A global GUID counter for objects
+	// 唯一标识符
+	// 事件操作, 有很大的关系
 	guid: 1,
 
 	// Bind a function to a context, optionally partially applying any
@@ -813,6 +817,8 @@ jQuery.extend({
 
 	// Multifunctional method to get and set values of a collection
 	// The value/s can optionally be executed if it's a function
+	
+	// chainable :  控制设置还是获取
 	access: function( elems, fn, key, value, chainable, emptyGet, raw ) {
 		var i = 0,
 			length = elems.length,

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>proxy</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// proxy 怎么修改 this指向
+		
+		function proxy(fn, context) {
+			var proxy, args;
+
+			args = [].slice.call(arguments, 2);
+
+			proxy = function () {
+				return fn.apply( context || this, args.concat( [].slice.call( arguments ) ) );
+			}
+
+			return proxy;
+		}
+
+		function show() {
+			console.log(this);
+		}
+
+		proxy(show, window)()
+	</script>
+</body>
+</html>

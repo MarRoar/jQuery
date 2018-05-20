@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>grep</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// grep 过滤得到新数组
+		
+		var arr = [1, 2, 3, 4];
+
+		// 过滤新数组
+		// 如果返回为真就
+		
+		// 第三个参数是取反的参数
+		var res = $.grep(arr, function (n, i) {	
+			return n > 2;
+		}, true)
+
+		// console.log('res', res);
+
+		function test(n, callback, inv) {
+			var len = n.length,
+				i = 0,
+				res = [];
+
+			inv = !! inv;
+
+			for (; i < len; i++) {
+				var item = n[i];
+
+				var t = callback( item , i)
+
+				// 在这里来判断是否取反
+				// 如果 inv = false
+				// 那么 t = true 的时候就为真，所以
+				if (inv !== t) {
+					res.push(item)
+				}
+			}
+
+			return res
+		}
+
+		var a = test(arr, function (n) {
+			return n > 2
+		}, true)
+		console.log("a", a);
+	</script>
+</body>
+</html>

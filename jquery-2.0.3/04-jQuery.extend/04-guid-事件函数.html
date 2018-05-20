@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>guid的应用</title>
+</head>
+<body>
+	<button class="sure">点击</button>
+	<button class="off">取消</button>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$(function () {
+			
+			function show(argument) {
+				console.log(this)
+			}
+
+			// 1
+
+			// $(".sure").click( show )
+
+			// $(".off").click(function () {
+
+			// 	$(".sure").off()
+
+			// })
+
+			// 2 如果改变this的指向
+			// 即使嵌套的情况下，也可以找打的 show 方法的	
+			$(".sure").click( $.proxy(show, window) )
+
+			$(".off").click(function () {
+
+				$(".sure").off()
+
+			})
+			
+
+
+		})
+	</script>
+</body>
+</html>

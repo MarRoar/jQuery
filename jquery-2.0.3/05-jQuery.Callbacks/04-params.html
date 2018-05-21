@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>参数</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		function aaa() {
+			console.log("aaa")
+		}
+		function bbb() {
+			console.log("bbb");
+		}
+
+		// var cb = $.Callbacks();
+		var cb1 = $.Callbacks('once'); // fire 只触发一次
+		
+		cb1.add(aaa)
+		cb1.add(bbb)
+		cb1.fire()
+		cb1.fire()
+		// fire 可以多次触发的
+		
+		// var cb = $.Callbacks("once");
+		// 这个参数是 fire 只能迟发一次
+		
+		console.log("--------------2222---------------------")
+
+		var cb2 = $.Callbacks('memory'); // 记忆
+
+		cb2.add(aaa)
+		cb2.fire() // 加上 memory 在 fire() 之后的 add 函数也可以触发
+		cb2.add(bbb)
+
+		var cb3 = $.Callbacks('unique') // 去重
+		cb3.add(aaa)
+		cb3.add(aaa)
+		cb3.fire()
+
+		console.log("--------------33333---------------------")
+
+		function ccc(argument) {
+			console.log("ccc")
+			return false
+		}
+
+		var cb4 = $.Callbacks('stopOnFalse') // 如果 有 reutrn false 的话 则会停止
+		// var cb4 = $.Callbacks() // 如果 有 reutrn false 的话 则会停止
+		cb4.add(ccc)
+		cb4.add(aaa)
+		cb4.fire()
+
+	</script>
+</body>
+</html>

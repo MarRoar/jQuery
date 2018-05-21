@@ -875,6 +875,7 @@ jQuery.extend({
 	// A method for quickly swapping in/out CSS properties to get correct calculations.
 	// Note: this method belongs to the css module but it's needed here for the support module.
 	// If support gets modularized, this method should be moved back to the css module.
+	// 可以获取到隐藏元素的值
 	swap: function( elem, options, callback, args ) {
 		var ret, name,
 			old = {};
@@ -2935,7 +2936,10 @@ var optionsCache = {};
 
 // Convert String-formatted options into Object-formatted ones and store in cache
 function createOptions( options ) {
+	console.log( core_rnotwhite )
+	console.log( options.match(core_rnotwhite) )
 	var object = optionsCache[ options ] = {};
+	// String 有 match 方法
 	jQuery.each( options.match( core_rnotwhite ) || [], function( _, flag ) {
 		object[ flag ] = true;
 	});
@@ -2986,6 +2990,7 @@ jQuery.Callbacks = function( options ) {
 		firingIndex,
 		// Actual callback list
 		list = [],
+
 		// Stack of fire calls for repeatable lists
 		stack = !options.once && [],
 		// Fire callbacks
@@ -3026,6 +3031,8 @@ jQuery.Callbacks = function( options ) {
 						jQuery.each( args, function( _, arg ) {
 							var type = jQuery.type( arg );
 							if ( type === "function" ) {
+
+								// uniquer 这个参数是去重
 								if ( !options.unique || !self.has( arg ) ) {
 									list.push( arg );
 								}
@@ -3041,6 +3048,8 @@ jQuery.Callbacks = function( options ) {
 						firingLength = list.length;
 					// With memory, if we're not firing then
 					// we should call right away
+					
+					// 有 memory 这个参数的话 就会触发
 					} else if ( memory ) {
 						firingStart = start;
 						fire( memory );

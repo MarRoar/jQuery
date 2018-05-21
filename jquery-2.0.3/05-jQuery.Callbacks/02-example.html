@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>使用</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		function aaa() {
+			console.log("aaa")
+		}
+		function bbb() {
+			console.log("bbb");
+		}
+
+		var cb = $.Callbacks();
+
+
+		
+		cb.add(aaa)
+		cb.add(bbb)
+		cb.fire()
+
+		// 类似于 js 绑定事件
+		// 
+		// 观察着模式
+		
+	</script>
+	<script>
+		// 对不同作用域下的函数进行管理
+		var C = $.Callbacks();
+
+		function ccc() {
+			console.log("c")
+		}
+
+		C.add(ccc);
+
+		(function () {
+			function ddd() {
+				console.log("d");
+			}
+
+			C.add(ddd);
+		})();
+
+		// ccc();
+		// ddd(); 在不同的作用域下
+		
+		C.fire()
+	</script>
+</body>
+</html>

@@ -2936,9 +2936,18 @@ var optionsCache = {};
 
 // Convert String-formatted options into Object-formatted ones and store in cache
 function createOptions( options ) {
-	console.log( core_rnotwhite )
-	console.log( options.match(core_rnotwhite) )
+	// console.log( core_rnotwhite )
+	// console.log( options.match(core_rnotwhite) )
 	var object = optionsCache[ options ] = {};
+	/**
+	 * 如果是复合形式的话 optionsCache 的形式
+	 * optionsCache = {
+	 * 	"memory unique": {
+	 * 		memory: true,
+	 * 		unique: true
+	 * 	}
+	 * }
+	 */
 	// String 有 match 方法
 	jQuery.each( options.match( core_rnotwhite ) || [], function( _, flag ) {
 		object[ flag ] = true;
@@ -2992,6 +3001,8 @@ jQuery.Callbacks = function( options ) {
 		list = [],
 
 		// Stack of fire calls for repeatable lists
+		
+		// options.once 让 fire 只执行一次
 		stack = !options.once && [],
 		// Fire callbacks
 		fire = function( data ) {
@@ -3002,6 +3013,7 @@ jQuery.Callbacks = function( options ) {
 			firingLength = list.length;
 			firing = true;
 			for ( ; list && firingIndex < firingLength; firingIndex++ ) {
+				// stopOnFalse = true 并且 函数 return false 的话终止循环，也就是后续的函数都不再执行
 				if ( list[ firingIndex ].apply( data[ 0 ], data[ 1 ] ) === false && options.stopOnFalse ) {
 					memory = false; // To prevent further calls using add
 					break;
@@ -3014,6 +3026,9 @@ jQuery.Callbacks = function( options ) {
 						fire( stack.shift() );
 					}
 				} else if ( memory ) {
+					// 这边可以看 04-params2.html
+					// 在 memory 为 true 的时候会把 list 这个数组置空
+					// 然后再下一个 fire() 其实执行的是空数组
 					list = [];
 				} else {
 					self.disable();
@@ -3033,11 +3048,16 @@ jQuery.Callbacks = function( options ) {
 							if ( type === "function" ) {
 
 								// uniquer 这个参数是去重
+								// 只有当 options.unique 和 has 都是真的情况才不需要 push 
 								if ( !options.unique || !self.has( arg ) ) {
 									list.push( arg );
 								}
 							} else if ( arg && arg.length && type !== "string" ) {
 								// Inspect recursively
+								// 检查递归的
+									// cb.add([a, b])
+									// 这种情况
+								
 								add( arg );
 							}
 						});
@@ -3095,11 +3115,11 @@ jQuery.Callbacks = function( options ) {
 				return this;
 			},
 			// Is it disabled?
-			disabled: function() {
+			disabled: function() { // 禁止后续的所有操作
 				return !list;
 			},
 			// Lock the list in its current state
-			lock: function() {
+			lock: function() { // 只是锁住 fire 操作的
 				stack = undefined;
 				if ( !memory ) {
 					self.disable();
@@ -3112,13 +3132,22 @@ jQuery.Callbacks = function( options ) {
 			},
 			// Call all callbacks with the given context and arguments
 			fireWith: function( context, args ) {
+				// 在第一次执行的时候 fired 为 false  !fired = true
+				// 第二次 fired = true  !fired = false 这个时候就需要看 stack 就看 once 这个参数了
+				// 
 				if ( list && ( !fired || stack ) ) {
 					args = args || [];
 					args = [ context, args.slice ? args.slice() : args ];
+					
+					// 把参数解析成有作用域和数组
+					
 					if ( firing ) {
+						// 正在执行中的函数，如果里面再有 fire 的话(04-params1.html)
+						// firing = true 则,进行 入栈操作
 						stack.push( args );
 					} else {
 						fire( args );
+						// fire 的参数
 					}
 				}
 				return this;

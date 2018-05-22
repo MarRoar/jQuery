@@ -33,13 +33,13 @@
 		cb2.add(aaa)
 		cb2.fire() // 加上 memory 在 fire() 之后的 add 函数也可以触发
 		cb2.add(bbb)
-
+		console.log("--------------33333---------------------")
 		var cb3 = $.Callbacks('unique') // 去重
 		cb3.add(aaa)
 		cb3.add(aaa)
 		cb3.fire()
 
-		console.log("--------------33333---------------------")
+		console.log("--------------44444---------------------")
 
 		function ccc(argument) {
 			console.log("ccc")
@@ -51,6 +51,24 @@
 		cb4.add(ccc)
 		cb4.add(aaa)
 		cb4.fire()
+
+
+		console.log("--------------5555---------------------")
+
+		var cb5 = $.Callbacks('memory unique') // 还可以这样组合着
+
+		console.log("--------------66666---------------------")
+
+		var cb6 = $.Callbacks();
+
+		cb6.add({
+			a: function () {
+				console.log("a")
+			},
+			length: 1
+		})
+		cb6.fire()
+
 
 	</script>
 </body>

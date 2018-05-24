@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>state</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var dfd = $.Deferred();
+
+		/*
+		
+		成功
+		[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],
+		失败
+		[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ],
+		进行中
+		[ "notify", "progress", jQuery.Callbacks("memory") ]
+		*/	
+
+		dfd.done(function () {
+			console.log("成功")
+		}).fail(function () {
+			console.log("失败")
+		}).progress(function () {
+			console.log("进行中")
+		})
+
+		for (var i = 0; i < 5; i++) {
+			// dfd.resolve() // 成功只触发一次
+			// dfd.reject() // 失败 只触发一次
+			console.log(i)
+			dfd.notify() // 触发多次
+		}
+
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>then</title>
+</head>
+<body>
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var dfd = $.Deferred();
+
+		// then 有三个参数可以传递
+		dfd.then(function () {
+			console.log("成功")
+		}, function () {
+			console.log("失败")
+			//  这里可以接收到参数
+			console.log(arguments[0])
+		}, function () {
+			console.log("fnProgress")
+		})
+
+		setTimeout(function () {
+			// dfd.resolve()
+			// 
+			// 这里可以传递参数
+			dfd.reject('参数')
+		}, 1000)
+		
+	</script>
+</body>
+</html>

@@ -3168,8 +3168,12 @@ jQuery.Callbacks = function( options ) {
 jQuery.extend({
 
 	Deferred: function( func ) {
+
 		var tuples = [
 				// action, add listener, listener list, final state
+				// 就是将fire 和 add抽象出来这几种状态
+				// once 触发一次 成功和失败，只会触发一次
+				// memory 后面添加的都可以加进去
 				[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],
 				[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ],
 				[ "notify", "progress", jQuery.Callbacks("memory") ]
@@ -3180,10 +3184,11 @@ jQuery.extend({
 					return state;
 				},
 				always: function() {
+					// 失败和陈宫都会走always
 					deferred.done( arguments ).fail( arguments );
 					return this;
 				},
-				then: function( /* fnDone, fnFail, fnProgress */ ) {
+				then: function( /* fnDone, fnFail, fnProgress */ ) { // 可以穿3个参数
 					var fns = arguments;
 					return jQuery.Deferred(function( newDefer ) {
 						jQuery.each( tuples, function( i, tuple ) {
@@ -3191,7 +3196,10 @@ jQuery.extend({
 								fn = jQuery.isFunction( fns[ i ] ) && fns[ i ];
 							// deferred[ done | fail | progress ] for forwarding actions to newDefer
 							deferred[ tuple[1] ](function() {
-								var returned = fn && fn.apply( this, arguments );
+
+								var returned = fn && fn.apply( this, arguments ); // 可以传递参数 arguments
+
+								// 这里主要针对 pipe 方法的
 								if ( returned && jQuery.isFunction( returned.promise ) ) {
 									returned.promise()
 										.done( newDefer.resolve )
@@ -3214,36 +3222,47 @@ jQuery.extend({
 			deferred = {};
 
 		// Keep pipe for back-compat
+		// then 和 pipe 是一个方法
+		// 为了兼容老版本
 		promise.pipe = promise.then;
 
 		// Add list-specific methods
+		// 这里是建立映射 
 		jQuery.each( tuples, function( i, tuple ) {
 			var list = tuple[ 2 ],
 				stateString = tuple[ 3 ];
 
 			// promise[ done | fail | progress ] = list.add
+			// 赋值给 add
 			promise[ tuple[1] ] = list.add;
+			// 添加到 promise 上
 
 			// Handle state
+			// 只有完成和未完成才能走这个状态的
 			if ( stateString ) {
 				list.add(function() {
 					// state = [ resolved | rejected ]
 					state = stateString;
 
 				// [ reject_list | resolve_list ].disable; progress_list.lock
+				
+				// 来控制状态的, 完成和失败的状态只能触发一个
+				// 运算符看 05.html
 				}, tuples[ i ^ 1 ][ 2 ].disable, tuples[ 2 ][ 2 ].lock );
 			}
 
 			// deferred[ resolve | reject | notify ]
+			
 			deferred[ tuple[0] ] = function() {
 				deferred[ tuple[0] + "With" ]( this === deferred ? promise : this, arguments );
 				return this;
 			};
+			// fireWith 也就是 fire 
 			deferred[ tuple[0] + "With" ] = list.fireWith;
 		});
 
 		// Make the deferred a promise
-		promise.promise( deferred );
+		promise.promise( deferred ); // 把 promise 继承到 deferred 上
 
 		// Call given func if any
 		if ( func ) {

@@ -57,7 +57,12 @@
 				jQuery.extend( {}, options );
 
 			// console.log(options)
-			var list = [];
+			var list = [],
+				firing;
+
+			var fire = function ( data ) {
+				
+			}
 
 			var self = {
 				add: function () {
@@ -71,7 +76,7 @@
 										list.push( arg );
 									}
 								} else if ( arg && arg.length && type !== "string" ) {
-									// console.log("here")
+									// 递归
 									add( arg )
 								}
 							})
@@ -97,11 +102,20 @@
 				locked: function () {
 					
 				},
-				fireWith: function () {
-					
-					if ( list && ( !fired || stack ) ) {
+				fireWith: function ( context, args ) {
 
+					if ( list && ( !fired || stack ) ) {
+						args = args || [];
+						args = [ context,  args.slice ? args.slice() : args ]
+
+						if ( firing ) {
+
+						} else {
+							fire( args );
+						}
 					}
+
+					return this;
 				},
 				fire: function () {
 					self.fireWith( this, arguments );

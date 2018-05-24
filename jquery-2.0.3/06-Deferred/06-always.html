@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var dfd = $.Deferred();
+
+
+		dfd.always(function () {
+			console.log("always")
+		})
+
+		for (var i = 0; i < 5; i++) {
+			console.log(i)
+			dfd.resolve();
+		}
+	</script>
+</body>
+</html>

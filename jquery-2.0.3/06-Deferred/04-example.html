@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<ul>
+		<li>promise</li>
+		<!-- promise 对象上有的方法 -->
+		<li>state</li>
+		<li>always</li>
+		<li>then</li>
+		<li>promise</li>
+		<li>pipe</li>
+		<li>done</li>
+		<li>fail</li>
+		<li>progress</li>
+	</ul>
+
+	<!-- Deferred 对象上本身就有三个方法 然后又拷贝了一下promise 所以  -->
+	<ul>
+		<li>Deferred</li>
+
+		<li>resolve</li>
+		<li>reject</li>
+		<li>notify</li>
+		<!-- promise 上的方法 -->
+	</ul>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var dfd = $.Deferred();
+
+		function a() {
+			setTimeout(function () {
+				dfd.resolve();
+			}, 1000)
+
+			return dfd;
+
+			// return dfd.promise() 如果加上 promise 的话，就不能修改延迟对象的状态
+			// 因为 promise 对象上没有这个方法，所以不能修改状态
+		}
+
+		var tempDfd = a()
+
+		tempDfd.done(function () {
+			
+			console.log("成功")
+		}).fail(function () {
+			
+			console.log("失败")
+		})
+
+		// 这个时候的状态是失败, 成功就不能再走了
+		tempDfd.reject()
+	</script>
+</body>
+</html>

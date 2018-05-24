@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>state</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		function a() {
+			console.log("a")
+		}
+
+		function b() {
+			console.log("b")
+		}
+
+		var cb = $.Callbacks();
+
+		cb.add(a)
+		cb.fire()
+
+		console.log("-------done---resolve-------------")
+		var dfd1 = $.Deferred();
+
+		dfd1.done(a)    // 表示成功
+		dfd1.resolve()
+
+		console.log("-------reject--fail--------------")
+		var dfd2 = $.Deferred();
+
+		
+		dfd2.fail(a)  // 表示失败
+		dfd2.reject()
+
+		console.log("-------notify---progress-------------")
+		var dfd3 = $.Deferred();
+
+		dfd3.progress(a)	
+		dfd3.notify()
+		
+
+
+	</script>
+</body>
+</html>

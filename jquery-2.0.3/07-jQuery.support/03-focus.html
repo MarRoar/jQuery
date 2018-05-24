@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div id="d">
+		<input type="text">
+	</div>
+	<p>onfocus 不具备冒泡机制</p>
+	<script>
+		var d = document.getElementById('d')
+		// d.onfocus = function () {
+		// 	alert(12);
+		// }
+
+		d.onfocusin = function () {
+			alert(12);
+		}
+
+
+
+		// d
+		var div = document.createElement('div')
+		div.style.backgroundColor = 'red';
+		div.cloneNode( true ).style.backgroundColor = ''
+		alert( div.style.backgroundColor )
+		// 在IE下是空的
+	</script>
+</body>
+</html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>when</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		//  when 的语法
+		// $.when().done()
+		
+
+		function aaa() {
+			var dfd = $.Deferred()
+			dfd.resolve();
+
+
+			return dfd;
+		}
+		
+		// aaa().done(function () {
+		// 	console.log("deferred 成功")
+		// })
+
+		function bbb() {
+			var dfd = $.Deferred()
+
+			setTimeout(function () {
+				// dfd.resolve();
+
+				dfd.reject()
+
+
+			}, 1000)
+
+			return dfd
+		}
+
+		// 现在有个需求就是要等到 aaa 和 bbb 的状态都完成
+		// 然后才触发 done ?
+		// 所以只能用when,
+		// when 主要针对多延迟对象的
+		
+		// bbb 的延迟对象，
+		$.when( aaa(), bbb() ).done(function () {
+			console.log("when 成功")
+		}).fail(function () {
+
+			// 只要有个状态是 reject()未完成的，就会走 fail
+			console.log("when fail")
+		})
+
+
+		// 原理
+		// when 有多少个参数，然后就会有计数器， 
+		// when 参数必须是 延迟对象
+		// 计数器为0 的时候，就会触发 when() 返回的 deferred对象，然后触发对应状态
+
+
+		$.when( aaa(), 123 ).done(function () {
+			console.log("when 成功")
+		}).fail(function () {
+			console.log("when fail")
+		})
+
+		// 如果 when 参数不是延迟对象，会被默认的跳过
+		$.when().done(function () {
+			console.log("when 成功")
+		}).fail(function () {
+			console.log("when fail")
+		})
+
+
+		//
+		$.when( aaa(), 123 ).done(function () {
+			console.log( arguments[1] )
+			console.log("when 成功")
+		}).fail(function () {
+			console.log("when fail")
+		})
+	</script>
+</body>
+</html>

@@ -3162,7 +3162,11 @@ jQuery.extend({
 			progressContexts = new Array( length );
 			resolveContexts = new Array( length );
 			for ( ; i < length; i++ ) {
+
+				// 判断参数里面是否是 延迟对象
 				if ( resolveValues[ i ] && jQuery.isFunction( resolveValues[ i ].promise ) ) {
+
+					// resolveValues = arguments[ i ]
 					resolveValues[ i ].promise()
 						.done( updateFunc( i, resolveContexts, resolveValues ) )
 						.fail( deferred.reject )
@@ -3189,7 +3193,9 @@ jQuery.support = (function( support ) {
 		opt = select.appendChild( document.createElement("option") );
 
 	// Finish early in limited environments
-	if ( !input.type ) {
+	// 在最新的版本里面没有这句话
+	// 因为 input 默认是有值的 type = text
+	if ( !input.type ) { 
 		return support;
 	}
 
@@ -3201,31 +3207,38 @@ jQuery.support = (function( support ) {
 
 	// Must access the parent to make an option select properly
 	// Support: IE9, IE10
+	// 在 IE9 10 创建的下拉选项，第一个是默认选中的,其他不是
 	support.optSelected = opt.selected;
 
 	// Will be defined later
+	// DOM 节点的操作，所以要在DOM加载完后才可以判断
 	support.reliableMarginRight = true;
 	support.boxSizingReliable = true;
 	support.pixelPosition = false;
 
 	// Make sure checked status is properly cloned
 	// Support: IE9, IE10
+	// 在 IE 9 10 克隆出来的默认补选中
 	input.checked = true;
 	support.noCloneChecked = input.cloneNode( true ).checked;
 
 	// Make sure that the options inside disabled selects aren't marked as disabled
 	// (WebKit marks them as disabled)
+	// 
 	select.disabled = true;
 	support.optDisabled = !opt.disabled;
 
 	// Check if an input maintains its value after becoming a radio
 	// Support: IE9, IE10
+	// 注意下面四行的顺序，先设置值，后type 再改变值
+	// IE 默认下的值是 on
 	input = document.createElement("input");
 	input.value = "t";
 	input.type = "radio";
 	support.radioValue = input.value === "t";
 
 	// #11217 - WebKit loses check when the name is after the checked attribute
+	// 文档碎片兼容问题
 	input.setAttribute( "checked", "t" );
 	input.setAttribute( "name", "t" );
 
@@ -3237,8 +3250,11 @@ jQuery.support = (function( support ) {
 
 	// Support: Firefox, Chrome, Safari
 	// Beware of CSP restrictions (https://developer.mozilla.org/en/Security/CSP)
+	// focusin 事件
+	// 它不具备冒泡机制
 	support.focusinBubbles = "onfocusin" in window;
 
+	// 背景剪切
 	div.style.backgroundClip = "content-box";
 	div.cloneNode( true ).style.backgroundClip = "";
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";

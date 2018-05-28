@@ -3464,24 +3464,32 @@ jQuery.support = (function( support ) {
 	6. Provide a clear path for implementation upgrade to WeakMap in 2014
 */
 var data_user, data_priv,
-	rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/,
+	rbrace = /(?:\{[\s\S]*\}|\[[\s\S]*\])$/, // 判断是否是 json的情况
 	rmultiDash = /([A-Z])/g;
 
 function Data() {
 	// Support: Android < 4,
-	// Old WebKit does not have Object.preventExtensions/freeze method,
+	// Old WebKit does not have Object.preventExtensions/freeze method, 
+	// Object.preventExtensions/freeze 防止对象被修改
+	
 	// return new empty object instead with no [[set]] accessor
+	// 防止属性值被修改
+	
 	Object.defineProperty( this.cache = {}, 0, {
 		get: function() {
 			return {};
 		}
 	});
 
+	// 唯一的标识符 这个就是 那个唯一的名字 xxx
+	// <body xxx = '1'>
+	// <body "jQuery203067348713152852580.8139772376720475">
 	this.expando = jQuery.expando + Math.random();
 }
 
 Data.uid = 1;
 
+// 判断节点类型
 Data.accepts = function( owner ) {
 	// Accepts only:
 	//  - Node
@@ -3491,28 +3499,45 @@ Data.accepts = function( owner ) {
 	//    - Any
 	return owner.nodeType ?
 		owner.nodeType === 1 || owner.nodeType === 9 : true;
+	
+	// 整理下 nodeType 的类型
 };
 
 Data.prototype = {
-	key: function( owner ) {
+	key: function( owner ) { // key 就是去拿到 xxx 的 value 值
 		// We can accept data for non-element nodes in modern browsers,
 		// but we should not, see #8335.
 		// Always return the key for a frozen object.
+		// 首先判断这个节点有没有
 		if ( !Data.accepts( owner ) ) {
 			return 0;
 		}
 
 		var descriptor = {},
 			// Check if the owner object already has a cache key
-			unlock = owner[ this.expando ];
+			unlock = owner[ this.expando ]; // 在标签上找 <div xxx=''> xxx 的数字值，看是否有值。
 
-		// If not, create one
+		// If not, create one,
+		// 如果没有 xxx 的话就创建
+		
 		if ( !unlock ) {
 			unlock = Data.uid++;
 
 			// Secure it in a non-enumerable, non-writable property
+			// 只能获取，不能修改
 			try {
 				descriptor[ this.expando ] = { value: unlock };
+
+				// console.log( 'descriptor', this);
+
+				/**
+				 * descriptor = {
+				 * 		jQuery20308019602227527420.38041662201063686: {
+				 * 			value: 2
+				 * 		}
+				 * }
+				 * 	jQuery20308019602227527420.38041662201063686, 就是 xxx
+				 */
 				Object.defineProperties( owner, descriptor );
 
 			// Support: Android < 4
@@ -3535,9 +3560,14 @@ Data.prototype = {
 			// There may be an unlock assigned to this node,
 			// if there is no entry for this "owner", create one inline
 			// and set the unlock as though an owner entry had always existed
-			unlock = this.key( owner ),
+			unlock = this.key( owner ), // 分配key
 			cache = this.cache[ unlock ];
 
+		// console.log( 'unlock', unlock )
+
+		// console.log('set', owner, data, value)
+
+		// 下面就是把值 设置在 cache 上面
 		// Handle: [ owner, key, value ] args
 		if ( typeof data === "string" ) {
 			cache[ data ] = value;
@@ -3554,6 +3584,8 @@ Data.prototype = {
 				}
 			}
 		}
+
+		// console.log(this)
 		return cache;
 	},
 	get: function( owner, key ) {
@@ -3578,14 +3610,18 @@ Data.prototype = {
 		//
 		//   1. The entire cache object
 		//   2. The data stored at the key
-		//
+		
+		// 
+		// console.log( owner, key, value);
+
 		if ( key === undefined ||
 				((key && typeof key === "string") && value === undefined) ) {
 
 			stored = this.get( owner, key );
+			// console.log( 'stored', stored )
 
 			return stored !== undefined ?
-				stored : this.get( owner, jQuery.camelCase(key) );
+				stored : this.get( owner, jQuery.camelCase(key) ); //Query.camelCase(key) 转驼峰的方法
 		}
 
 		// [*]When the key is not a string, or both a key and value
@@ -3605,11 +3641,14 @@ Data.prototype = {
 			unlock = this.key( owner ),
 			cache = this.cache[ unlock ];
 
-		if ( key === undefined ) {
+		if ( key === undefined ) { 
+			// 在没有指定key 的时候，把 cache 上的所有key
+			// 都清空
 			this.cache[ unlock ] = {};
 
 		} else {
 			// Support array or space separated string of keys
+			// ['name', 'key']
 			if ( jQuery.isArray( key ) ) {
 				// If "name" is an array of keys...
 				// When data is initially created, via ("key", "val") signature,
@@ -3617,6 +3656,8 @@ Data.prototype = {
 				// Since there is no way to tell _how_ a key was added, remove
 				// both plain key and camelCase key. #12786
 				// This will only penalize the array argument path.
+				
+				// 转驼峰
 				name = key.concat( key.map( jQuery.camelCase ) );
 			} else {
 				camel = jQuery.camelCase( key );
@@ -3654,7 +3695,7 @@ Data.prototype = {
 data_user = new Data();
 data_priv = new Data();
 
-
+// $.data( '#div1', 'k', 'v' )
 jQuery.extend({
 	acceptData: Data.accepts,
 
@@ -3681,6 +3722,7 @@ jQuery.extend({
 	}
 });
 
+// $('#div').data('k', 'v')
 jQuery.fn.extend({
 	data: function( key, value ) {
 		var attrs, name,
@@ -3689,6 +3731,7 @@ jQuery.fn.extend({
 			data = null;
 
 		// Gets all values
+		// 获取所有的 值
 		if ( key === undefined ) {
 			if ( this.length ) {
 				data = data_user.get( elem );
@@ -3700,7 +3743,7 @@ jQuery.fn.extend({
 
 						if ( name.indexOf( "data-" ) === 0 ) {
 							name = jQuery.camelCase( name.slice(5) );
-							dataAttr( elem, name, data[ name ] );
+							dataAttr( elem, name, data[ name ] ); // 把标签里面的 data-* 添加到 data() 里面
 						}
 					}
 					data_priv.set( elem, "hasDataAttrs", true );
@@ -3711,6 +3754,7 @@ jQuery.fn.extend({
 		}
 
 		// Sets multiple values
+		// $('#div').data({name:'hello',age: 12})
 		if ( typeof key === "object" ) {
 			return this.each(function() {
 				data_user.set( this, key );
@@ -3786,7 +3830,7 @@ function dataAttr( elem, key, data ) {
 	// If nothing was found internally, try to fetch any
 	// data from the HTML5 data-* attribute
 	if ( data === undefined && elem.nodeType === 1 ) {
-		name = "data-" + key.replace( rmultiDash, "-$1" ).toLowerCase();
+		name = "data-" + key.replace( rmultiDash, "-$1" ).toLowerCase(); // replace( rmultiDash, "-$1" ) 找到第一个大写字母
 		data = elem.getAttribute( name );
 
 		if ( typeof data === "string" ) {
@@ -3795,12 +3839,14 @@ function dataAttr( elem, key, data ) {
 					data === "false" ? false :
 					data === "null" ? null :
 					// Only convert to a number if it doesn't change the string
+					// 判断字符串数字，转成数字
 					+data + "" === data ? +data :
 					rbrace.test( data ) ? JSON.parse( data ) :
 					data;
 			} catch( e ) {}
 
 			// Make sure we set the data so it isn't changed later
+			// 去设置，
 			data_user.set( elem, key, data );
 		} else {
 			data = undefined;

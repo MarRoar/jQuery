@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>source</title>
+</head>
+<body>
+	<div id="div1">aaaa</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		/**
+		 * jquery 在设置的时候是，是设置所有的元素
+		 * jquery 在获取的时候是，默认获取第一个元素
+		 */
+		
+		// h5 设置 data-* 属性的值
+		$("#div1").get(0).dataset.name = 'dd'
+
+
+		console.log( $("#div1").data() )
+
+	</script>
+</body>
+</html>

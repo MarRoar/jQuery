@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>test</title>
+</head>
+<body>
+	<div id="div1">div</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var oDiv = $("#div1")
+
+		oDiv.data("name1", 'ddd')
+		console.log(oDiv.attr('data-name1'))
+
+		oDiv.attr('data-name2', '02-test.html')
+		console.log(oDiv.data('name2'))
+
+		oDiv.data('name2', 'change')
+		
+		console.log(oDiv.attr('data-name2'))		
+		console.log(oDiv.data('name2'))		
+
+
+		/**
+		 * data 这个方法的设计思路是( 可以看笔记上面的图 )
+		 * oDiv.data("name1", 'ddd')
+		 * -> 
+		 * <div id ='div1'  xxx='' >
+		 * -> 
+		 * 这个 xxx 就是 expando 的值，
+		 * 这个值和 cache 中介相对应
+		 * 
+		 */
+		
+		/**
+		 * <p id="p"></p>
+		 * $.data( document.getElementById('p'), 'name', 'pp' )
+		 *
+		 * <p id="p" xxx='1'></p>
+		 *
+		 * cache = {
+		 * 		1: {
+		 * 			name: 'pp'
+		 * 		}
+		 * }
+		 * * $.data( document.getElementById('p'), 'age', '132' )
+		 *
+		 * cache = {
+		 * 		1: {
+		 * 			name: 'pp',
+		 * 			age: 132
+		 * 		}
+		 * }
+		 * 一个标签只能有一个 xxx = '1', 这个只能有一个1
+		 */
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>source</title>
+</head>
+<body>
+	<div id="div1">asdf</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// $('#div1').data("name", 'hello');
+
+		// $.data( $('#div1'), 'age', '200' );
+		// $.data( $('#div1'), 'name', 'nn' );
+		$.data( document.body, 'name', 'sd' );	
+		$.data( document.body, 'age', 'sd' );	
+
+		$.data( $('#div1')[0], 'name', 'nn' );
+
+	</script>
+</body>
+</html>

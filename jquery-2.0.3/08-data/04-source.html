@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>source</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		
+		var obj = {
+			name: 'hello'
+		};
+
+		// Object.freeze( obj );
+		// 防止属性被修改, 基本类型的数据是不能修改的
+		obj.name = 'jdfd';
+
+		// console.log( obj.name )
+
+		// 引用类型的数据,在这里面是可以修改的。
+		var obj2 = {
+			tt: obj
+		}
+
+		Object.freeze(obj2)
+
+		obj.name = "obbbb"
+
+		// console.log(obj2)
+
+		//-------------------------------------------------------
+		var tem = {
+			name: 'template'
+		}
+
+		Object.defineProperty( tem, 0, {
+			get: function () {
+				return {}
+			}
+		} )
+
+		console.log('tem', tem[0])
+		tem[0] = 123456;
+		console.log('tem', tem[0])
+
+
+	</script>
+</body>
+</html>

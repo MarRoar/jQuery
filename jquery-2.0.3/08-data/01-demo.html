@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>data</title>
+</head>
+<body>
+	<p> 使用 </p>
+	<div id="div1"></div>
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+
+		$(function () {
+			$("#div1").attr('name', 'hello') // 设置
+			console.log( $("#div1").attr('name') ) // 获取
+
+			$("#div1").prop('name', 'hello') // 设置
+			console.log( $("#div1").prop('name') ) // 获取
+
+			$("#div1").data('name', 'hello') // 设置
+			console.log( $("#div1").data('name') ) // 获取
+
+			// 这三个的用法是很类似的
+			
+			// att => setAttribute , getAttribute 
+			// prop => 直接在DOM元素上设置和获取
+				// document.getElementById('div1').name = 'hello'
+				// document.getElementById('div1').name
+
+			// 以上两个方法不太适合适用大量数据的情况
+			// data 适合大量的数据
+
+			// data => 
+
+
+		})
+	</script>
+	<script>
+		// 内存泄漏
+		
+		// DOM 元素与对象之间相互引用，大部分浏览器就会出现内存泄漏
+		
+		// var oDiv = document.getElementById('div1')
+		// var obj = {}
+
+		// oDiv.name = obj
+		
+		// 这种情况就出现内存泄漏，所以 attr 和 prop 就有可能出现内存泄漏
+		
+
+		// data 可以存json  
+		// 是因为有一个中间 cache 对象
+		// 所以 就把数据绑定在 cache 对象上，这样就可以防止内存泄漏，
+		// 又可以绑定json 数据
+	</script>
+</body>
+</html>

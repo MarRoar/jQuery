@@ -3388,35 +3388,49 @@ jQuery.support = (function( support ) {
 	support.clearCloneStyle = div.style.backgroundClip === "content-box";
 
 	// Run tests that need a body at doc ready
+	// 这些东西需要DOM 加载完后才能
 	jQuery(function() {
 		var container, marginDiv,
 			// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
+			// 标准模式和怪异模式
+			// 比如说盒子模型
 			divReset = "padding:0;margin:0;border:0;display:block;-webkit-box-sizing:content-box;-moz-box-sizing:content-box;box-sizing:content-box",
 			body = document.getElementsByTagName("body")[ 0 ];
 
+		// 判断是不是在页面里面
 		if ( !body ) {
 			// Return for frameset docs that don't have a body
 			return;
 		}
 
 		container = document.createElement("div");
+		// 不让他在页面里面显示
 		container.style.cssText = "border:0;width:0;height:0;position:absolute;top:0;left:-9999px;margin-top:1px";
 
 		// Check box-sizing and margin behavior.
 		body.appendChild( container ).appendChild( div );
+
+		// 主要是针对 1.xx 的版本
 		div.innerHTML = "";
 		// Support: Firefox, Android 2.3 (Prefixed box-sizing versions).
 		div.style.cssText = "-webkit-box-sizing:border-box;-moz-box-sizing:border-box;box-sizing:border-box;padding:1px;border:1px;display:block;width:4px;margin-top:1%;position:absolute;top:1%";
 
 		// Workaround failing boxSizing test due to offsetWidth returning wrong value
 		// with some non-1 values of body zoom, ticket #13543
+		// jQuery.swap 是css 转换方法
+		
+		// zoom 属性， 页面显示比例
+		
 		jQuery.swap( body, body.style.zoom != null ? { zoom: 1 } : {}, function() {
 			support.boxSizing = div.offsetWidth === 4;
 		});
 
 		// Use window.getComputedStyle because jsdom on node.js will break without it.
 		if ( window.getComputedStyle ) {
+			//pixelPosition 像素定位
 			support.pixelPosition = ( window.getComputedStyle( div, null ) || {} ).top !== "1%";
+
+			// 获取div 的宽度 
 			support.boxSizingReliable = ( window.getComputedStyle( div, null ) || { width: "4px" } ).width === "4px";
 
 			// Support: Android 2.3
@@ -7914,6 +7928,7 @@ if ( window.ActiveXObject ) {
 	});
 }
 
+// 判断 ajax 的东西
 jQuery.support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
 jQuery.support.ajax = xhrSupported = !!xhrSupported;
 

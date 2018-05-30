@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<input type="checkbox" checked="checked">
+	<input type="checkbox">
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// hooks
+
+		console.log( $('input').attr('checked') ) // checked
+		console.log( $('input').prop('checked') ) // true
+
+
+		// 在设置的时候
+		
+		// $('input').eq(1).attr('checked', 'checked') //
+		// $('input').eq(1).attr('checked', true)
+		// 在原生的时候 setAttribute('checked', 'checked') 这样的写法才是正确的
+		// 但是 jQuery 兼容了 attr('checked', true) 这种写法
+	</script>
+</body>
+</html>

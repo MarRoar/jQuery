@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>addClass</title>
+</head>
+<body>
+	<div class="box box1"></div>
+	<div class="box box1"></div>
+	<div class="box box1"></div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$("div").addClass("box2")
+
+		$("div").removeClass("box")
+
+		$("div").toggleClass("box2")
+
+		$("div").hasClass("box")
+
+
+		// addClass() 可以传下面的参数
+		$("div").addClass(function ( index ) {
+			console.log( index )
+			// return 添加到class 上面
+			// <div class="box box1 fn0"></div>
+			return 'fn' + index
+		})
+
+
+		//
+
+	</script>
+</body>
+</html>

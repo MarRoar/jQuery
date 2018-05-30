@@ -3666,18 +3666,24 @@ function dataAttr( elem, key, data ) {
 	}
 	return data;
 }
+
+// ---------- queue -----------
 jQuery.extend({
 	queue: function( elem, type, data ) {
+		// 对象 名字 值
 		var queue;
 
+		// 可以用 02 走一下
 		if ( elem ) {
-			type = ( type || "fx" ) + "queue";
-			queue = data_priv.get( elem, type );
+			type = ( type || "fx" ) + "queue"; // 名字默认的是 fx
+			queue = data_priv.get( elem, type ); // 取值
 
 			// Speed up dequeue by getting out quickly if this is just a lookup
 			if ( data ) {
+				//jQuery.isArray( data ) 的作用是  当 data 是数组的 时候$.queue( document, 'q1', [bb] )
+				//会把之前所有的给置空
 				if ( !queue || jQuery.isArray( data ) ) {
-					queue = data_priv.access( elem, type, jQuery.makeArray(data) );
+					queue = data_priv.access( elem, type, jQuery.makeArray(data) ); // 设置值,是数组形式的
 				} else {
 					queue.push( data );
 				}
@@ -3691,13 +3697,15 @@ jQuery.extend({
 
 		var queue = jQuery.queue( elem, type ),
 			startLength = queue.length,
-			fn = queue.shift(),
+			fn = queue.shift(), // 取出第一个
 			hooks = jQuery._queueHooks( elem, type ),
 			next = function() {
 				jQuery.dequeue( elem, type );
 			};
 
 		// If the fx queue is dequeued, always remove the progress sentinel
+		
+		// inprogress  主要针对 animate 运动的
 		if ( fn === "inprogress" ) {
 			fn = queue.shift();
 			startLength--;
@@ -3722,6 +3730,7 @@ jQuery.extend({
 	},
 
 	// not intended for public consumption - generates a queueHooks object, or returns the current one
+	// 清理一下缓存
 	_queueHooks: function( elem, type ) {
 		var key = type + "queueHooks";
 		return data_priv.get( elem, key ) || data_priv.access( elem, key, {
@@ -3742,18 +3751,20 @@ jQuery.fn.extend({
 			setter--;
 		}
 
+		// 设置还是获取
 		if ( arguments.length < setter ) {
 			return jQuery.queue( this[0], type );
 		}
 
 		return data === undefined ?
 			this :
-			this.each(function() {
+			this.each(function() { // 设置是对每一个进行设置
 				var queue = jQuery.queue( this, type, data );
 
 				// ensure a hooks for this queue
 				jQuery._queueHooks( this, type );
 
+				// 这里是出队操作， 但是这里是 queue 入队操作,主要是 aniamte 动画方法
 				if ( type === "fx" && queue[0] !== "inprogress" ) {
 					jQuery.dequeue( this, type );
 				}
@@ -3766,23 +3777,24 @@ jQuery.fn.extend({
 	},
 	// Based off of the plugin by Clint Helfers, with permission.
 	// http://blindsignals.com/index.php/2009/07/jquery-delay/
-	delay: function( time, type ) {
+	delay: function( time, type ) { // 延迟
 		time = jQuery.fx ? jQuery.fx.speeds[ time ] || time : time;
 		type = type || "fx";
 
 		return this.queue( type, function( next, hooks ) {
 			var timeout = setTimeout( next, time );
 			hooks.stop = function() {
+				// 出队后清除计时器
 				clearTimeout( timeout );
 			};
 		});
 	},
-	clearQueue: function( type ) {
+	clearQueue: function( type ) { // 清除队列
 		return this.queue( type || "fx", [] );
 	},
 	// Get a promise resolved when queues of a certain type
 	// are emptied (fx is the type by default)
-	promise: function( type, obj ) {
+	promise: function( type, obj ) { // 队列整体结束后调用的
 		var tmp,
 			count = 1,
 			defer = jQuery.Deferred(),
@@ -3840,26 +3852,29 @@ jQuery.fn.extend({
 	addClass: function( value ) {
 		var classes, elem, cur, clazz, j,
 			i = 0,
-			len = this.length,
+			len = this.length, // 对象的length 比如div
 			proceed = typeof value === "string" && value;
 
+		// 判断是否是函数
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
 				jQuery( this ).addClass( value.call( this, j, this.className ) );
 			});
 		}
 
+		// 是否是 字符串类型的
 		if ( proceed ) {
 			// The disjunction here is for better compressibility (see removeClass)
 			classes = ( value || "" ).match( core_rnotwhite ) || [];
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
+					// 只有元素节点才可以添加
 				cur = elem.nodeType === 1 && ( elem.className ?
-					( " " + elem.className + " " ).replace( rclass, " " ) :
+					( " " + elem.className + " " ).replace( rclass, " " ) : // 类名前后添加空格
 					" "
 				);
-
+				// " " 中间有空格 也是真
 				if ( cur ) {
 					j = 0;
 					while ( (clazz = classes[j++]) ) {
@@ -3873,6 +3888,7 @@ jQuery.fn.extend({
 			}
 		}
 
+		// 链式操作
 		return this;
 	},
 
@@ -3881,6 +3897,7 @@ jQuery.fn.extend({
 			i = 0,
 			len = this.length,
 			proceed = arguments.length === 0 || typeof value === "string" && value;
+			// && 的优先级比 || 的优先级高
 
 		if ( jQuery.isFunction( value ) ) {
 			return this.each(function( j ) {
@@ -3915,6 +3932,8 @@ jQuery.fn.extend({
 	},
 
 	toggleClass: function( value, stateVal ) {
+		//stateVal 为 true 说明是添加
+		//为 false 说明是删除
 		var type = typeof value;
 
 		if ( typeof stateVal === "boolean" && type === "string" ) {
@@ -3977,10 +3996,12 @@ jQuery.fn.extend({
 		var hooks, ret, isFunction,
 			elem = this[0];
 
+		// 获取
 		if ( !arguments.length ) {
 			if ( elem ) {
+				//  valHooks 针对多少种进行兼容
 				hooks = jQuery.valHooks[ elem.type ] || jQuery.valHooks[ elem.nodeName.toLowerCase() ];
-
+				// 这里为什么要 || 操作因为有的没有type 比如 select
 				if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
 					return ret;
 				}
@@ -4113,23 +4134,36 @@ jQuery.extend({
 		}
 
 		// Fallback to prop when attributes are not supported
-		if ( typeof elem.getAttribute === core_strundefined ) {
+		// document， html， window 是没办法加 attr 的,但是可以加 prop
+		if ( typeof elem.getAttribute === core_strundefined ) { // core_strundefined 是 undefined
 			return jQuery.prop( elem, name, value );
 		}
 
 		// All attributes are lowercase
 		// Grab necessary hook if one is defined
+		
+		// !jQuery.isXMLDoc( elem ) 是sizzle 的一个方法
 		if ( nType !== 1 || !jQuery.isXMLDoc( elem ) ) {
 			name = name.toLowerCase();
+			// Hooks 做兼容具体处理方式
 			hooks = jQuery.attrHooks[ name ] ||
 				( jQuery.expr.match.bool.test( name ) ? boolHook : nodeHook );
+			/**
+			 * ( jQuery.expr.match.bool.test( name ) ? boolHook : nodeHook ) 也是 sizzle 
+			 * "checked|selected|async|autofocus|autoplay|controls|defer|disabled|hidden|ismap|loop|multiple|open|readonly|required|scoped",
+			 *  匹配这些值的
+			 *  看例子 03-boolHook.html
+			 */
+			// 
 		}
 
+		// 设置的时候
 		if ( value !== undefined ) {
 
 			if ( value === null ) {
 				jQuery.removeAttr( elem, name );
 
+				//"set" in hooks 是否做了兼容
 			} else if ( hooks && "set" in hooks && (ret = hooks.set( elem, value, name )) !== undefined ) {
 				return ret;
 
@@ -4138,10 +4172,13 @@ jQuery.extend({
 				return value;
 			}
 
+			// 获取
 		} else if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
 			return ret;
 
 		} else {
+			// $('#div1').attr('name')
+			// sizzle 下面的 attr
 			ret = jQuery.find.attr( elem, name );
 
 			// Non-existent attributes return null, we normalize to undefined
@@ -4155,7 +4192,7 @@ jQuery.extend({
 		var name, propName,
 			i = 0,
 			attrNames = value && value.match( core_rnotwhite );
-
+		// $("#div1").removeAttr('name1 name2') 这里有空格隔开 删除多个
 		if ( attrNames && elem.nodeType === 1 ) {
 			while ( (name = attrNames[i++]) ) {
 				propName = jQuery.propFix[ name ] || name;
@@ -4163,6 +4200,7 @@ jQuery.extend({
 				// Boolean attributes get special treatment (#10870)
 				if ( jQuery.expr.match.bool.test( name ) ) {
 					// Set corresponding property to false
+					// prop 
 					elem[ propName ] = false;
 				}
 
@@ -4171,12 +4209,14 @@ jQuery.extend({
 		}
 	},
 
-	attrHooks: {
+	attrHooks: { // 兼容处理
 		type: {
 			set: function( elem, value ) {
+				// type 是 radio 类型的标签做个处理
 				if ( !jQuery.support.radioValue && value === "radio" && jQuery.nodeName(elem, "input") ) {
 					// Setting the type on a radio button after the value resets the value in IE6-9
 					// Reset value to default in case type is set after value during creation
+					// 
 					var val = elem.value;
 					elem.setAttribute( "type", value );
 					if ( val ) {
@@ -4188,7 +4228,7 @@ jQuery.extend({
 		}
 	},
 
-	propFix: {
+	propFix: { // 一些兼容性写法
 		"for": "htmlFor",
 		"class": "className"
 	},
@@ -4223,7 +4263,7 @@ jQuery.extend({
 	},
 
 	propHooks: {
-		tabIndex: {
+		tabIndex: { // 获取光标的兼容
 			get: function( elem ) {
 				return elem.hasAttribute( "tabindex" ) || rfocusable.test( elem.nodeName ) || elem.href ?
 					elem.tabIndex :
@@ -4269,6 +4309,7 @@ jQuery.each( jQuery.expr.match.bool.source.match( /\w+/g ), function( i, name ) 
 
 // Support: IE9+
 // Selectedness for an option in an optgroup can be inaccurate
+// IE 默认不会选中
 if ( !jQuery.support.optSelected ) {
 	jQuery.propHooks.selected = {
 		get: function( elem ) {
@@ -4293,6 +4334,7 @@ jQuery.each([
 	"frameBorder",
 	"contentEditable"
 ], function() {
+	// jQuery.propFix[ tabindex ] = tabIndex; 转小写
 	jQuery.propFix[ this.toLowerCase() ] = this;
 });
 

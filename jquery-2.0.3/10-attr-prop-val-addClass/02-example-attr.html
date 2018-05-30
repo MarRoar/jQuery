@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>attr</title>
+</head>
+<body>
+
+	<div id="div1">adfadf</div>
+	<a id="a1" href="baidu.com"></a>
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+
+		//attr
+		// $("#div1").attr('title', "hello")
+		// console.log($("#div1").attr('id'))
+
+		// prop
+		// $("#div1").prop('title', "prop")
+		// console.log($("#div1").prop('id'))
+
+		// 这两个有什么区别
+		// 需要看原生怎么设置 属性
+		// setAttribute()
+		// . | []
+		
+
+		var oDiv = document.getElementById('div1');
+		/**
+		 * attr 这个方法调用的是 setAttribute 这个
+		 */
+		// oDiv.setAttribute('title', 'setAttribute')
+		
+		/**
+		 *  prop 是调用 documnet.属性名 = 值 这个方法
+		 */
+		// 或者
+		// oDiv.title = "sdf"
+		oDiv["title"] = "sdf"
+
+
+		//attr 和 prop 在使用上也有很多区别
+		
+		console.log( $('#a1').attr('href') ) // baidu.com
+		console.log( $('#a1').prop('href') ) // file:///F:/MarLen/jQuery/Learning/jQuery/jquery-2.0.3/10-attr-prop-val-addClass/baidu.com
+	</script>
+</body>
+</html>

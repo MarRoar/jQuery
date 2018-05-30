@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>example</title>
+	<style>
+		#div1 {
+			width: 100px;
+			height: 100px;
+			background-color: red;
+			position: absolute;
+		}
+	</style>
+</head>
+<body>
+	<div id="div1">
+		
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+
+	// 从下面这个例子可以看出是出队操作
+	$("#div1").on('click', function () {
+		$(this).animate({ width: 300}, 2000).delay( 2000 ).animate({ left: 300}, 2000)
+		
+	})
+
+	</script>
+</body>
+</html>

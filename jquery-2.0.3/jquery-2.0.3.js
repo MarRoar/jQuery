@@ -3854,6 +3854,8 @@ function dataAttr( elem, key, data ) {
 	}
 	return data;
 }
+
+// queue 的工具方法
 jQuery.extend({
 	queue: function( elem, type, data ) {
 		var queue;
@@ -3972,7 +3974,7 @@ jQuery.fn.extend({
 	// are emptied (fx is the type by default)
 	promise: function( type, obj ) {
 		var tmp,
-			count = 1,
+			count = 1,	
 			defer = jQuery.Deferred(),
 			elements = this,
 			i = this.length,
@@ -3999,6 +4001,7 @@ jQuery.fn.extend({
 		return defer.promise( obj );
 	}
 });
+
 var nodeHook, boolHook,
 	rclass = /[\t\r\n\f]/g,
 	rreturn = /\r/g,

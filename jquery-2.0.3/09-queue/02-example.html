@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>stru</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+	//------------------------------------------------------
+		function aa() {
+			console.log(1)
+		}
+		function bb() {
+			console.log(2)
+		}
+
+		// 队列中存储的都是函数
+		
+		$.queue( document, 'q1', aa)
+		$.queue( document, 'q1', bb)
+
+		// $.queue( document, 'q1', [aa, bb] )
+
+		console.log( $.queue( document, 'q1') )
+
+	//-------------------------------------------------------------
+		
+		//  dequeue 是取出函数并且调用
+		
+		$.dequeue( document, 'q1')  // aa
+		$.dequeue( document, 'q1')  // bb
+
+	//------ 通过实例的时候用法也一样
+	
+		function cc() {
+			console.log(3)
+		}
+		function dd() {
+			console.log(4)
+		}
+
+		$(document).queue( 'p1', cc)
+		$(document).queue( 'p1', dd)
+
+		$(document).dequeue('p1') // cc
+		$(document).dequeue('p1') // dd
+
+	</script>
+</body>
+</html>

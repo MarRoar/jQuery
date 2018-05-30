@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>example</title>
+	<style>
+		#div1 {
+			width: 100px;
+			height: 100px;
+			background-color: red;
+			position: absolute;
+		}
+	</style>
+</head>
+<body>
+	<div id="div1">
+		
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+
+	// 观察动画执行的顺序, 这个是放在队列里面执行的
+	// $("#div1").on('click', function () {
+	// 	$(this).animate({ width: 300}, 2000)
+	// 	$(this).animate({ height: 500}, 2000)
+	// 	$(this).animate({ left: 300}, 2000)
+	// })
+	
+
+	// 从下面这个例子可以看出是出队操作
+	$("#div1").on('click', function () {
+
+		/*
+		// 队列默认的名字是 fx
+		$(this).animate({ width: 300}, 2000).queue('fx', function (next) {
+			
+			// $(this).dequeue() =>
+			next()
+			
+		}).animate({ left: 300}, 2000)
+		*/
+	
+		// 其实用 animate 动画的回调就可以实现这个方法
+		// 但是队列可以做更复杂的操作
+		// 下面这个例子可以看出， 高度和 left 是一起移动的
+		/*
+		$(this).animate({ width: 300}, 2000, function () {
+			
+			var This = this;
+			var timer = setInterval(function () {
+				This.style.height = This.offsetHeight + 1 + 'px'
+
+				if (This.offsetHeight == 200) {
+					clearInterval(timer)
+				}
+			}, 20)
+			
+		}).animate({ left: 300}, 2000)
+		*/
+
+		$(this).animate({ width: 300}, 2000).queue('fx', function (next) {
+			
+			var This = this;
+			var timer = setInterval(function () {
+				This.style.height = This.offsetHeight + 1 + 'px'
+
+				if (This.offsetHeight == 200) {
+					clearInterval(timer)
+					next()
+				}
+			}, 20)
+			
+			
+		}).animate({ left: 300}, 2000)
+		
+	})
+
+	</script>
+</body>
+</html>

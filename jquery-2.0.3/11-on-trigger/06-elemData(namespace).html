@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>查看缓存数据</title>
+</head>
+<body>
+	<div id="div1">div</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// 主要查看 elemData = data_priv.get( elem ) 这个 elemData 缓存了哪些数据
+		// 
+		
+		$("#div1").on('click.aa', function () {
+			alert(1)
+		})		
+		$("#div1").on('click', function () {
+			alert(2)
+		})
+
+		// $("#div1").trigger('click')
+
+		$("#div1").trigger('click.aa')
+
+		// 'click.aa' 后面这个 aa 就是命名空间
+
+	</script>
+</body>
+</html>

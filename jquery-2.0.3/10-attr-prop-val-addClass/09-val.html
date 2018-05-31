@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>val</title>
+</head>
+<body>
+	<input type="checkbox" value="tom">
+	<input type="checkbox" value="jam">
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// 当val 是数组的时候, 其实是选中操作
+		// 比如下面数组里面是 tom 的话， 就是选中 value 是 tom 的input 标签
+		$("input").val(['tom'])
+	</script>
+</body>
+</html>

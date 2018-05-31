@@ -3667,7 +3667,7 @@ function dataAttr( elem, key, data ) {
 	return data;
 }
 
-// ---------- queue -----------
+// --------------------------------------------- queue -----------------------------------
 jQuery.extend({
 	queue: function( elem, type, data ) {
 		// 对象 名字 值
@@ -3740,7 +3740,6 @@ jQuery.extend({
 		});
 	}
 });
-
 jQuery.fn.extend({
 	queue: function( type, data ) {
 		var setter = 2;
@@ -3823,6 +3822,7 @@ jQuery.fn.extend({
 		return defer.promise( obj );
 	}
 });
+// --------------------------------------------- attr prop  -----------------------------------
 var nodeHook, boolHook,
 	rclass = /[\t\r\n\f]/g,
 	rreturn = /\r/g,
@@ -3852,8 +3852,8 @@ jQuery.fn.extend({
 	addClass: function( value ) {
 		var classes, elem, cur, clazz, j,
 			i = 0,
-			len = this.length, // 对象的length 比如div
-			proceed = typeof value === "string" && value;
+			len = this.length, // 对象的length 比如div有多个
+			proceed = typeof value === "string" && value; // 如果 && 前面是 true 则返回会面的值
 
 		// 判断是否是函数
 		if ( jQuery.isFunction( value ) ) {
@@ -3869,7 +3869,7 @@ jQuery.fn.extend({
 
 			for ( ; i < len; i++ ) {
 				elem = this[ i ];
-					// 只有元素节点才可以添加
+					// 只有元素节点才可以添加 所以要判断 nodeType === 1
 				cur = elem.nodeType === 1 && ( elem.className ?
 					( " " + elem.className + " " ).replace( rclass, " " ) : // 类名前后添加空格
 					" "
@@ -3933,7 +3933,7 @@ jQuery.fn.extend({
 
 	toggleClass: function( value, stateVal ) {
 		//stateVal 为 true 说明是添加
-		//为 false 说明是删除
+		//         为 false 说明是删除
 		var type = typeof value;
 
 		if ( typeof stateVal === "boolean" && type === "string" ) {
@@ -4001,7 +4001,10 @@ jQuery.fn.extend({
 			if ( elem ) {
 				//  valHooks 针对多少种进行兼容
 				hooks = jQuery.valHooks[ elem.type ] || jQuery.valHooks[ elem.nodeName.toLowerCase() ];
-				// 这里为什么要 || 操作因为有的没有type 比如 select
+				// 这里为什么要 || 操作因为有的没有type 
+				// 比如 select 它的type 是 select-one 或者 select-multiple 所以就用 nodeName 来保存
+				
+				// 兼容写法
 				if ( hooks && "get" in hooks && (ret = hooks.get( elem, "value" )) !== undefined ) {
 					return ret;
 				}
@@ -4060,6 +4063,7 @@ jQuery.extend({
 			get: function( elem ) {
 				// attributes.value is undefined in Blackberry 4.7 but
 				// uses .value. See #6932
+				// 
 				var val = elem.attributes.value;
 				return !val || val.specified ? elem.value : elem.text;
 			}
@@ -4135,6 +4139,7 @@ jQuery.extend({
 
 		// Fallback to prop when attributes are not supported
 		// document， html， window 是没办法加 attr 的,但是可以加 prop
+		// 也就是要兼容 没法设置 attr 的标签的写法
 		if ( typeof elem.getAttribute === core_strundefined ) { // core_strundefined 是 undefined
 			return jQuery.prop( elem, name, value );
 		}
@@ -4172,7 +4177,7 @@ jQuery.extend({
 				return value;
 			}
 
-			// 获取
+			// get 获取 做的兼容
 		} else if ( hooks && "get" in hooks && (ret = hooks.get( elem, name )) !== null ) {
 			return ret;
 

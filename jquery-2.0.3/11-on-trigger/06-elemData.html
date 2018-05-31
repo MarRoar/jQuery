@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>查看缓存数据</title>
+</head>
+<body>
+	<div id="div1">div</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// 主要查看 elemData = data_priv.get( elem ) 这个 elemData 缓存了哪些数据
+		// 
+		
+		$("#div1").on('click.aa', function () {
+			alert(1)
+		})		
+		$("#div1").on('click', function () {
+			alert(2)
+		})
+
+		$("#div1").on('click', 'span', function () {
+			alert(4)
+		})
+		$("#div1").on('myClick', function () {
+			alert(3)
+		})
+
+		
+		var elemData = {
+				events: {
+					click: [  // arr arr.delegateCount(这个元素上委托事件的个数)  arr.length = 3
+						{
+							data: undefined,
+							guid: 3, // 
+							namespace: 'aa', // 命名空间
+							needsContext: '', // 和委托有关  有委托: false, 没有委托: undefined, 有伪类的时候: true
+							origType: "click", // 原始的type类型,就是你绑定的事件，有可能不兼容
+							selector: "span", // 委托元素
+							type: 'click',
+							handler: function (e) {} // 就是我们绑定的事件函数
+						},
+						{
+							type: 'click',
+							handler: function (e) {} // 这个events 里面的 handler 就是普通的函数
+						}
+					],
+					myClick: [
+						{
+							type: 'myClick',
+							handler: function (e) {}
+						}
+					]
+				},
+				handler: function (e) {}  // 我们事件函数
+			}
+
+		 
+		/*
+			arr.delegateCount 这个参数是委托的个数
+			$("#div1").on('click', 'span', function () {
+				alert(3)
+			})
+
+		 */
+
+	</script>
+</body>
+</html>

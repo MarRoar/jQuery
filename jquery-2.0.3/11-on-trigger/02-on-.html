@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>on</title>
+</head>
+<body>
+	<div>一个参数</div>
+	<div>二个参数</div>
+	<div>
+		<p>三个参数</p>
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+
+		// 第一种
+		// $("div").on('click', function () {
+		// 	alert("click")
+		// })
+
+		// 第二种 三个参数
+		// $("div").eq(1).on('click', {name: 'hello'}, function (ev) {
+		// 	alert(ev.data.name)
+		// })
+
+		// 第三种  委托方式
+			// delegate 的写法
+		// $("div").eq(2).delegate('p', 'click', {name: 'delegate'}, function () {
+		// 	alert("p")
+		// })
+		// 	// on 的写法
+		// $("div").eq(2).on('click', 'p', {name: 'delegate'}, function () {
+		// 	alert("p---")
+		// })
+
+		// 第一个参数是 object 类型的
+		/*
+		$("div").eq(2).on({
+			'click': function () {
+				alert(123)
+			},
+			'mouseover': function () {
+				alert(456)
+			}
+		})
+		*/
+		// one() 只执行一次
+		$("div").eq(2).one('click', function () {
+			alert("one")
+		})
+	
+
+
+
+
+		
+	</script>
+</body>
+</html>

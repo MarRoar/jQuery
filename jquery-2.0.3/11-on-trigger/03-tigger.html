@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>trigger</title>
+</head>
+<body>
+	<input type="text" id="ipt1">
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$("#ipt1").focus(function () {
+			$(this).css('background', 'red')
+		})
+
+		// $("#ipt1").trigger('focus') // 光标移动到了 input 框里面
+		$("#ipt1").triggerHandler('focus') // 光标 没有 移动到了 input 框里面
+
+		/*
+			triggerHandler 不会触发当前事件的默认行为
+		 */
+		
+	</script>
+</body>
+</html>

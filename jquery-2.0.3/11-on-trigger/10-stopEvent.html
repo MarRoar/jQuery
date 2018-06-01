@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>阻止事件</title>
+</head>
+<body>
+	
+	<div>
+		div
+		<span>span</span>
+	</div>
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		/**
+		 *  1 点击 span 会有冒泡
+		 *  2 在 span 里面加 ev.stopPropagation() 阻止事件冒泡
+		 *  3 但是如果给 span 绑定多个操作的话，其他实践也会执行
+		 *  4 如果 用 ev.stopImmediatePropagation() 就会阻止其他事件
+		 */
+		
+		$('div').on('click', function () {
+			alert(1)
+		})
+		$('span').on('click', function (ev) {
+			alert(2)
+			// ev.stopPropagation()
+			
+			ev.stopImmediatePropagation() // 禁止掉其实事件
+		})
+		$('span').on('click', function () {
+			alert(3)
+		})
+	</script>
+</body>
+</html>

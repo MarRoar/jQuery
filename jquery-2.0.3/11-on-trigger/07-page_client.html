@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>区别</title>
+</head>
+<body style="height: 2000px;">
+	<script>
+		document.onclick = function (e) {
+			console.log(e.pageY) // 到页面文档顶端的距离
+			// pageY 是有兼容性的
+			// 
+			console.log(e.clientY) // 到可视区的距离, 所有浏览器都支持
+		}
+	</script>
+</body>
+</html>

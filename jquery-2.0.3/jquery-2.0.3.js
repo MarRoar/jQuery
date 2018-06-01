@@ -4587,20 +4587,23 @@ jQuery.event = {
 				// Discard the second event of a jQuery.event.trigger() and
 				// when an event is called after a page has unloaded
 				return typeof jQuery !== core_strundefined && (!e || jQuery.event.triggered !== e.type) ?
-					jQuery.event.dispatch.apply( eventHandle.elem, arguments ) :
+					jQuery.event.dispatch.apply( eventHandle.elem, arguments ) : // jQuery.event.dispatch 事件执行操作
 					undefined;
 			};
 			// Add elem as a property of the handle fn to prevent a memory leak with IE non-native events
+			// 防止IE 上内存泄漏
 			eventHandle.elem = elem;
+
 		}
 
 		// Handle multiple events separated by a space
+		// types = "click mouseover" 这一种情况下
 		types = ( types || "" ).match( core_rnotwhite ) || [""];
 		t = types.length;
 		while ( t-- ) {
 			tmp = rtypenamespace.exec( types[t] ) || [];
 			type = origType = tmp[1];
-			namespaces = ( tmp[2] || "" ).split( "." ).sort();
+			namespaces = ( tmp[2] || "" ).split( "." ).sort(); // 来处理命名空间
 
 			// There *must* be a type, no attaching namespace-only handlers
 			if ( !type ) {
@@ -4608,6 +4611,7 @@ jQuery.event = {
 			}
 
 			// If event changes its type, use the special event handlers for the changed type
+			// 特殊情况的事件
 			special = jQuery.event.special[ type ] || {};
 
 			// If selector defined, determine special event api type, otherwise given type
@@ -4617,6 +4621,7 @@ jQuery.event = {
 			special = jQuery.event.special[ type ] || {};
 
 			// handleObj is passed to all event handlers
+			// 拼接数据 看例子 06-elemData 里面查看 各个参数是做什么的
 			handleObj = jQuery.extend({
 				type: type,
 				origType: origType,
@@ -4630,11 +4635,11 @@ jQuery.event = {
 
 			// Init the event handler queue if we're the first
 			if ( !(handlers = events[ type ]) ) {
-				handlers = events[ type ] = [];
+				handlers = events[ type ] = [];  // 向 events 里面添加数组
 				handlers.delegateCount = 0;
 
 				// Only use addEventListener if the special events handler returns false
-				// 绑定系统事件
+				// 绑定系统事件, 还有一些特殊事件处理
 				if ( !special.setup || special.setup.call( elem, data, namespaces, eventHandle ) === false ) {
 					if ( elem.addEventListener ) {
 						elem.addEventListener( type, eventHandle, false );
@@ -4651,6 +4656,7 @@ jQuery.event = {
 			}
 
 			// Add to the element's handler list, delegates in front
+			// 如果有委托的话，放在数组的前面
 			if ( selector ) {
 				handlers.splice( handlers.delegateCount++, 0, handleObj );
 			} else {
@@ -4662,6 +4668,7 @@ jQuery.event = {
 		}
 
 		// Nullify elem to prevent memory leaks in IE
+		// 防止在IE 上内存泄漏
 		elem = null;
 
 		// 打印缓存数据
@@ -4870,9 +4877,15 @@ jQuery.event = {
 	},
 
 	dispatch: function( event ) {
+		/**
+		 * dispatch 做了三个事情
+		 * 1  jQuery.event.fix 兼容 event
+		 * 2  jQuery.event.special 兼容事件
+		 * 3  jQuery.event.handlers 事件队列
+		 */
 
 		// Make a writable jQuery.Event from the native event object
-		event = jQuery.event.fix( event );
+		event = jQuery.event.fix( event ); // 对event 兼容处理
 
 		var i, j, ret, matched, handleObj,
 			handlerQueue = [],
@@ -4890,15 +4903,18 @@ jQuery.event = {
 		}
 
 		// Determine handlers
+		// 执行顺序的队列
 		handlerQueue = jQuery.event.handlers.call( this, event, handlers );
 
 		// Run delegates first; they may want to stop propagation beneath us
 		i = 0;
-		while ( (matched = handlerQueue[ i++ ]) && !event.isPropagationStopped() ) {
+		// 在处理事件中 return false 就可以阻止冒泡和默认事件
+		while ( (matched = handlerQueue[ i++ ]) && !event.isPropagationStopped() ) { // 冒泡的判断
 			event.currentTarget = matched.elem;
 
 			j = 0;
 			while ( (handleObj = matched.handlers[ j++ ]) && !event.isImmediatePropagationStopped() ) {
+				// !event.isImmediatePropagationStopped() 这个的作用可以看 10-stopEvent.html 阻止同类型的事件
 
 				// Triggered event must either 1) have no namespace, or
 				// 2) have namespace(s) a subset or equal to those in the bound event (both can have no namespace).
@@ -4910,6 +4926,7 @@ jQuery.event = {
 					ret = ( (jQuery.event.special[ handleObj.origType ] || {}).handle || handleObj.handler )
 							.apply( matched.elem, args );
 
+					//// 在处理事件中 return false 就可以阻止冒泡和默认事件
 					if ( ret !== undefined ) {
 						if ( (event.result = ret) === false ) {
 							event.preventDefault();
@@ -4992,13 +5009,15 @@ jQuery.event = {
 		}
 	},
 
-	mouseHooks: {
+	mouseHooks: { // 鼠标下的操作
 		props: "button buttons clientX clientY offsetX offsetY pageX pageY screenX screenY toElement".split(" "),
 		filter: function( event, original ) {
 			var eventDoc, doc, body,
 				button = original.button;
 
 			// Calculate pageX/Y if missing and clientX/Y available
+			// pageX/Y 和 clientX/Y 的区别？07-page_client.html 例子
+			// 对 pageX做的兼容处理
 			if ( event.pageX == null && original.clientX != null ) {
 				eventDoc = event.target.ownerDocument || document;
 				doc = eventDoc.documentElement;
@@ -5010,6 +5029,7 @@ jQuery.event = {
 
 			// Add which for click: 1 === left; 2 === middle; 3 === right
 			// Note: button is not normalized, so don't use it
+			// 鼠标的 左键，右键，中 的点击处理 08-which.html 例子
 			if ( !event.which && button !== undefined ) {
 				event.which = ( button & 1 ? 1 : ( button & 2 ? 3 : ( button & 4 ? 2 : 0 ) ) );
 			}
@@ -5027,17 +5047,17 @@ jQuery.event = {
 		var i, prop, copy,
 			type = event.type,
 			originalEvent = event,
-			fixHook = this.fixHooks[ type ];
+			fixHook = this.fixHooks[ type ]; // 兼容处理
 
-		if ( !fixHook ) {
+		if ( !fixHook ) { // 没有的话也会去判断
 			this.fixHooks[ type ] = fixHook =
 				rmouseEvent.test( type ) ? this.mouseHooks :
 				rkeyEvent.test( type ) ? this.keyHooks :
 				{};
 		}
-		copy = fixHook.props ? this.props.concat( fixHook.props ) : this.props;
+		copy = fixHook.props ? this.props.concat( fixHook.props ) : this.props; // 将 props 这些事件拷贝
 
-		event = new jQuery.Event( originalEvent );
+		event = new jQuery.Event( originalEvent ); // 创建 jQuery下面增强版的 event 对象
 
 		i = copy.length;
 		while ( i-- ) {
@@ -5168,20 +5188,21 @@ jQuery.Event = function( src, props ) {
 	}
 
 	// Create a timestamp if incoming event doesn't have one
-	this.timeStamp = src && src.timeStamp || jQuery.now();
+	this.timeStamp = src && src.timeStamp || jQuery.now(); // 时间戳
 
 	// Mark it as fixed
+	// 缓存
 	this[ jQuery.expando ] = true;
 };
 
 // jQuery.Event is based on DOM3 Events as specified by the ECMAScript Language Binding
 // http://www.w3.org/TR/2003/WD-DOM-Level-3-Events-20030331/ecma-script-binding.html
 jQuery.Event.prototype = {
-	isDefaultPrevented: returnFalse,
+	isDefaultPrevented: returnFalse, // 是否阻止默认事件
 	isPropagationStopped: returnFalse,
 	isImmediatePropagationStopped: returnFalse,
 
-	preventDefault: function() {
+	preventDefault: function() { // 阻止默认事件
 		var e = this.originalEvent;
 
 		this.isDefaultPrevented = returnTrue;
@@ -5190,7 +5211,7 @@ jQuery.Event.prototype = {
 			e.preventDefault();
 		}
 	},
-	stopPropagation: function() {
+	stopPropagation: function() { // 阻止冒泡
 		var e = this.originalEvent;
 
 		this.isPropagationStopped = returnTrue;
@@ -5199,7 +5220,7 @@ jQuery.Event.prototype = {
 			e.stopPropagation();
 		}
 	},
-	stopImmediatePropagation: function() {
+	stopImmediatePropagation: function() { // 阻止冒泡的, 这个阻止冒泡和上面阻止冒泡的区别
 		this.isImmediatePropagationStopped = returnTrue;
 		this.stopPropagation();
 	}

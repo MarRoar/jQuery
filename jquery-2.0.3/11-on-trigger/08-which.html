@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>which</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// 鼠标的 左键，右键，中键
+		
+		// $(document).on('click', function (ev) { // click 会有一些问题
+		// 	alert(ev.which)
+		// })
+
+
+		$(document).on('mousedown', function (ev) {
+			// 这个 ev 是jQuery 的event
+			// ev.originalEvent 这个是原生的event 
+			alert(ev.which)
+		})
+	</script>
+</body>
+</html>

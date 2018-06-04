@@ -4591,6 +4591,7 @@ jQuery.event = {
 			events = elemData.events = {};
 		}
 
+		// 先判断有没有这个事件处理函数
 		if ( !(eventHandle = elemData.handle) ) {
 			// 这个就是要绑定到 DOM 上的处理函数
 			eventHandle = elemData.handle = function( e ) {
@@ -4644,6 +4645,7 @@ jQuery.event = {
 			}, handleObjIn ); /// handleObjIn 内部用法
 
 			// Init the event handler queue if we're the first
+			// 在 events 里面添加对应的数组
 			if ( !(handlers = events[ type ]) ) {
 				handlers = events[ type ] = [];  // 向 events 里面添加数组 05-designEvent.html
 				handlers.delegateCount = 0;
@@ -4897,8 +4899,8 @@ jQuery.event = {
 	dispatch: function( event ) {
 		/**
 		 * dispatch 做了三个事情
-		 * 1  jQuery.event.fix 兼容 event
-		 * 2  jQuery.event.special 兼容事件
+		 * 1  jQuery.event.fix 兼容 event (就是event那个对象)
+		 * 2  jQuery.event.special 兼容事件 ( 比如说 mouseenter等)
 		 * 3  jQuery.event.handlers 事件队列
 		 */
 
@@ -5019,7 +5021,7 @@ jQuery.event = {
 		filter: function( event, original ) {
 
 			// Add which for key events
-			// 真对键盘属性来兼容处理
+			// 针对键盘属性来兼容处理
 			if ( event.which == null ) {
 				event.which = original.charCode != null ? original.charCode : original.keyCode;
 			}
@@ -5058,6 +5060,7 @@ jQuery.event = {
 	},
 
 	fix: function( event ) {
+		// 首先看一下是否有缓存
 		if ( event[ jQuery.expando ] ) {
 			return event;
 		}
@@ -5065,15 +5068,17 @@ jQuery.event = {
 		// Create a writable copy of the event object and normalize some properties
 		var i, prop, copy,
 			type = event.type,
-			originalEvent = event,
+			originalEvent = event, // 原生的 event 对象
 			fixHook = this.fixHooks[ type ]; // 兼容处理
 
 		if ( !fixHook ) { // 没有的话也会去判断
 			this.fixHooks[ type ] = fixHook =
-				rmouseEvent.test( type ) ? this.mouseHooks :
-				rkeyEvent.test( type ) ? this.keyHooks :
+				rmouseEvent.test( type ) ? this.mouseHooks : // 鼠标的处理
+				rkeyEvent.test( type ) ? this.keyHooks : // 键盘的处理
 				{};
 		}
+
+		// 共享的属性(有些属性是原生的，有些是jQuery的，现在放在一起)
 		copy = fixHook.props ? this.props.concat( fixHook.props ) : this.props; // 将 props 这些事件拷贝
 
 		event = new jQuery.Event( originalEvent ); // 创建 jQuery下面增强版的 event 对象
@@ -5087,6 +5092,7 @@ jQuery.event = {
 
 		// Support: Cordova 2.5 (WebKit) (#13255)
 		// All events should have a target; Cordova deviceready doesn't
+		// deviceready 设备有没有就绪，有个问题就是没有事件源
 		// 让 document 作为事件源
 		if ( !event.target ) {
 			event.target = document;

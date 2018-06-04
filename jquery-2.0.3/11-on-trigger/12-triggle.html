@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>trigger冒泡</title>
+</head>
+<body>
+	<div id="div1">
+		<input type="text">
+	</div>
+	<img src="./12-trgger.png" alt="">
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// jquery 的 trigger 会有冒泡的操作
+		
+		$("#div1").on('click', function () {
+			alert(1)
+		})
+		$("input").on('click', function () {
+			alert(2)
+		})
+
+		// $('input').trigger('click')
+		
+
+		// 原生的 load 事件是没有冒泡操作的，但是jQuery里面的load事件有冒泡
+		
+		$(document).on('load', function () {
+			alert('load1')
+		})
+
+		$('img').on('load', function () {
+			alert('load2')
+		})
+
+	</script>
+</body>
+</html>

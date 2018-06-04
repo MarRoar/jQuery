@@ -4775,6 +4775,8 @@ jQuery.event = {
 		ontype = type.indexOf(":") < 0 && "on" + type;
 
 		// Caller can pass in a jQuery.Event object, Object, or just an event type string
+		
+		// jQuery.expando 首先判断这个有没有，这里可以缓存
 		event = event[ jQuery.expando ] ?
 			event :
 			new jQuery.Event( type, typeof event === "object" && event );
@@ -5002,6 +5004,7 @@ jQuery.event = {
 		filter: function( event, original ) {
 
 			// Add which for key events
+			// 真对键盘属性来兼容处理
 			if ( event.which == null ) {
 				event.which = original.charCode != null ? original.charCode : original.keyCode;
 			}
@@ -5060,6 +5063,7 @@ jQuery.event = {
 
 		event = new jQuery.Event( originalEvent ); // 创建 jQuery下面增强版的 event 对象
 
+		// 把原生事件拷贝进去
 		i = copy.length;
 		while ( i-- ) {
 			prop = copy[ i ];
@@ -5068,23 +5072,26 @@ jQuery.event = {
 
 		// Support: Cordova 2.5 (WebKit) (#13255)
 		// All events should have a target; Cordova deviceready doesn't
+		// 让 document 作为事件源
 		if ( !event.target ) {
 			event.target = document;
 		}
 
 		// Support: Safari 6.0+, Chrome < 28
 		// Target should not be a text node (#504, #13143)
-		if ( event.target.nodeType === 3 ) {
+		if ( event.target.nodeType === 3 ) { // 文本情况
 			event.target = event.target.parentNode;
 		}
 
+		// 兼容后的 event
 		return fixHook.filter? fixHook.filter( event, originalEvent ) : event;
 	},
 
 	special: {
-		load: {
+		load: { // 
 			// Prevent triggered image.load events from bubbling to window.load
-			noBubble: true
+			// 阻止从 image 到 window 的冒泡事件
+			noBubble: true //
 		},
 		focus: {
 			// Fire native event if possible so blur/focus sequence is correct
@@ -5164,17 +5171,19 @@ jQuery.removeEvent = function( elem, type, handle ) {
 
 jQuery.Event = function( src, props ) {
 	// Allow instantiation without the 'new' keyword
+	// 没有new 操作的时候，会自己new 一个操作
 	if ( !(this instanceof jQuery.Event) ) {
 		return new jQuery.Event( src, props );
 	}
 
 	// Event object
 	if ( src && src.type ) {
-		this.originalEvent = src;
+		this.originalEvent = src; // 保存下原生的event
 		this.type = src.type;
 
 		// Events bubbling up the document may have been marked as prevented
-		// by a handler lower down the tree; reflect the correct value.
+		// by a handler lower down the tree; reflect the correct value.的处理
+		// 组织默认行为的处理
 		this.isDefaultPrevented = ( src.defaultPrevented ||
 			src.getPreventDefault && src.getPreventDefault() ) ? returnTrue : returnFalse;
 

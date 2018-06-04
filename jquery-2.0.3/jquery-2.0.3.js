@@ -4526,11 +4526,11 @@ jQuery.each([ "radio", "checkbox" ], function() {
 		};
 	}
 });
-// -------------------------- on trigger 事件处理 ------------------------------------------------
-var rkeyEvent = /^key/,
-	rmouseEvent = /^(?:mouse|contextmenu)|click/,
-	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/,
-	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/;
+// ---------------------- 11-on-trigger ---- on trigger 事件处理 ------------------------------------------------
+var rkeyEvent = /^key/, // 键盘事件
+	rmouseEvent = /^(?:mouse|contextmenu)|click/, // 鼠标事件
+	rfocusMorph = /^(?:focusinfocus|focusoutblur)$/, // 焦点事件
+	rtypenamespace = /^([^.]*)(?:\.(.+)|)$/; // 命名空间 比如 $('div').on('click.namespace', fn)
 
 function returnTrue() {
 	return true;
@@ -4559,7 +4559,11 @@ jQuery.event = {
 		var handleObjIn, eventHandle, tmp,
 			events, t, handleObj,
 			special, handlers, type, namespaces, origType,
-			elemData = data_priv.get( elem ); // 缓存数据,
+			elemData = data_priv.get( elem ); // 缓存数据, 刚开始只是一个对象
+		/**
+		 * 在 05-designEvent.html 里面是将自定义的对象挂载到 元素身上，但是会引起内存泄漏，所以jQuery用data数据缓存在处理这
+		 * 挂载的操作
+		 */
 
 		// Don't attach events to noData or text/comment nodes (but allow plain objects)
 		if ( !elemData ) {
@@ -4567,6 +4571,9 @@ jQuery.event = {
 		}
 
 		// Caller can pass in an object of custom data in lieu of the handler
+		// console.log( 'handler', handler )
+		// console.log( 'handler', handler() )
+
 		if ( handler.handler ) {
 			handleObjIn = handler;
 			handler = handleObjIn.handler;
@@ -4579,10 +4586,13 @@ jQuery.event = {
 		}
 
 		// Init the element's event structure and main handler, if this is the first
-		if ( !(events = elemData.events) ) { // 自定义事件集合
+		if ( !(events = elemData.events) ) { 
+			// 自定义事件集合, e 对象下的属性和参数 05-designEvent.html
 			events = elemData.events = {};
 		}
+
 		if ( !(eventHandle = elemData.handle) ) {
+			// 这个就是要绑定到 DOM 上的处理函数
 			eventHandle = elemData.handle = function( e ) {
 				// Discard the second event of a jQuery.event.trigger() and
 				// when an event is called after a page has unloaded
@@ -4594,17 +4604,16 @@ jQuery.event = {
 			// Add elem as a property of the handle fn to prevent a memory leak with IE non-native events
 			// 防止IE 上内存泄漏
 			eventHandle.elem = elem;
-
 		}
 
 		// Handle multiple events separated by a space
-		// types = "click mouseover" 这一种情况下
+		// types = "click mouseover" 这一种情况下，如果有多个的话可以分成数组的形式
 		types = ( types || "" ).match( core_rnotwhite ) || [""];
 		t = types.length;
 		while ( t-- ) {
 			tmp = rtypenamespace.exec( types[t] ) || [];
 			type = origType = tmp[1];
-			namespaces = ( tmp[2] || "" ).split( "." ).sort(); // 来处理命名空间
+			namespaces = ( tmp[2] || "" ).split( "." ).sort(); // 来处理命名空间,排序
 
 			// There *must* be a type, no attaching namespace-only handlers
 			if ( !type ) {
@@ -4632,11 +4641,11 @@ jQuery.event = {
 				selector: selector,
 				needsContext: selector && jQuery.expr.match.needsContext.test( selector ),
 				namespace: namespaces.join(".")
-			}, handleObjIn );
+			}, handleObjIn ); /// handleObjIn 内部用法
 
 			// Init the event handler queue if we're the first
 			if ( !(handlers = events[ type ]) ) {
-				handlers = events[ type ] = [];  // 向 events 里面添加数组
+				handlers = events[ type ] = [];  // 向 events 里面添加数组 05-designEvent.html
 				handlers.delegateCount = 0;
 
 				// Only use addEventListener if the special events handler returns false
@@ -4658,7 +4667,9 @@ jQuery.event = {
 
 			// Add to the element's handler list, delegates in front
 			// 如果有委托的话，放在数组的前面
+			// 05-designEvent.html 把事件push 到数组里面
 			if ( selector ) {
+				// 委托形式的用 splice
 				handlers.splice( handlers.delegateCount++, 0, handleObj );
 			} else {
 				handlers.push( handleObj ); // 把事件放进这个数组里面
@@ -4733,9 +4744,11 @@ jQuery.event = {
 			// (avoids potential for endless recursion during removal of special event handlers)
 			if ( origCount && !handlers.length ) {
 				if ( !special.teardown || special.teardown.call( elem, namespaces, elemData.handle ) === false ) {
+					// 05-designEvent.html remove 删除系统事件
 					jQuery.removeEvent( elem, type, elemData.handle ); // 删除系统事件
 				}
 
+				// 05-designEvent.html remove 删除系统事件
 				delete events[ type ]; // 删除 自定义事件
 			}
 		}
@@ -4827,6 +4840,7 @@ jQuery.event = {
 		// Fire handlers on the event path
 		i = 0;
 		// 循环调用
+		// 05-designEvent.html trigger 删除系统事件
 		while ( (cur = eventPath[i++]) && !event.isPropagationStopped() ) { 
 
 			event.type = i > 1 ?
@@ -4836,6 +4850,7 @@ jQuery.event = {
 			// jQuery handler
 			handle = ( data_priv.get( cur, "events" ) || {} )[ event.type ] && data_priv.get( cur, "handle" );
 			if ( handle ) {
+				// 当这个函数存在的时候，让函数执行
 				handle.apply( cur, data );
 			}
 
@@ -5310,7 +5325,7 @@ jQuery.fn.extend({
 		}
 
 		if ( data == null && fn == null ) {
-			// ( types, fn )
+			// ( types, fn ) 两个参数的情况下
 			fn = selector; // 参数换一下
 			data = selector = undefined;
 		} else if ( fn == null ) {
@@ -5330,7 +5345,6 @@ jQuery.fn.extend({
 		} else if ( !fn ) {
 			return this;
 		}
-
 
 		if ( one === 1 ) { // 事件只执行一次
 			origFn = fn;

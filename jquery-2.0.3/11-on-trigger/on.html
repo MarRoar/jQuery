@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>on Event</title>
+</head>
+<body>
+	<div id="div1">div</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$("#div1").on('myClick', function () {
+			console.log("my")
+		})
+
+		$("#div1").trigger('myClick')
+	</script>
+</body>
+</html>

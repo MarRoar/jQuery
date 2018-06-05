@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>beforeunload</title>
+</head>
+<body>
+	<p>sdf</p>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// 离开页面事件
+		$(window).on('beforeunload', function (e) {
+			// alert(1)
+			return 123
+		})
+	</script>
+</body>
+</html>

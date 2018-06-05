@@ -4,11 +4,27 @@
 	<meta charset="UTF-8">
 	<title>pageY和clientY的兼容</title>
 </head>
-<body>
+<body style="height: 2000px; width: 1500px;">
+	<div>
+		
+	</div>
 	<script>
 		// mouseHooks 下面的 filter 兼容处理
 		// pageY 在IE 678 下面是不支持的 client 是支持的
 		// 然后自己总结下，怎么做兼容处理！！
+		
+		// 兼容到页面顶端的处理方法
+		document.onclick = function (e) {
+			var body = document.body,
+				doc = document.documentElement,
+				pageOBJ = {};
+
+			console.log( doc.clientTop || body.clientTop )
+			
+			pageOBJ.Y = e.clientY + ( doc && doc.scrollTop || body && body.scrollTop || 0 )
+
+			console.log( pageOBJ.Y, e.pageY )
+		}
 	</script>
 </body>
 </html>

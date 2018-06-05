@@ -20,18 +20,19 @@
 			alert(2)
 		})
 
-		// $('input').trigger('click')
+		// trigger 是有冒泡操作的
+		$('input').trigger('click')
 		
 
 		// 原生的 load 事件是没有冒泡操作的，但是jQuery里面的load事件有冒泡
 		
-		$(document).on('load', function () {
-			alert('load1')
-		})
+		// $(document).on('load', function () {
+		// 	alert('load1')
+		// })
 
-		$('img').on('load', function () {
-			alert('load2')
-		})
+		// $('img').on('load', function () {
+		// 	alert('load2')
+		// })
 
 	</script>
 </body>

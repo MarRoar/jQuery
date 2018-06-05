@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>mouse</title>
+	<style>
+		#div1 {
+			width: 200px;
+			height: 200px;
+			background-color: yellow;
+		}
+		#div2 {
+			width: 100px;
+			height: 100px;
+			background-color: red;
+		}
+	</style>
+</head>
+<body>
+	<div id="div1">
+		<div id="div2"></div>
+	</div>
+	<span id="s"></span>
+	<script>
+		var oDiv1 = document.getElementById('div1'),
+			oDiv2 = document.getElementById('div2'),
+			oSpan = document.getElementById('s');
+
+		// oDiv1.onmouseover = function (argument) {
+		// 	oSpan.innerHTML += '1'
+		// }
+		// oDiv1.onmouseout = function () {
+		// 	oSpan.innerHTML += '2'
+		// }
+
+		/**
+		 * 因为黄的具有冒泡的特点，所以再会触发 1
+		 * 解决办法可以用 下面的，但是 onmouseenter 这两个方法具有兼容性
+		 */
+		/*
+		oDiv1.onmouseenter = function (argument) {
+			oSpan.innerHTML += '1'
+		}
+		oDiv1.onmouseleave = function () {
+			oSpan.innerHTML += '2'
+		}
+		*/
+	
+
+		// 那么jQuery的做法
+		oDiv1.onmouseover = function (ev) {
+			ev = ev || window.event;
+			var a = this,
+				b = ev.relatedTarget; // b就是事件触发之前的元素, d
+
+			// 然后判断两个元素是否具有嵌套操作
+			if ( !elContains(a, b) && a != b ) {
+				oSpan.innerHTML += '1'
+			}
+		}
+		oDiv1.onmouseout = function (ev) {
+			ev = ev || window.event;
+			var a = this,
+				b = ev.relatedTarget; // b就是事件触发之前的元素
+
+			if ( !elContains(a, b) && a != b ) {
+				oSpan.innerHTML += '2'
+			}
+		}
+
+		// 判断两个元素是否是嵌套关系
+		function elContains(a, b) {
+			return a.contains ? a != b && a.contains(b) : !!(a.compareDocumentPosition(b) & 16);
+		}
+		
+		// 
+	</script>
+</body>
+</html>

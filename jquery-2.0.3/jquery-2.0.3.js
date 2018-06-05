@@ -4918,6 +4918,7 @@ jQuery.event = {
 		event.delegateTarget = this;
 
 		// Call the preDispatch hook for the mapped type, and let it bail if desired
+		// preDispatch 事件触发之前触发，留的接口
 		if ( special.preDispatch && special.preDispatch.call( this, event ) === false ) {
 			return;
 		}
@@ -5122,7 +5123,7 @@ jQuery.event = {
 					return false;
 				}
 			},
-			delegateType: "focusin"
+			delegateType: "focusin" // 代理类型 13-spec-trigger.html
 		},
 		blur: {
 			trigger: function() {
@@ -5136,6 +5137,7 @@ jQuery.event = {
 		click: {
 			// For checkbox, fire native event so checked state will be right
 			trigger: function() {
+				// 复选框会选中
 				if ( this.type === "checkbox" && this.click && jQuery.nodeName( this, "input" ) ) {
 					this.click();
 					return false;
@@ -5144,12 +5146,13 @@ jQuery.event = {
 
 			// For cross-browser consistency, don't fire native .click() on links
 			_default: function( event ) {
+				// a 标签不会触发默认事件
 				return jQuery.nodeName( event.target, "a" );
 			}
 		},
 
 		beforeunload: {
-			postDispatch: function( event ) {
+			postDispatch: function( event ) { // 事件执行结束之后去调用的, 上面可以找到
 
 				// Support: Firefox 20+
 				// Firefox doesn't alert if the returnValue field is not set.
@@ -5267,7 +5270,7 @@ jQuery.each({
 		delegateType: fix,
 		bindType: fix,
 
-		handle: function( event ) {
+		handle: function( event ) { // 17-spec-mouse.html 解释
 			var ret,
 				target = this,
 				related = event.relatedTarget,

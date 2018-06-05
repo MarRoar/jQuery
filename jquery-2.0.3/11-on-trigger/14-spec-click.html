@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<a href="http://www.google.com">go</a>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$('a').on('click', function () {
+			alert(1)
+		})
+
+		// 这个时候 trigger 后不会进行跳转 
+		$('a').trigger('click')
+	</script>
+</body>
+</html>

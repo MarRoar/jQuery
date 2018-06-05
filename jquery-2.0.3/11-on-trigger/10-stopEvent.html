@@ -25,8 +25,8 @@
 		})
 		$('span').on('click', function (ev) {
 			alert(2)
-			// ev.stopPropagation()
-			
+
+			// ev.stopPropagation() 阻止冒泡
 			ev.stopImmediatePropagation() // 禁止掉其实事件
 		})
 		$('span').on('click', function () {

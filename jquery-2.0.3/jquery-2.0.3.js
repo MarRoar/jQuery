@@ -4702,14 +4702,16 @@ jQuery.event = {
 		}
 
 		// Once for each type.namespace in types; type may be omitted
+		// 将要所有类型拆分
 		types = ( types || "" ).match( core_rnotwhite ) || [""];
 		t = types.length;
 		while ( t-- ) {
 			tmp = rtypenamespace.exec( types[t] ) || [];
 			type = origType = tmp[1];
-			namespaces = ( tmp[2] || "" ).split( "." ).sort();
+			namespaces = ( tmp[2] || "" ).split( "." ).sort(); // 命名空间
 
 			// Unbind all events (on this namespace, if provided) for the element
+			// $('#span1').off('.namespance') 没有类型只有命名空间
 			if ( !type ) {
 				for ( type in events ) {
 					jQuery.event.remove( elem, type + types[ t ], handler, selector, true );
@@ -4724,14 +4726,15 @@ jQuery.event = {
 
 			// Remove matching events
 			origCount = j = handlers.length;
+			// 为了再次映射上，所以要删除 缓存中的数据等等
+			
 			while ( j-- ) {
 				handleObj = handlers[ j ];
-
 				if ( ( mappedTypes || origType === handleObj.origType ) &&
 					( !handler || handler.guid === handleObj.guid ) &&
 					( !tmp || tmp.test( handleObj.namespace ) ) &&
 					( !selector || selector === handleObj.selector || selector === "**" && handleObj.selector ) ) {
-					handlers.splice( j, 1 );
+					handlers.splice( j, 1 ); 
 
 					if ( handleObj.selector ) {
 						handlers.delegateCount--;
@@ -4769,7 +4772,8 @@ jQuery.event = {
 			type = core_hasOwn.call( event, "type" ) ? event.type : event,
 			namespaces = core_hasOwn.call( event, "namespace" ) ? event.namespace.split(".") : [];
 
-		cur = tmp = elem = elem || document;
+		cur = tmp = elem = elem || document; // DOM 标签
+		// console.log("cur", cur)
 
 		// Don't do events on text and comment nodes
 		if ( elem.nodeType === 3 || elem.nodeType === 8 ) {
@@ -4777,10 +4781,12 @@ jQuery.event = {
 		}
 
 		// focus/blur morphs to focusin/out; ensure we're not firing them right now
+		// console.log('trigger= ', type + jQuery.event.triggered)
 		if ( rfocusMorph.test( type + jQuery.event.triggered ) ) {
 			return;
 		}
 
+		// 命名空间
 		if ( type.indexOf(".") >= 0 ) {
 			// Namespaced trigger; create a regexp to match event type in handle()
 			namespaces = type.split(".");
@@ -4792,9 +4798,14 @@ jQuery.event = {
 		// Caller can pass in a jQuery.Event object, Object, or just an event type string
 		
 		// jQuery.expando 首先判断这个有没有，这里可以缓存
+		// 就是 data 缓存数据是否有
+		// console.log( event[ jQuery.expando ] )
 		event = event[ jQuery.expando ] ?
 			event :
 			new jQuery.Event( type, typeof event === "object" && event );
+
+		// console.log( event )
+		// return 
 
 		// Trigger bitmask: & 1 for native handlers; & 2 for jQuery (always true)
 		event.isTrigger = onlyHandlers ? 2 : 3;
@@ -4822,14 +4833,19 @@ jQuery.event = {
 
 		// Determine event propagation path in advance, per W3C events spec (#9951)
 		// Bubble up to document, then to window; watch for a global ownerDocument var (#9724)
+		// 这里来处理冒泡情况, 
+		// 这里找所有的父节点,然后存起来
 		if ( !onlyHandlers && !special.noBubble && !jQuery.isWindow( elem ) ) {
+			/**
+			 * 模拟冒泡就是通过一层层的往父集中找,然后筛选，然后触发相应的事件
+			 */
 
-			bubbleType = special.delegateType || type;
+			bubbleType = special.delegateType || type; // 要往上冒泡的类型
 			if ( !rfocusMorph.test( bubbleType + type ) ) {
-				cur = cur.parentNode;
+				cur = cur.parentNode; // 查找父节点
 			}
 			for ( ; cur; cur = cur.parentNode ) {
-				eventPath.push( cur );
+				eventPath.push( cur ); //把父节点push 到 eventPath 进去
 				tmp = cur;
 			}
 
@@ -4842,7 +4858,8 @@ jQuery.event = {
 		// Fire handlers on the event path
 		i = 0;
 		// 循环调用
-		// 05-designEvent.html trigger 删除系统事件
+		// 05-designEvent.html trigger
+		// 筛选父节点，然后找到满足情况的，然后执行
 		while ( (cur = eventPath[i++]) && !event.isPropagationStopped() ) { 
 
 			event.type = i > 1 ?
@@ -4850,6 +4867,7 @@ jQuery.event = {
 				special.bindType || type;
 
 			// jQuery handler
+			// 取出处理函数
 			handle = ( data_priv.get( cur, "events" ) || {} )[ event.type ] && data_priv.get( cur, "handle" );
 			if ( handle ) {
 				// 当这个函数存在的时候，让函数执行
@@ -4858,6 +4876,7 @@ jQuery.event = {
 
 			// Native handler
 			handle = ontype && cur[ ontype ];
+			// console.log( handle )
 			if ( handle && jQuery.acceptData( cur ) && handle.apply && handle.apply( cur, data ) === false ) {
 				event.preventDefault();
 			}
@@ -4865,6 +4884,7 @@ jQuery.event = {
 		event.type = type;
 
 		// If nobody prevented the default action, do it now
+		// 这里没有组织默认行为执行，一些相应的默认行为操作
 		if ( !onlyHandlers && !event.isDefaultPrevented() ) {
 
 			if ( (!special._default || special._default.apply( eventPath.pop(), data ) === false) &&
@@ -4944,6 +4964,7 @@ jQuery.event = {
 					event.handleObj = handleObj;
 					event.data = handleObj.data;
 
+					// 回调的执行结果
 					ret = ( (jQuery.event.special[ handleObj.origType ] || {}).handle || handleObj.handler )
 							.apply( matched.elem, args );
 
@@ -4967,6 +4988,12 @@ jQuery.event = {
 	},
 
 	handlers: function( event, handlers ) {
+
+		/**
+		 * 队列有个原则，
+		 * 事件有委托的和绑定在自身的，委托的执行顺序比较靠前
+		 */
+
 		var i, matches, sel, handleObj,
 			handlerQueue = [],
 			delegateCount = handlers.delegateCount,
@@ -5417,7 +5444,7 @@ jQuery.fn.extend({
 		}
 	}
 });
-//-----------------------------------------------------------------------------------------------------------------------
+//------------------------------- 12-DOM ---- 12-DOM操作 ------------------------------------------------------------------------------------
 var isSimple = /^.[^:#\[\.,]*$/,
 	rparentsprev = /^(?:parents|prev(?:Until|All))/,
 	rneedsContext = jQuery.expr.match.needsContext,
@@ -5460,7 +5487,8 @@ jQuery.fn.extend({
 		var targets = jQuery( target, this ),
 			l = targets.length;
 
-		return this.filter(function() {
+		// 这里过滤的是 div
+		return this.filter(function() { // 回调函数
 			var i = 0;
 			for ( ; i < l; i++ ) {
 				if ( jQuery.contains( this, targets[i] ) ) {
@@ -5471,6 +5499,7 @@ jQuery.fn.extend({
 	},
 
 	not: function( selector ) {
+		// pushStack 是栈的管理
 		return this.pushStack( winnow(this, selector || [], true) );
 	},
 
@@ -5633,14 +5662,15 @@ jQuery.extend({
 	filter: function( expr, elems, not ) {
 		var elem = elems[ 0 ];
 
-		if ( not ) {
-			expr = ":not(" + expr + ")";
+		if ( not ) { // not = true 的时候 , 复杂的情况 ( 比如 div.box ) 这种情况前面是不能加 not 的
+			expr = ":not(" + expr + ")"; // sizzle 中的写法
 		}
 
-		return elems.length === 1 && elem.nodeType === 1 ?
-			jQuery.find.matchesSelector( elem, expr ) ? [ elem ] : [] :
-			jQuery.find.matches( expr, jQuery.grep( elems, function( elem ) {
-				return elem.nodeType === 1;
+		// jQuery.find = Sizzle 就是去调用 Sizzle 复杂选择器
+		return elems.length === 1 && elem.nodeType === 1 ? // 一个还是多个元素筛选方式( 比如 div  )
+			jQuery.find.matchesSelector( elem, expr ) ? [ elem ] : [] : // 一个元素
+			jQuery.find.matches( expr, jQuery.grep( elems, function( elem ) { // 多个元素
+				return elem.nodeType === 1; // 节点类型的
 			}));
 	},
 
@@ -5674,7 +5704,10 @@ jQuery.extend({
 
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, not ) {
+	// 判断筛选条件是否是函数
 	if ( jQuery.isFunction( qualifier ) ) {
+
+		// jQuery.grep 数组过滤的方法
 		return jQuery.grep( elements, function( elem, i ) {
 			/* jshint -W018 */
 			return !!qualifier.call( elem, i, elem ) !== not;
@@ -5682,22 +5715,29 @@ function winnow( elements, qualifier, not ) {
 
 	}
 
+	// 传递的是元素的情况
 	if ( qualifier.nodeType ) {
 		return jQuery.grep( elements, function( elem ) {
 			return ( elem === qualifier ) !== not;
 		});
-
 	}
 
+	// 字符串
 	if ( typeof qualifier === "string" ) {
+
+		// 正则匹配成功
 		if ( isSimple.test( qualifier ) ) {
+			// 调用一个工具方法 not  然后结束
 			return jQuery.filter( qualifier, elements, not );
 		}
 
-		qualifier = jQuery.filter( qualifier, elements );
+		// 复杂的情况 
+		qualifier = jQuery.filter( qualifier, elements ); 
 	}
 
 	return jQuery.grep( elements, function( elem ) {
+		// 这个函数里面就是来判断 not 的真假的情况
+		// 这是复杂情况需要用这种方式来判断，但是简单的情况可以用 not 来直接区分出来
 		return ( core_indexOf.call( qualifier, elem ) >= 0 ) !== not;
 	});
 }
@@ -6347,6 +6387,7 @@ jQuery.fn.extend({
 		}).end();
 	}
 });
+// ----------------------------------------------------------------------------------------------
 var curCSS, iframe,
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display

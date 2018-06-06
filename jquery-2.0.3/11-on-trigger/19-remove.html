@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>remove</title>
+</head>
+<body>
+	<span id="span1">asdf</span>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$("#span1").on('click', function () {
+			alert(1)
+		})
+
+		$("#span1").on('mouseover', function () {
+			alert(2)
+		})
+
+
+		$("#span1").on('mouseleave.namespace', function () {
+			alert(2)
+		})
+
+		$("#span1").off()
+		$("#span1").off('mouseover')
+		$("#span1").off('mouseover click')
+		$("#span1").off("mouseover.namespace")
+		$("#span1").off(".namespace") // 取消所有这个命名空间的事件
+	</script>
+</body>
+</html>

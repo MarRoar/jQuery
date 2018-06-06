@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>has not filter</title>
+</head>
+<body>
+	<div id="div1" class="box">div1 <span>span1</span></div>
+	<div>div2 </div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$(function () {
+			
+			// filter() not() 都是过滤操作
+			// $('div').css('border', '1px solid red')
+			// 但是我们想选择 class = box 的盒子 过滤出 .box 的元素
+			// $('div').filter('.box').css('border', '1px solid red')
+			// not('.box')  没有 .box 的元素
+			// $('div').not('.box').css('border', '1px solid red') 
+
+			
+			//  has() 是内部有没有 这句话的意思 div 里面有 span 的 div 元素
+			// $('div').has('span').css('border', '1px solid red') 			
+
+
+			// winnow 函数
+			/**
+			 * isSimple 正则 isSimple = /^.[^:#\[\.,]*$/
+			 *
+			 * 匹配成功 : .box  div   #div1   :odd
+			 *
+			 * 匹配不成功 : div:odd  , ul #id ,  ul[title="hello"] , div.box    (这种复杂的不能选中)
+			 */
+			
+
+
+			/**
+			 *  filter() 和 not() 参数是函数的情况
+			 */
+			
+			$('div').filter(function (i, elem) {
+				console.log(elem)
+				return elem.className == 'box'
+			}).css('border', '1px solid red')
+
+			// $('div').not(function (ele) {
+			// 	return false
+			// }).css('border', '1px solid red')
+		})
+	</script>
+</body>
+</html>

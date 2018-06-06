@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>find is</title>
+</head>
+<body>
+	<ul>
+		<li>
+			<!-- 去重的情况 -->
+			<ul>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</li>
+		<li></li>
+		<li></li>
+	</ul>
+	<ol>
+		<li></li>
+		<li></li>
+		<li></li>
+	</ol>
+
+	<div class="box">div1</div>
+	<div>div2</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$(function () {
+			$('ul').find('li').css('background', 'pink')
+			
+			// $('ul').find( $('li') ).css('background', 'pink')
+			
+
+
+			// jQuery.unique()
+			// 为什么会有这个去重情况
+			// 上面有两个 ul 所以第一个 ul找后面的 li 的时候会找到6个li
+			// 第二个里面的 ul 再找的时候会找到里面的3个li 
+			// 但是第一个ul 里面的6个和第二个里面的三个是有重复的情况
+			// 所以要进行去重操作
+			
+
+			//---------------
+			console.log( $('div').is('.box') ) // true
+			console.log( $('div:first').is('.box') ) // true
+			console.log( $('div:last').is('.box') ) //false
+
+			// 下面这种情况就比较奇怪了
+			console.log( $('div:first').is('div:last') ) // false
+		})
+	</script>
+</body>
+</html>

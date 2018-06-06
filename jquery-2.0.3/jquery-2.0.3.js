@@ -5463,8 +5463,13 @@ jQuery.fn.extend({
 			self = this,
 			len = self.length;
 
+		// 不是字符串的情况走这里
+		// 比如 find( oLi ), find( $('li') ) 这些情况就走这里
 		if ( typeof selector !== "string" ) {
+			// console.log( $( selector) )
 			return this.pushStack( jQuery( selector ).filter(function() {
+				// 这里是选循环所有的 this, 也就是 find 之前的元素
+				// 然后再进行 contain 判断
 				for ( i = 0; i < len; i++ ) {
 					if ( jQuery.contains( self[ i ], this ) ) {
 						return true;
@@ -5475,9 +5480,12 @@ jQuery.fn.extend({
 
 		for ( i = 0; i < len; i++ ) {
 			jQuery.find( selector, self[ i ], ret );
+			// 执行完之后把筛选到的结果放到 ret 里面
 		}
 
 		// Needed because $( selector, context ) becomes $( context ).find( selector )
+		// jQuery.unique 这个方法是去重
+		//  len 等于1的时候肯定没有重复的情况
 		ret = this.pushStack( len > 1 ? jQuery.unique( ret ) : ret );
 		ret.selector = this.selector ? this.selector + " " + selector : selector;
 		return ret;
@@ -5511,11 +5519,13 @@ jQuery.fn.extend({
 		return !!winnow(
 			this,
 
+			// rneedsContext = 伪类选择器的正则比如下面的情况
 			// If this is a positional/relative selector, check membership in the returned set
 			// so $("p:first").is("p:last") won't return true for a doc with two "p".
+			// jQuery 中不允许出现这种相对的情况
 			typeof selector === "string" && rneedsContext.test( selector ) ?
-				jQuery( selector ) :
-				selector || [],
+				jQuery( selector ) : // 上面相对的情况走这里
+				selector || [], // 普通情况走这里
 			false
 		).length;
 	},

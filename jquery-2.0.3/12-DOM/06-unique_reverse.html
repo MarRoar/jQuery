@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>去重会你像排序</title>
+</head>
+<body>
+	<div id="divBox">
+		d
+		<div id="div1">d
+			<span>s</span>
+		</div>
+		<div id="div2">d
+			<span>s</span>
+		</div>
+	</div>
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var match = $('span').parents('div')
+
+		console.log(match)
+		// console.log(match = jQuery.unique(match)) // 可以和上面的对比一下，会发现这个结果逆向排序
+	</script>
+</body>
+</html>

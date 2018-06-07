@@ -5451,7 +5451,7 @@ var isSimple = /^.[^:#\[\.,]*$/,
 	// methods guaranteed to produce a unique set when starting from a unique set
 	guaranteedUnique = {
 		children: true,
-		contents: true,
+		contents: true, // 可以获取到文本节点等
 		next: true,
 		prev: true
 	};
@@ -5535,6 +5535,8 @@ jQuery.fn.extend({
 			i = 0,
 			l = this.length,
 			matched = [],
+			// rneedsContext.test( selectors ) 匹配伪类的情况
+			// 或者不是字符串的情况
 			pos = ( rneedsContext.test( selectors ) || typeof selectors !== "string" ) ?
 				jQuery( selectors, context || this.context ) :
 				0;
@@ -5554,7 +5556,7 @@ jQuery.fn.extend({
 				}
 			}
 		}
-
+		// 去重返回
 		return this.pushStack( matched.length > 1 ? jQuery.unique( matched ) : matched );
 	},
 
@@ -5563,16 +5565,20 @@ jQuery.fn.extend({
 	index: function( elem ) {
 
 		// No argument, return index in parent
+		// 没有参数的情况下
 		if ( !elem ) {
+			// prevAll() 这个元素之前的元素
 			return ( this[ 0 ] && this[ 0 ].parentNode ) ? this.first().prevAll().length : -1;
 		}
 
 		// index in selector
 		if ( typeof elem === "string" ) {
+			// 在所有 span 中找 #span1
 			return core_indexOf.call( jQuery( elem ), this[ 0 ] );
 		}
 
 		// Locate the position of the desired element
+		// $('span').index( $('#span1') 这种情况走这里
 		return core_indexOf.call( this,
 
 			// If it receives a jQuery object, the first element is used
@@ -5583,15 +5589,19 @@ jQuery.fn.extend({
 	add: function( selector, context ) {
 		var set = typeof selector === "string" ?
 				jQuery( selector, context ) :
-				jQuery.makeArray( selector && selector.nodeType ? [ selector ] : selector ),
+				jQuery.makeArray( selector && selector.nodeType ? [ selector ] : selector ), // 标签或者jQuery对象
+			// 用merge把，两个元素合并
 			all = jQuery.merge( this.get(), set );
 
+		// 入栈操作
 		return this.pushStack( jQuery.unique(all) );
 	},
 
 	addBack: function( selector ) {
 		return this.add( selector == null ?
 			this.prevObject : this.prevObject.filter(selector)
+		// prevObject 这个是栈的下一层
+		// filter 是一个筛选操作
 		);
 	}
 });
@@ -5608,6 +5618,7 @@ jQuery.each({
 		return parent && parent.nodeType !== 11 ? parent : null;
 	},
 	parents: function( elem ) {
+		// dir 后面的参数是原生的方法的名字
 		return jQuery.dir( elem, "parentNode" );
 	},
 	parentsUntil: function( elem, i, until ) {
@@ -5632,35 +5643,46 @@ jQuery.each({
 		return jQuery.dir( elem, "previousSibling", until );
 	},
 	siblings: function( elem ) {
+
+		// ( elem.parentNode || {} ).firstChild 当前元素父集的第一个元素
 		return jQuery.sibling( ( elem.parentNode || {} ).firstChild, elem );
 	},
 	children: function( elem ) {
 		return jQuery.sibling( elem.firstChild );
 	},
 	contents: function( elem ) {
+		// contentDocument  content的 docuemnt 的标签，主要是 iframe 元素有这个属性
+		// $('iframe').contents() 就可以拿到 iframe 里面的元素
+
+		// 原生 childNodes 就是获取所有子节点
 		return elem.contentDocument || jQuery.merge( [], elem.childNodes );
 	}
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
-		var matched = jQuery.map( this, fn, until );
+		var matched = jQuery.map( this, fn, until ); // map遍历,得到结果
 
 		if ( name.slice( -5 ) !== "Until" ) {
-			selector = until;
+			selector = until; // 一个参数的话，筛选条件
 		}
 
 		if ( selector && typeof selector === "string" ) {
-			matched = jQuery.filter( selector, matched );
+			matched = jQuery.filter( selector, matched ); // 筛选之后的结果再返回回来
 		}
 
+		// console.log('排序', matched)
+
+		// 结果有多个的情况下parents()
 		if ( this.length > 1 ) {
 			// Remove duplicates
-			if ( !guaranteedUnique[ name ] ) {
+			if ( !guaranteedUnique[ name ] ) { // 不包含重复的情况
 				jQuery.unique( matched );
 			}
-
+			// console.log('排序', matched)
+		
+			// 16-unique_reverse.html
 			// Reverse order for parents* and prev-derivatives
-			if ( rparentsprev.test( name ) ) {
-				matched.reverse();
+			if ( rparentsprev.test( name ) ) { // 针对某些情况需要重新排序
+				matched.reverse(); 
 			}
 		}
 
@@ -5685,13 +5707,21 @@ jQuery.extend({
 	},
 
 	dir: function( elem, dir, until ) {
+		/**
+		 * elem 元素
+		 * dir 原生的方法名字
+		 * until 到哪里结束
+		 */
 		var matched = [],
 			truncate = until !== undefined;
 
 		while ( (elem = elem[ dir ]) && elem.nodeType !== 9 ) {
-			if ( elem.nodeType === 1 ) {
+
+			if ( elem.nodeType === 1 ) { // 元素节点
+
+				// 这里主要针对截止操作的
 				if ( truncate && jQuery( elem ).is( until ) ) {
-					break;
+					break; // 结束整个循环
 				}
 				matched.push( elem );
 			}
@@ -5703,6 +5733,7 @@ jQuery.extend({
 		var matched = [];
 
 		for ( ; n; n = n.nextSibling ) {
+			// n !== elem 也就是说不包含他自己
 			if ( n.nodeType === 1 && n !== elem ) {
 				matched.push( n );
 			}

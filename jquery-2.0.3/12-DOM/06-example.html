@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<div>
+		div
+		<p>
+			p
+			<span>span</span>
+		</p>
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// parent()  parents()  parentsUntil()
+		
+		// $('span').parent().css('border', '1px solid red'); // span标签的父元素
+		// console.log( $('span').parent() )
+		
+		// $('span').parents().css('border', '1px solid red'); // span 的祖先元素( 爸爸 + 爷爷 .... )
+		// console.log( $('span').parents() )
+		
+		// $('span').parentsUntil('body').css('border', '1px solid red'); // span 的祖先不过有个限度，到哪为止
+		// console.log( $('span').parentsUntil('body') )
+		// 
+		
+		// $('span').parentsUntil('body', 'div').css('border', '1px solid red'); // span 的祖先不过有个限度，到哪为止,并且还有筛选功能,比如这里筛选div
+		// console.log( $('span').parentsUntil('body', 'div') )
+		
+
+		/**
+		 * 	next         下一个兄弟节点
+			prev         上一个兄弟节点
+			nextAll      下面所有的兄弟节点
+			prevAll      上面所有的兄弟节点
+			nextUntil    下面所有的兄弟节点 到某个截止的位置
+			prevUntil    上面所有的兄弟节点 到某个截止的位置
+		 */
+		
+
+		 // contents()  方法会把文本节点，也取到
+
+		console.log( $('body').children() )
+		console.log( $('body').contents() ) // 
+
+	</script>
+</body>
+</html>

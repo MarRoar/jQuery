@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>remove, detach</title>
+</head>
+<body>
+	<div>
+		div
+		<p>
+			p
+			<span>span</span>
+		</p>
+	</div>
+	<div class="box">test div</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// remove 和 detach 的方法类似都是删除操作
+		// $('div').remove();
+		// $('div').remove('.box'); // 选择 div 中 .box 的元素删除
+		
+		// $('div').detach();
+		
+		/**
+		 * remove 这个删除操作很彻底，会把删除元素身上的绑定事件
+		 * 数据缓存都给清理掉
+		 * 所以删除后再append后，点击事件没用
+		 */
+		// $('div').on('click', function () {
+		// 	alert(1)
+		// })
+		// var $div = $('div').remove(); // 
+		// $('body').append( $div )
+		
+		/**
+		 * detach ，删除后，上面的事件还是有的
+		 */
+		$('div').on('click', function () {
+			alert(1)
+		})
+		var $div = $('div').detach(); // 
+		$('body').append( $div )
+		
+	</script>
+</body>
+</html>

@@ -5862,13 +5862,19 @@ jQuery.fn.extend({
 			elems = selector ? jQuery.filter( selector, this ) : this,
 			i = 0;
 
+		// 遍历选择的元素
 		for ( ; (elem = elems[i]) != null; i++ ) {
+			// 下面这个 if 是在 detach 的时候走的
 			if ( !keepData && elem.nodeType === 1 ) {
+				// 清除相关的数据
+				// getAll 获取下面所有的子元素 比如[ div, p, span]
 				jQuery.cleanData( getAll( elem ) );
 			}
 
 			if ( elem.parentNode ) {
+				// 子元素里面如果有 script 的操作 
 				if ( keepData && jQuery.contains( elem.ownerDocument, elem ) ) {
+					// 进行全局的设置
 					setGlobalEval( getAll( elem, "script" ) );
 				}
 				elem.parentNode.removeChild( elem );
@@ -6217,6 +6223,7 @@ jQuery.extend({
 	},
 
 	cleanData: function( elems ) {
+		// 清除当前元素身上的事件和数据缓存
 		var data, elem, events, type, key, j,
 			special = jQuery.event.special,
 			i = 0;
@@ -6224,11 +6231,13 @@ jQuery.extend({
 		for ( ; (elem = elems[ i ]) !== undefined; i++ ) {
 			if ( Data.accepts( elem ) ) {
 				key = elem[ data_priv.expando ];
-
+				// 私有事件缓存的东西
 				if ( key && (data = data_priv.cache[ key ]) ) {
 					events = Object.keys( data.events || {} );
+					// 事件
 					if ( events.length ) {
 						for ( j = 0; (type = events[j]) !== undefined; j++ ) {
+							// 区分特殊事件和真正事件
 							if ( special[ type ] ) {
 								jQuery.event.remove( elem, type );
 
@@ -6238,6 +6247,7 @@ jQuery.extend({
 							}
 						}
 					}
+					// 删除缓存
 					if ( data_priv.cache[ key ] ) {
 						// Discard any remaining `private` data
 						delete data_priv.cache[ key ];
@@ -6335,7 +6345,8 @@ function cloneCopyEvent( src, dest ) {
 	}
 }
 
-
+// 获取下面所有的子元素并且合并到数组里面
+// getAll( elem, false) 这种写法只返回他自己
 function getAll( context, tag ) {
 	var ret = context.getElementsByTagName ? context.getElementsByTagName( tag || "*" ) :
 			context.querySelectorAll ? context.querySelectorAll( tag || "*" ) :

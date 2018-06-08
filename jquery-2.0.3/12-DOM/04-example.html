@@ -5,9 +5,9 @@
 	<title>closest, index</title>
 </head>
 <body>
-<!-- 	<div>1</div>
+	<div>1</div>
 	<div id="div1">2</div>
-	<div>3</div> -->
+	<div>3</div>
 
 <!-- 	<div>1 <span>span</span></div>
 	<div id="div1">2 <span id="span1">span</span></div>
@@ -24,17 +24,17 @@
 	</div> -->
 
 	
-	<div class="box">
+<!-- 	<div class="box">
 		<span class="span">span1</span>
 	</div>
 	<div class="box">
 		<span class="span">span2</span>
-	</div>
+	</div> -->
 
 	<script src="../jquery-2.0.3.js"></script>
 	<script>
 		// index 返回在兄弟节点中的序号
-		// console.log( $('#div1').index() )
+		console.log( $('#div1').index() )
 		// console.log( $('#div1').prevAll() ) // prevAll() 返回这个元素之前的元素
 
 
@@ -50,6 +50,7 @@
 
 
 		// $("#div1").closest('.box', $('#divBox1')[0] ).css('border', '1px solid pink') // 第二个参数是限定查找的范围
+		// 比如说到 $('#divBox1')[0] 为止，
 		
 
 		// $(".span").closest('.box').css('border', '1px solid pink')

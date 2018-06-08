@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>html</title>
+</head>
+<body>
+	<span id="span1"></span>
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+
+		var s = '<script>alert(1)<\/script>'
+		// $("#span1").get(0).innerHTML = s
+		// $("#span1").html( s )
+		
+		// 原生的现象是添加进去的 alert() 不会执行
+		// jQuery 的 html 是 alert(1) 可以执行
+		
+		/**
+		 * wrapMap 规范
+		 * 
+		 */
+		var t = '<tr></tr>';
+		// $("#span1").get(0).innerHTML = t
+		// $("#span1").html( t )
+
+		// 因为 直接向 span 里面添加 tr 是不符合规范的.所以就添加不进去
+		// 但是
+		
+
+		// $('#span1').html('<div/>') // 这种情况会自动换成双标签的
+		
+
+		$('span').append('<div>d</div>')
+		
+	</script>
+</body>
+</html>

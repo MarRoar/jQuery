@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>text empty clone</title>
+</head>
+<body>
+	<div id="div1">
+		<p>
+			ppppp
+			<span>
+				spanpanpan
+			</span>
+		</p>
+	</div>
+
+	
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		/**
+		 * empty 就是把标签情况
+		 */
+		
+		// $('div').empty()
+		
+
+		/**
+		 * text
+		 */
+		// console.log( $('div').text() ); // text 只获取文本节点
+		// $('div').text('<h1>text</h1>') // 设置, 并不会解析标签
+
+		/**
+		 * clone
+		 */
+		
+		// var cloneDiv = $('div').clone()
+		// $('body').append( cloneDiv )
+		
+		// 克隆出来的数据，事件还有没有
+		
+		// $('div').on('click', function () {
+		// 	alert(123)
+		// })
+
+		// var cloneDiv = $('div').clone( true ) // 如果有参数的话，克隆出来的标签就会有事件
+		// $('body').append( cloneDiv )
+
+		
+		$('div').on('click', function () {
+			alert(123)
+		})
+		$('span').on('click', function () {
+			alert(456)
+		})
+
+		// 第二个参数如果为 false 的话 那么克隆出来的 div 的子标签的事件就会没有 事件
+		// 但是如果只传一个参数的话，第二个参数默认会赋值，
+		var cloneDiv = $('div').clone( true, false )
+		$('body').append( cloneDiv )
+
+
+		/**
+		 * 	cloneNode()  原生的克隆方法 
+		 * 	如果参数为 true 那么子元素也会被赋值
+		 * 	如果没有参数或者为false 的话，只会复制自己
+		 */
+
+		// console.log( $('div')[0].cloneNode() )
+
+		
+		
+	</script>
+</body>
+</html>

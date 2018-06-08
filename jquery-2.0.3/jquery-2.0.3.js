@@ -2931,6 +2931,7 @@ jQuery.contains = Sizzle.contains;
 
 
 })( window );
+//------------------------------------- 05-jQuery.Callbacks - jQuery.Callbacks---------------
 // String to Object options format cache
 var optionsCache = {};
 
@@ -5508,6 +5509,7 @@ jQuery.fn.extend({
 
 	not: function( selector ) {
 		// pushStack 是栈的管理
+		// window( div, '.box', true)
 		return this.pushStack( winnow(this, selector || [], true) );
 	},
 
@@ -5614,6 +5616,7 @@ function sibling( cur, dir ) {
 
 jQuery.each({
 	parent: function( elem ) {
+		// console.log('elem', elem)
 		var parent = elem.parentNode;
 		return parent && parent.nodeType !== 11 ? parent : null;
 	},
@@ -5622,6 +5625,7 @@ jQuery.each({
 		return jQuery.dir( elem, "parentNode" );
 	},
 	parentsUntil: function( elem, i, until ) {
+		// console.log( elem, i, until)
 		return jQuery.dir( elem, "parentNode", until );
 	},
 	next: function( elem ) {
@@ -5660,6 +5664,7 @@ jQuery.each({
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
 		var matched = jQuery.map( this, fn, until ); // map遍历,得到结果
+		// console.log( 'matched', matched)
 
 		if ( name.slice( -5 ) !== "Until" ) {
 			selector = until; // 一个参数的话，筛选条件
@@ -5692,6 +5697,7 @@ jQuery.each({
 
 jQuery.extend({
 	filter: function( expr, elems, not ) {
+		// filter( '.box', div )
 		var elem = elems[ 0 ];
 
 		if ( not ) { // not = true 的时候 , 复杂的情况 ( 比如 div.box ) 这种情况前面是不能加 not 的
@@ -5744,6 +5750,7 @@ jQuery.extend({
 });
 
 // Implement the identical functionality for filter and not
+// window( div, '.box', true)
 function winnow( elements, qualifier, not ) {
 	// 判断筛选条件是否是函数
 	if ( jQuery.isFunction( qualifier ) ) {
@@ -5773,6 +5780,7 @@ function winnow( elements, qualifier, not ) {
 		}
 
 		// 复杂的情况 
+		// filter( '.box', div )
 		qualifier = jQuery.filter( qualifier, elements ); 
 	}
 
@@ -5794,6 +5802,8 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 	rcleanScript = /^\s*<!(?:\[CDATA\[|--)|(?:\]\]|--)>\s*$/g,
 
 	// We have to close these tags to support XHTML (#13200)
+	// 定义的一些 XHTML 规范
+	// 必须是这种结构
 	wrapMap = {
 
 		// Support: IE 9
@@ -5815,10 +5825,11 @@ wrapMap.th = wrapMap.td;
 
 jQuery.fn.extend({
 	text: function( value ) {
+		// jQuery.access
 		return jQuery.access( this, function( value ) {
 			return value === undefined ?
-				jQuery.text( this ) :
-				this.empty().append( ( this[ 0 ] && this[ 0 ].ownerDocument || document ).createTextNode( value ) );
+				jQuery.text( this ) : // 获取  jQuery.text sizzle 里面 Sizzle.getText
+				this.empty().append( ( this[ 0 ] && this[ 0 ].ownerDocument || document ).createTextNode( value ) );// 设置
 		}, null, value, arguments.length );
 	},
 
@@ -5842,6 +5853,11 @@ jQuery.fn.extend({
 
 	before: function() {
 		return this.domManip( arguments, function( elem ) {
+			// $('span').append('<div>d</div>')
+			// this =>就是 span
+			// elem =>就是 div
+			// console.log(this, elem)
+			
 			if ( this.parentNode ) {
 				this.parentNode.insertBefore( elem, this );
 			}
@@ -5904,9 +5920,12 @@ jQuery.fn.extend({
 
 	clone: function( dataAndEvents, deepDataAndEvents ) {
 		dataAndEvents = dataAndEvents == null ? false : dataAndEvents;
+		// 如果第一个参数为 true 第二个参数没有赋值的话
+		// 第二个参数会 和第一个参数的值一样(也就是把第一个参数的值赋给第二个参数)
 		deepDataAndEvents = deepDataAndEvents == null ? dataAndEvents : deepDataAndEvents;
 
 		return this.map( function () {
+			// 调用内部的 clone 方法
 			return jQuery.clone( this, dataAndEvents, deepDataAndEvents );
 		});
 	},
@@ -5922,9 +5941,15 @@ jQuery.fn.extend({
 			}
 
 			// See if we can take a shortcut and just use innerHTML
+			// 	rnoInnerhtml = /<(?:script|style|link)/i, 
+			// 	如果标签是 script style link 不会走下面这个if，
+			// 	下面这个 if  里面是 innerHTML 所以 script 标签里面的js 代码也不会执行的
+			// 	
+			// 	wrapMap 不符合规范的话也是不会走这里的
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
 				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
 
+				// 是否是但标签 $('<div/>') 这种情况
 				value = value.replace( rxhtmlTag, "<$1></$2>" );
 
 				try {
@@ -5945,6 +5970,7 @@ jQuery.fn.extend({
 			}
 
 			if ( elem ) {
+				// append 是可以让 js 代码执行
 				this.empty().append( value );
 			}
 		}, null, value, arguments.length );
@@ -6095,11 +6121,13 @@ jQuery.each({
 jQuery.extend({
 	clone: function( elem, dataAndEvents, deepDataAndEvents ) {
 		var i, l, srcElements, destElements,
-			clone = elem.cloneNode( true ),
-			inPage = jQuery.contains( elem.ownerDocument, elem );
+			clone = elem.cloneNode( true ), // 原生操作,整体克隆一份
+			inPage = jQuery.contains( elem.ownerDocument, elem ); // 是否是在当前页 true false
+		// console.log(inPage)
 
-		// Support: IE >= 9
+		// Support: IE >= 9 主要针对 IE 9+
 		// Fix Cloning issues
+		// 处理兼容问题
 		if ( !jQuery.support.noCloneChecked && ( elem.nodeType === 1 || elem.nodeType === 11 ) && !jQuery.isXMLDoc( elem ) ) {
 
 			// We eschew Sizzle here for performance reasons: http://jsperf.com/getall-vs-sizzle/2
@@ -6107,27 +6135,31 @@ jQuery.extend({
 			srcElements = getAll( elem );
 
 			for ( i = 0, l = srcElements.length; i < l; i++ ) {
+				// 主要是下面这句话用来处理兼容的, 08-clone-ie.html
 				fixInput( srcElements[ i ], destElements[ i ] );
 			}
 		}
 
 		// Copy the events from the original to the clone
-		if ( dataAndEvents ) {
-			if ( deepDataAndEvents ) {
+		// 是否克隆事件
+		if ( dataAndEvents ) { 
+			if ( deepDataAndEvents ) { // 克隆子标签
 				srcElements = srcElements || getAll( elem );
 				destElements = destElements || getAll( clone );
 
 				for ( i = 0, l = srcElements.length; i < l; i++ ) {
 					cloneCopyEvent( srcElements[ i ], destElements[ i ] );
 				}
-			} else {
+			} else {// 克隆自身
 				cloneCopyEvent( elem, clone );
 			}
 		}
 
 		// Preserve script evaluation history
 		destElements = getAll( clone, "script" );
+		// 克隆出来的 script 标签
 		if ( destElements.length > 0 ) {
+		 	// 把克隆出来的 script 全局话，所以再克隆出来的 script 不会再执行了
 			setGlobalEval( destElements, !inPage && getAll( elem, "script" ) );
 		}
 
@@ -6311,7 +6343,12 @@ function setGlobalEval( elems, refElements ) {
 	}
 }
 
+// 给复制出来的标签添加相应的事件
 function cloneCopyEvent( src, dest ) {
+	/**
+	 * src 自身的标签
+	 * dest 克隆出来的标签
+	 */
 	var i, l, type, pdataOld, pdataCur, udataOld, udataCur, events;
 
 	if ( dest.nodeType !== 1 ) {
@@ -6319,6 +6356,7 @@ function cloneCopyEvent( src, dest ) {
 	}
 
 	// 1. Copy private data: events, handlers, etc.
+	// 缓存数据
 	if ( data_priv.hasData( src ) ) {
 		pdataOld = data_priv.access( src );
 		pdataCur = data_priv.set( dest, pdataOld );
@@ -6362,10 +6400,12 @@ function fixInput( src, dest ) {
 	var nodeName = dest.nodeName.toLowerCase();
 
 	// Fails to persist the checked state of a cloned checkbox or radio button.
+	// manipulation_rcheckableType.test( src.type ) 正则判断是否是单选或者复选框
 	if ( nodeName === "input" && manipulation_rcheckableType.test( src.type ) ) {
 		dest.checked = src.checked;
 
 	// Fails to return the selected option to the default selected state when cloning options
+	// textarea 有一些默认值
 	} else if ( nodeName === "input" || nodeName === "textarea" ) {
 		dest.defaultValue = src.defaultValue;
 	}

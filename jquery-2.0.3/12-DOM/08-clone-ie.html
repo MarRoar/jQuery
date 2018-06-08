@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>兼容IE的问题</title>
+</head>
+<body>
+	<!-- <input type="checkbox"> -->
+
+	<div>
+		<script>alert(1)</script>
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$(function () {
+			// 
+			//  兼容的问题是
+			//  当给 checkbox 选中的时候，然后再
+			//  克隆出来的 input 没有选中
+			//  jQuery要兼容这样的处理
+			// $('input').prop('checked', true)
+			// $('input').clone().appendTo( 'body' )
+			
+
+			// 这个 当克隆完后，script 里面的函数只执行了一次，
+			// 那是因为 script 被全局化了 setGlobalEval 这个方法
+			$('div').clone().appendTo('body')
+		})
+	</script>
+</body>
+</html>

@@ -5807,6 +5807,7 @@ var rxhtmlTag = /<(?!area|br|col|embed|hr|img|input|link|meta|param)(([\w:]+)[^>
 	wrapMap = {
 
 		// Support: IE 9
+		// 下面的数字是找到相应的层级
 		option: [ 1, "<select multiple='multiple'>", "</select>" ],
 
 		thead: [ 1, "<table>", "</table>" ],
@@ -5834,15 +5835,17 @@ jQuery.fn.extend({
 	},
 
 	append: function() {
+		// 原生的appendChild
 		return this.domManip( arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
-				var target = manipulationTarget( this, elem );
+				var target = manipulationTarget( this, elem ); // 处理兼容问题 在低版本中
 				target.appendChild( elem );
 			}
 		});
 	},
 
 	prepend: function() {
+
 		return this.domManip( arguments, function( elem ) {
 			if ( this.nodeType === 1 || this.nodeType === 11 || this.nodeType === 9 ) {
 				var target = manipulationTarget( this, elem );
@@ -5852,9 +5855,10 @@ jQuery.fn.extend({
 	},
 
 	before: function() {
+		// $('span').append('<div>d</div>')
+		// this =>就是 span
 		return this.domManip( arguments, function( elem ) {
-			// $('span').append('<div>d</div>')
-			// this =>就是 span
+			// console.log( elem )
 			// elem =>就是 div
 			// console.log(this, elem)
 			
@@ -5865,8 +5869,12 @@ jQuery.fn.extend({
 	},
 
 	after: function() {
+		// 
 		return this.domManip( arguments, function( elem ) {
 			if ( this.parentNode ) {
+				// $("span").after('<div>before</div>')
+				// 原生的并没有 insertAfter， 所以上面那句话的意思就是
+				// 添加到 span 后一个元素的前面
 				this.parentNode.insertBefore( elem, this.nextSibling );
 			}
 		});
@@ -5936,6 +5944,7 @@ jQuery.fn.extend({
 				i = 0,
 				l = this.length;
 
+			// 没有参数的情况下是获取，直接调用原生的方法
 			if ( value === undefined && elem.nodeType === 1 ) {
 				return elem.innerHTML;
 			}
@@ -5945,7 +5954,7 @@ jQuery.fn.extend({
 			// 	如果标签是 script style link 不会走下面这个if，
 			// 	下面这个 if  里面是 innerHTML 所以 script 标签里面的js 代码也不会执行的
 			// 	
-			// 	wrapMap 不符合规范的话也是不会走这里的
+			// 	wrapMap 不符合XHTML规范的话也是不会走这里的
 			if ( typeof value === "string" && !rnoInnerhtml.test( value ) &&
 				!wrapMap[ ( rtagName.exec( value ) || [ "", "" ] )[ 1 ].toLowerCase() ] ) {
 
@@ -6022,17 +6031,25 @@ jQuery.fn.extend({
 			isFunction = jQuery.isFunction( value );
 
 		// We can't cloneNode fragments that contain checked, in WebKit
+		// 用文档碎片克隆 checked
+		// 函数, checkbox 标签
+		// 11-domManip_if.html
 		if ( isFunction || !( l <= 1 || typeof value !== "string" || jQuery.support.checkClone || !rchecked.test( value ) ) ) {
 			return this.each(function( index ) {
+				// 这里用each 对每个节点进行添加，而不是克隆
+				// 因为 checkbox 复选框在克隆的时候 选中效果是克隆不了的，所以进行每个添加
 				var self = set.eq( index );
 				if ( isFunction ) {
+
 					args[ 0 ] = value.call( this, index, self.html() );
 				}
+				// $("span").append('hello')
 				self.domManip( args, callback, allowIntersection );
 			});
 		}
 
 		if ( l ) {
+			// 文档碎片的创建
 			fragment = jQuery.buildFragment( args, this[ 0 ].ownerDocument, false, !allowIntersection && this );
 			first = fragment.firstChild;
 
@@ -6041,7 +6058,9 @@ jQuery.fn.extend({
 			}
 
 			if ( first ) {
-				scripts = jQuery.map( getAll( fragment, "script" ), disableScript );
+				// 对 script 标签的处理
+				scripts = jQuery.map( getAll( fragment, "script" ), disableScript ); // 阻止script操作 12-domManip_script.html
+
 				hasScripts = scripts.length;
 
 				// Use the original fragment for the last item instead of the first because it can end up
@@ -6050,6 +6069,8 @@ jQuery.fn.extend({
 					node = fragment;
 
 					if ( i !== iNoClone ) {
+						// 这边就是克隆操作
+						// 就像 div 添加到 span 里面
 						node = jQuery.clone( node, true, true );
 
 						// Keep references to cloned scripts for later restoration
@@ -6060,9 +6081,12 @@ jQuery.fn.extend({
 						}
 					}
 
+					// 对每一个元素进行回调函数处理，
 					callback.call( this[ i ], node, i );
 				}
 
+				// $('span').append('<script>alert(1)</script>')
+				// 当有多个 span 的时候，这里的 alert(1) 只会执行一次
 				if ( hasScripts ) {
 					doc = scripts[ scripts.length - 1 ].ownerDocument;
 
@@ -6075,10 +6099,13 @@ jQuery.fn.extend({
 						if ( rscriptType.test( node.type || "" ) &&
 							!data_priv.access( node, "globalEval" ) && jQuery.contains( doc, node ) ) {
 
+							// $('span').append('<script src="a.js"></script>')
 							if ( node.src ) {
 								// Hope ajax is available...
+								// 这里是用 ajax 来处理的
 								jQuery._evalUrl( node.src );
 							} else {
+								// textContent 替换一些没有的东西
 								jQuery.globalEval( node.textContent.replace( rcleanScript, "" ) );
 							}
 						}
@@ -6168,11 +6195,12 @@ jQuery.extend({
 	},
 
 	buildFragment: function( elems, context, scripts, selection ) {
+		// 文档碎片的创建
 		var elem, tmp, tag, wrap, contains, j,
 			i = 0,
 			l = elems.length,
 			fragment = context.createDocumentFragment(),
-			nodes = [];
+			nodes = []; // 收集创建好的节点
 
 		for ( ; i < l; i++ ) {
 			elem = elems[ i ];
@@ -6180,26 +6208,30 @@ jQuery.extend({
 			if ( elem || elem === 0 ) {
 
 				// Add nodes directly
+					//$("span").before( oDiv )
+					//$("span").before( $('div') )
+					// 针对这种情况
 				if ( jQuery.type( elem ) === "object" ) {
 					// Support: QtWebKit
 					// jQuery.merge because core_push.apply(_, arraylike) throws
-					jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem );
+					jQuery.merge( nodes, elem.nodeType ? [ elem ] : elem ); // 
 
 				// Convert non-html into a text node
-				} else if ( !rhtml.test( elem ) ) {
+				} else if ( !rhtml.test( elem ) ) { // 判断是否有标签存在
 					nodes.push( context.createTextNode( elem ) );
 
 				// Convert html into DOM nodes
-				} else {
+				} else { // 标签的情况下走这里
+					//$("span").before( '<div>div1</div>' )
 					tmp = tmp || fragment.appendChild( context.createElement("div") );
 
 					// Deserialize a standard representation
 					tag = ( rtagName.exec( elem ) || ["", ""] )[ 1 ].toLowerCase();
-					wrap = wrapMap[ tag ] || wrapMap._default;
+					wrap = wrapMap[ tag ] || wrapMap._default; // wrapMap 是XHTML 规范检查
 					tmp.innerHTML = wrap[ 1 ] + elem.replace( rxhtmlTag, "<$1></$2>" ) + wrap[ 2 ];
 
 					// Descend through wrappers to the right content
-					j = wrap[ 0 ];
+					j = wrap[ 0 ]; // 找到对应的层级
 					while ( j-- ) {
 						tmp = tmp.lastChild;
 					}
@@ -6213,19 +6245,21 @@ jQuery.extend({
 
 					// Fixes #12346
 					// Support: Webkit, IE
-					tmp.textContent = "";
+					tmp.textContent = ""; //清空临时变量
 				}
 			}
 		}
 
 		// Remove wrapper from fragment
-		fragment.textContent = "";
+		fragment.textContent = ""; // 清空
 
 		i = 0;
 		while ( (elem = nodes[ i++ ]) ) {
 
 			// #4087 - If origin and destination elements are the same, and this is
 			// that element, do not do anything
+			// domManip 的第三个参数
+			// 13-buildFragment.html 处理这种情况
 			if ( selection && jQuery.inArray( elem, selection ) !== -1 ) {
 				continue;
 			}
@@ -6233,6 +6267,7 @@ jQuery.extend({
 			contains = jQuery.contains( elem.ownerDocument, elem );
 
 			// Append to fragment
+			// 下面是处理 script 标签的情况
 			tmp = getAll( fragment.appendChild( elem ), "script" );
 
 			// Preserve script evaluation history
@@ -6265,6 +6300,7 @@ jQuery.extend({
 				key = elem[ data_priv.expando ];
 				// 私有事件缓存的东西
 				if ( key && (data = data_priv.cache[ key ]) ) {
+
 					events = Object.keys( data.events || {} );
 					// 事件
 					if ( events.length ) {
@@ -6292,6 +6328,7 @@ jQuery.extend({
 	},
 
 	_evalUrl: function( url ) {
+		// 用 ajax 来处理添加的是 script 标签
 		return jQuery.ajax({
 			url: url,
 			type: "GET",
@@ -6305,6 +6342,13 @@ jQuery.extend({
 
 // Support: 1.x compatibility
 // Manipulating tables requires a tbody
+// 在 IE 6 7  才有的
+/*
+处理的问题是，正在低版本中
+var tr = documnet.createElement('tr')
+table.appendChild(tr)
+在创建 tr 的时候，会创建 tbody 这个标签，所以会有一些问题
+ */
 function manipulationTarget( elem, content ) {
 	return jQuery.nodeName( elem, "table" ) &&
 		jQuery.nodeName( content.nodeType === 1 ? content : content.firstChild, "tr" ) ?
@@ -6315,10 +6359,12 @@ function manipulationTarget( elem, content ) {
 }
 
 // Replace/restore the type attribute of script elements for safe DOM manipulation
+// 阻止 script 标签的执行方法
 function disableScript( elem ) {
 	elem.type = (elem.getAttribute("type") !== null) + "/" + elem.type;
 	return elem;
 }
+// 恢复 script 标签的执行
 function restoreScript( elem ) {
 	var match = rscriptTypeMasked.exec( elem.type );
 

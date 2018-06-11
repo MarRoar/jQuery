@@ -8,8 +8,18 @@
 	<span>span</span>
 	<script src="../jquery-2.0.3.js"></script>
 	<script>
-		// $("span").append('<div>append</div>')
-		$("span").before('<div>before</div>')
+		// $("span").append('<div>append</div>') 添加到 span 的里面的
+		// $("span").before('<div>before</div>')
+		// $("span").after('<div>before</div>')
+		// $("span").prepend('<div>before</div>') // 添加到 span 里面， 在最前面  
+		
+		// 参数可以是函数
+		// 就可以在 span 标签里面添加 hello 字符串
+		$("span").append( function () {
+			return 'hello'
+		} )
+		// 上面函数的执行就相当于再
+		//  $("span").append('hello')
 	</script>
 </body>
 </html>

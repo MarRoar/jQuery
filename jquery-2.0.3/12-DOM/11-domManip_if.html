@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>一种情况</title>
+</head>
+<body>
+	<span></span>
+	<span></span>
+	<span></span>
+	<div>div</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$('span').append( $('div') );
+		// 上面这种情况相当于就是找到 div
+		// 然后把 div 放到第一个span 里面
+		// 然后在克隆两份添加到剩余的两个 span 里面
+		
+		// 但是源码里面 对 CheckBox 并不是用的克隆，而是每个标签都进行一次添加操作
+	</script>
+</body>
+</html>

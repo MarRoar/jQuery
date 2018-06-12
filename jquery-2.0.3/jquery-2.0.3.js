@@ -551,7 +551,7 @@ jQuery.extend({
 			jQuery( scripts ).remove();
 		}
 
-		console.log("parsed", parsed)
+		// console.log("parsed", parsed)
 
 		return jQuery.merge( [], parsed.childNodes );
 	},
@@ -6195,6 +6195,9 @@ jQuery.extend({
 	},
 
 	buildFragment: function( elems, context, scripts, selection ) {
+
+		console.log( context )
+
 		// 文档碎片的创建
 		var elem, tmp, tag, wrap, contains, j,
 			i = 0,

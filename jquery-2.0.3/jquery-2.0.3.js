@@ -6196,7 +6196,7 @@ jQuery.extend({
 
 	buildFragment: function( elems, context, scripts, selection ) {
 
-		console.log( context )
+		// console.log( context )
 
 		// 文档碎片的创建
 		var elem, tmp, tag, wrap, contains, j,
@@ -6263,6 +6263,7 @@ jQuery.extend({
 			// that element, do not do anything
 			// domManip 的第三个参数
 			// 13-buildFragment.html 处理这种情况
+			// 就相当于里面那个span 找不到了，然后就跳出来了。
 			if ( selection && jQuery.inArray( elem, selection ) !== -1 ) {
 				continue;
 			}
@@ -6463,6 +6464,8 @@ jQuery.fn.extend({
 	wrapAll: function( html ) {
 		var wrap;
 
+		// $('span').wrapAll( function () { return '<div>'})
+		// 参数可以传函数
 		if ( jQuery.isFunction( html ) ) {
 			return this.each(function( i ) {
 				jQuery( this ).wrapAll( html.call(this, i) );
@@ -6471,13 +6474,19 @@ jQuery.fn.extend({
 
 		if ( this[ 0 ] ) {
 
+			
 			// The elements to wrap the target around
+			// 1. 先克隆一份标签
 			wrap = jQuery( html, this[ 0 ].ownerDocument ).eq( 0 ).clone( true );
 
 			if ( this[ 0 ].parentNode ) {
+				// 2. 把标签放到指定元素的最前面
 				wrap.insertBefore( this[ 0 ] );
 			}
-
+			//3.  把目标元素剪切到，指定元素里面
+			// $('span').wrapAll('<div><p></p></div>')
+			// 里面的参数是这种多标签的情况
+			// 
 			wrap.map(function() {
 				var elem = this;
 
@@ -6486,7 +6495,7 @@ jQuery.fn.extend({
 				}
 
 				return elem;
-			}).append( this );
+			}).append( this ); //调用 append 差不多就相当于剪切的了
 		}
 
 		return this;
@@ -6503,6 +6512,7 @@ jQuery.fn.extend({
 			var self = jQuery( this ),
 				contents = self.contents();
 
+			// 找到子元素，然后给子元素包裹个父集
 			if ( contents.length ) {
 				contents.wrapAll( html );
 

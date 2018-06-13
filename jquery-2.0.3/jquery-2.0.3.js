@@ -6538,7 +6538,7 @@ jQuery.fn.extend({
 		}).end();
 	}
 });
-// ----------------------------------------------------------------------------------------------
+// ------------------13-CSS----------------------------------------------------------------------------
 var curCSS, iframe,
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
@@ -6559,6 +6559,7 @@ var curCSS, iframe,
 	cssPrefixes = [ "Webkit", "O", "Moz", "ms" ];
 
 // return a css property mapped to a potentially vendor prefixed property
+// 添加浏览器厂商前缀的方法
 function vendorPropName( style, name ) {
 
 	// shortcut for names that are not vendor prefixed
@@ -6569,8 +6570,9 @@ function vendorPropName( style, name ) {
 	// check for vendor prefixed names
 	var capName = name.charAt(0).toUpperCase() + name.slice(1),
 		origName = name,
-		i = cssPrefixes.length;
+		i = cssPrefixes.length; 
 
+	// 循环前缀
 	while ( i-- ) {
 		name = cssPrefixes[ i ] + capName;
 		if ( name in style ) {
@@ -6590,7 +6592,7 @@ function isHidden( elem, el ) {
 
 // NOTE: we've included the "window" in window.getComputedStyle
 // because jsdom on node.js will break without it.
-function getStyles( elem ) {
+function getStyles( elem ) { // 封装原生的 getComputedStyle方法
 	return window.getComputedStyle( elem, null );
 }
 
@@ -6655,20 +6657,25 @@ jQuery.fn.extend({
 				map = {},
 				i = 0;
 
+			// 判断是否是数组，主要针对是否是数组形式的获取
+			// $('#div1').css(['color', 'width'])
 			if ( jQuery.isArray( name ) ) {
-				styles = getStyles( elem );
+				styles = getStyles( elem ); // 在这调用，主要是为了性能
 				len = name.length;
 
 				for ( ; i < len; i++ ) {
 					map[ name[ i ] ] = jQuery.css( elem, name[ i ], false, styles );
+					// jQuery.css() 传递最后一个 styles 主要是为了提高性能
+					// 在 jQuery.css 这个方法里面会循环调用 getStyles()
+					// 但是在这里传进去的话，就不会循环调用，所以提高性能。
 				}
 
 				return map;
 			}
 
 			return value !== undefined ?
-				jQuery.style( elem, name, value ) :
-				jQuery.css( elem, name );
+				jQuery.style( elem, name, value ) : // 设置
+				jQuery.css( elem, name ); // 获取
 		}, name, value, arguments.length > 1 );
 	},
 	show: function() {
@@ -6725,11 +6732,21 @@ jQuery.extend({
 	// setting or getting the value
 	cssProps: {
 		// normalize float css property
-		"float": "cssFloat"
+		"float": "cssFloat" // 因为浮动是js 里面的一个关键字，所以浮动用 cssFloat
 	},
 
 	// Get and set the style property on a DOM Node
 	style: function( elem, name, value, extra ) {
+		/**
+		 * elem => div
+		 * name => color等的属性值
+		 * value => yellow 等的属性值
+		 * extra => 针对尺寸方法的 
+		 * 		比如 $().width() /height() 
+		 * 			/ innerWidth() / innerHeight() 
+		 * 			/ outerWidth() / outerHeight()
+		 */
+
 		// Don't set styles on text and comment nodes
 		if ( !elem || elem.nodeType === 3 || elem.nodeType === 8 || !elem.style ) {
 			return;
@@ -6790,14 +6807,25 @@ jQuery.extend({
 	},
 
 	css: function( elem, name, extra, styles ) {
+		/**
+		 * elem => div
+		 * name => color等
+		 * extra => 尺寸
+		 * styles => 在多个值的获取的时候是传styles, 单个值没有传,
+		 * 		
+		 */
 		var val, num, hooks,
-			origName = jQuery.camelCase( name );
+			origName = jQuery.camelCase( name );// 转驼峰 .css('background-color')
 
 		// Make sure that we're working with the right name
 		name = jQuery.cssProps[ origName ] || ( jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) );
+		// vendorPropName() 添加浏览器厂商前缀的方法
+		// jQuery.cssProps[ origName ] = vendorPropName( elem.style, origName ) 
+		// 上面把值赋给 cssProps 然后缓存下来,然后下次就方便了
 
 		// gets hook for the prefixed version
 		// followed by the unprefixed version
+		// opacity 透明度 , 
 		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
 
 		// If a hook was provided get the computed value from there
@@ -6811,11 +6839,17 @@ jQuery.extend({
 		}
 
 		//convert "normal" to computed value
+		// 有可能返回的值是 normal 的情况
+		// fontWeight: normal 就是 400
 		if ( val === "normal" && name in cssNormalTransform ) {
 			val = cssNormalTransform[ name ];
 		}
 
 		// Return, converting to number if forced or a qualifier was provided and val looks numeric
+		// 是否有单位的处理
+		// 比如 $('#div').css('width')  100px
+		// $('#div').width()  100
+		//  这个if就是来处理 width() 这样的情况
 		if ( extra === "" || extra ) {
 			num = parseFloat( val );
 			return extra === true || jQuery.isNumeric( num ) ? num || 0 : val;
@@ -7102,6 +7136,7 @@ jQuery.each({
 		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
 	}
 });
+//------------------------------------------------------
 var r20 = /%20/g,
 	rbracket = /\[\]$/,
 	rCRLF = /\r?\n/g,

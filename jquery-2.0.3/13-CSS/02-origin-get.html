@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>原生获取样式</title>
+	<style>
+		#div1 {
+			color: blue;
+		}
+	</style>
+</head>
+<body>
+	<!-- <div id="div1" style="color: red;">asdfasdfs</div> -->
+
+	<div id="div1">asdfasdfs</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+
+		// console.log( $('#div1')[0].style.color ) //这样只能获取到行内的样式
+
+		// 如果要获取引用的 css 样式 用 getComputedStyle()
+		// getComputedStyle() 只能获取，不能设置
+		// 不能获取复合样式, 比如 background, 但是 backgroundColor 是可以的。
+		
+		// console.log( window.getComputedStyle( $('#div1')[0], null ).color )
+		// console.log( window.getComputedStyle( $('#div1')[0], null ).background )
+		
+		// $('#div1').css('color') // jQuery css 样式的获取是调用的哪个方法
+		// .css()获取 =>  jQuery.style()  => 原生的style
+
+		// $('#div1').css('color', 'pink') //  设置又是调用哪个方法呢.
+		// .css()设置 => jQuery.css() =>  curCSS函数  => getComputedStyle()
+		
+		// $('#div1').css(['color', 'width']) // 多个值的获取 可以传递数组
+		
+		// $('#div1').css({
+		// 	color: 'red',
+		// 	height: '100px'
+		// }) // 多个值的设置 可以用对象的形式
+
+
+		/**
+		 * 可以用回调函数的形式，来设置
+		 * 
+		 * $('#div1').css('color', function () {
+			return 'red'
+		})
+		 */	
+		
+		// float 对应的原生操作的 cssFloat 。就像 class => className
+		$('#div1')[0].style.cssFloat = 'right'
+
+	</script>
+</body>
+</html>

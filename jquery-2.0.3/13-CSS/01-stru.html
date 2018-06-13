@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>CSS框架</title>
+</head>
+<body>
+	<script>
+		变量
+		
+		function vendorPropName( style, name ) {}
+
+		function isHidden( elem, el ) {}
+
+		function getStyles( elem ) {}
+
+		function showHide( elements, show ) {}
+
+		jQuery.fn.extend({
+			css,
+			show,
+			hide,
+			toggle
+		})
+
+		jQuery.extend({
+			cssHooks,
+			cssNumber,
+			cssProps,
+			style,
+			css,
+		})
+
+		curCSS = function( elem, name, _computed ) {}
+
+		function setPositiveNumber( elem, value, subtract ) {}
+
+		function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {}
+
+		function getWidthOrHeight( elem, name, extra ) {}
+
+		function css_defaultDisplay( nodeName ) {}
+
+		function actualDisplay( name, doc ) {}
+
+		// 下面就是一些 cssHooks
+
+		jQuery.each([ "height", "width" ], function( i, name ) {
+			jQuery.cssHooks[ name ] = {}
+		})
+
+		jQuery.cssHooks.marginRight = {}
+
+		jQuery.each( [ "top", "left" ], function( i, prop ) {
+			jQuery.cssHooks[ prop ] = {}
+		})
+
+		jQuery.expr.filters.hidden = function( elem ) {}
+
+		jQuery.expr.filters.visible = function( elem ) {}
+
+		jQuery.each({
+			margin: "",
+			padding: "",
+			border: "Width"
+		})
+
+
+	</script>
+</body>
+</html>

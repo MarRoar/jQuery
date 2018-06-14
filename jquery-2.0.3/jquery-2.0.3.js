@@ -387,6 +387,8 @@ jQuery.extend({
 
 	// 这个的正确的使用是在 引入 jquery 之前定义的 $
 	noConflict: function( deep ) {
+		console.log( _$ )
+
 		if ( window.$ === jQuery ) {
 			window.$ = _$;
 		}
@@ -3855,7 +3857,7 @@ function dataAttr( elem, key, data ) {
 	}
 	return data;
 }
-// --------------------------------------------- queue -----------------------------------
+// --------------------------------------------- 09-queue -----------------------------------
 // queue 的工具方法
 jQuery.extend({
 	queue: function( elem, type, data ) {
@@ -4009,7 +4011,7 @@ jQuery.fn.extend({
 		return defer.promise( obj );
 	}
 });
-// --------------------------------------------- attr prop  -----------------------------------
+// --------------------------------------------- 10-attr-prop-val-addClass -----------------------------------
 var nodeHook, boolHook,
 	rclass = /[\t\r\n\f]/g,
 	rreturn = /\r/g,

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	<p>chrome 不行, FF 可以</p>
+	<!-- <iframe src="./07-iframe-src.html"></iframe> -->
+	<iframe src="./07-iframe-src.html" style="display: none;"></iframe>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		/**
+		 * css_defaultDisplay里面iframe 兼容问题的问题
+		 * 
+		 * iframe 里面的标签的默认 display 的值
+		 * 如果 iframe 显示的话，里面的值是没有问题的
+		 * 如果 iframe 的 display: none 的话，获取就会有问题
+		 * 
+		 */
+		
+		$(window).load(function () {
+			var oDiv = $('iframe').get(0).contentWindow.document.getElementById('div1'); // 这种情况在 chrome 里面不行, 在FF里面可以
+			console.log( window.getComputedStyle( oDiv, null ).display )
+		})
+	</script>
+</body>
+</html>

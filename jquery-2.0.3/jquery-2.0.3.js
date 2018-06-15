@@ -6547,7 +6547,7 @@ var curCSS, iframe,
 	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
 	rmargin = /^margin/,
 	rnumsplit = new RegExp( "^(" + core_pnum + ")(.*)$", "i" ),
-	rnumnonpx = new RegExp( "^(" + core_pnum + ")(?!px)[a-z%]+$", "i" ),
+	rnumnonpx = new RegExp( "^(" + core_pnum + ")(?!px)[a-z%]+$", "i" ), // 不去匹配带px 像素的值
 	rrelNum = new RegExp( "^([+-])=(" + core_pnum + ")", "i" ),
 	elemdisplay = { BODY: "block" },
 
@@ -6585,7 +6585,11 @@ function vendorPropName( style, name ) {
 	return origName;
 }
 
+// isHidden 判断元素是否隐藏
 function isHidden( elem, el ) {
+	/**
+	 * el = 针对过滤用的
+	 */
 	// isHidden might be called from jQuery#filter function;
 	// in that case, element will be second argument
 	elem = el || elem;
@@ -6610,7 +6614,8 @@ function showHide( elements, show ) {
 			continue;
 		}
 
-		values[ index ] = data_priv.get( elem, "olddisplay" );
+		values[ index ] = data_priv.get( elem, "olddisplay" ); // 获取之前存的 display 也就是下面存的
+	
 		display = elem.style.display;
 		if ( show ) {
 			// Reset the inline display of this element to learn if it is
@@ -6624,13 +6629,18 @@ function showHide( elements, show ) {
 			// for such an element
 			if ( elem.style.display === "" && isHidden( elem ) ) {
 				values[ index ] = data_priv.access( elem, "olddisplay", css_defaultDisplay(elem.nodeName) );
+				
+				// css_defaultDisplay() 获取隐藏元素的默认 display 值				
 			}
 		} else {
 
 			if ( !values[ index ] ) {
-				hidden = isHidden( elem );
+				hidden = isHidden( elem ); // 隐藏 true
 
+				// 显示的时候走
 				if ( display && display !== "none" || !hidden ) {
+					// 06-display.html  这里可以获取到 是什么类型的标签
+					// 然后存起来
 					data_priv.set( elem, "olddisplay", hidden ? display : jQuery.css(elem, "display") );
 				}
 			}
@@ -6641,11 +6651,18 @@ function showHide( elements, show ) {
 	// to avoid the constant reflow
 	for ( index = 0; index < length; index++ ) {
 		elem = elements[ index ];
+		// 判断 有没有 style 。然后才可以进行后续操作
+		// 比如文本节点，注释等不能继续操作
 		if ( !elem.style ) {
 			continue;
 		}
 		if ( !show || elem.style.display === "none" || elem.style.display === "" ) {
+			// 如果 values 有值， 在这里还原 values 的值 
 			elem.style.display = show ? values[ index ] || "" : "none";
+			// values
+			// 在显示的时候，会根据标签是块集元素，还是行内元素来赋值
+			// 比如 <div style="display: block"></div>
+			// 比如 <span style="display: inline"></span>
 		}
 	}
 
@@ -6738,6 +6755,7 @@ jQuery.extend({
 	},
 
 	// Get and set the style property on a DOM Node
+	// 行间的设置和获取
 	style: function( elem, name, value, extra ) {
 		/**
 		 * elem => div
@@ -6763,13 +6781,17 @@ jQuery.extend({
 
 		// gets hook for the prefixed version
 		// followed by the unprefixed version
+		// 尺寸 
 		hooks = jQuery.cssHooks[ name ] || jQuery.cssHooks[ origName ];
 
 		// Check if we're setting a value
+		// 设置
 		if ( value !== undefined ) {
 			type = typeof value;
 
 			// convert relative number strings (+= or -=) to relative numbers. #7345
+			// rrelNum = 正则，字符串计算的判断
+			// $('div').css('width', '+=100')
 			if ( type === "string" && (ret = rrelNum.exec( value )) ) {
 				value = ( ret[1] + 1 ) * ret[2] + parseFloat( jQuery.css( elem, name ) );
 				// Fixes bug #9237
@@ -6777,27 +6799,33 @@ jQuery.extend({
 			}
 
 			// Make sure that NaN and null values aren't set. See: #7116
+			// $('div').css('width', null); 设置为空的情况
 			if ( value == null || type === "number" && isNaN( value ) ) {
 				return;
 			}
 
 			// If a number was passed in, add 'px' to the (except for certain CSS properties)
+			// 加单位，但是并不是所有的样式都需要加单位， 比如 cssNumber 里面的
 			if ( type === "number" && !jQuery.cssNumber[ origName ] ) {
 				value += "px";
 			}
 
 			// Fixes #8908, it can be done more correctly by specifying setters in cssHooks,
 			// but it would mean to define eight (for every problematic property) identical functions
+			// 克隆出来的元素，如果克隆元素修改了 background 那么被克隆的元素的 background 也会
+			// 受到影响
 			if ( !jQuery.support.clearCloneStyle && value === "" && name.indexOf("background") === 0 ) {
 				style[ name ] = "inherit";
 			}
 
 			// If a hook was provided, use that value, otherwise just set the specified value
+			// 尺寸方面的
 			if ( !hooks || !("set" in hooks) || (value = hooks.set( elem, value, extra )) !== undefined ) {
 				style[ name ] = value;
 			}
 
 		} else {
+			// 获取
 			// If a hook was provided get the non-computed value from there
 			if ( hooks && "get" in hooks && (ret = hooks.get( elem, false, extra )) !== undefined ) {
 				return ret;
@@ -6862,15 +6890,19 @@ jQuery.extend({
 
 curCSS = function( elem, name, _computed ) {
 	var width, minWidth, maxWidth,
-		computed = _computed || getStyles( elem ),
+		computed = _computed || getStyles( elem ),  // 获取到原生的样式
 
 		// Support: IE9
 		// getPropertyValue is only needed for .css('filter') in IE9, see #12537
+		// filter 属性, 这个兼容只有在 IE9 下面的。
 		ret = computed ? computed.getPropertyValue( name ) || computed[ name ] : undefined,
 		style = elem.style;
 
 	if ( computed ) {
-
+		// elem.ownerDocument 就是元素的document元素
+		// 只要在页面中一般都会有包含关系的，但是对于用js 来创建的元素
+		// 这个时候就不是真的了
+		// 这个方法是针对动态创建的元素
 		if ( ret === "" && !jQuery.contains( elem.ownerDocument, elem ) ) {
 			ret = jQuery.style( elem, name );
 		}
@@ -6879,6 +6911,9 @@ curCSS = function( elem, name, _computed ) {
 		// A tribute to the "awesome hack by Dean Edwards"
 		// Safari 5.1.7 (at least) returns percentage for a larger set of values, but width seems to be reliably pixels
 		// this is against the CSSOM draft spec: http://dev.w3.org/csswg/cssom/#resolved-values
+		
+		// 04-margin.html 例子
+		// 浏览器会帮我们自动换算，但是这种情况不会换算,就是解决这种情况
 		if ( rnumnonpx.test( ret ) && rmargin.test( name ) ) {
 
 			// Remember the original values
@@ -6992,14 +7027,20 @@ function getWidthOrHeight( elem, name, extra ) {
 }
 
 // Try to determine the default display value of an element
+// 对于展示的标签
+// 获取默认的 display 值
 function css_defaultDisplay( nodeName ) {
 	var doc = document,
-		display = elemdisplay[ nodeName ];
+		display = elemdisplay[ nodeName ]; // body 是 block的元素
+		// body 不能动态创建
 
 	if ( !display ) {
 		display = actualDisplay( nodeName, doc );
 
 		// If the simple way fails, read from inside an iframe
+		// 下面是针对 iframe 里面的操作
+		// 07-iframe.html 里面有描述
+		// 可以检测到 iframe 里面标签的 display的默认值
 		if ( display === "none" || !display ) {
 			// Use the already-created iframe if possible
 			iframe = ( iframe ||

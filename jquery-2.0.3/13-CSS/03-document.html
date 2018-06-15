@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	<div id="div1">sdf</div>
+	<script>
+
+		/**
+		 *  ownerDocument 就是 document 标签
+		 */
+		var oDiv = document.getElementById('div1');
+		console.log( oDiv.ownerDocument)
+
+		/**
+		 * 对于动态创建的元素,获取样式
+		 */
+		
+		var $span = $('<span>')
+		$span.css('width');
+	</script>
+</body>
+</html>

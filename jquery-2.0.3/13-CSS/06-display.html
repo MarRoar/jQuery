@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>display</title>
+	<style>
+		div, span, table, input {
+			/*display: none;*/
+		}
+	</style>
+</head>
+<body>
+	<div>div</div>
+	<span>span</span>
+	<table>
+		<tr>
+			<td>sdf</td>
+		</tr>
+	</table>
+	<input type="text" value="t">
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// 刚开始都是隐藏的，让后让他们显示,看看他们的 display 有没有差别
+		// $('div, span, table, input').show()
+		/**
+		 * div   => display: block
+		 * span => display: inline
+		 * table => display: table
+		 * input => display: inline-block
+		 */
+		// jQuery非常智能的已经帮我们判断了，
+		// 那么它是怎么做的呢
+		
+
+		// 下面这个方法就是在没有写 display 的时候
+		// 可以用 getComputedStyle() 这个方法的 display 属性来获取
+		console.log( window.getComputedStyle( $('div')[0], null ).display )
+		console.log( window.getComputedStyle( $('span')[0], null ).display )
+		console.log( window.getComputedStyle( $('table')[0], null ).display )
+		console.log( window.getComputedStyle( $('input')[0], null ).display )
+
+		// 但是如果设置了 display: none 的话，那么获取就都是 none 
+		// 这个情况怎么解决呢？ 
+		// css_defaultDisplay() 这个方法来解决
+		
+		/**
+		 * css_defaultDisplay 的实现方法是
+		 * 对于展示的元素 => ele.nodeName
+		 * => 'div'拿到标签类型的时候
+		 * => createElement() 然后动态创建
+		 * => 然后就可以用上面的方法拿到 display 的默认值
+		 */
+	</script>
+</body>
+</html>

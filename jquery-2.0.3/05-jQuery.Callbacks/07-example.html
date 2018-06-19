@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>disable lock</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+	/**
+	 * disable 和 lock 的区别
+	 * disable 会把后续的操作都给禁止了
+	 * lock 只会对 fire 进行控制
+	 */
+
+	 	/**
+	 	 * 比如说下面这种操作 memory 如果没有 display 那么 结果就是 aaa bbb,
+	 	 * 但是在 fire 后面加上 disable 后， 只有 aaa 这一个了
+	 	 *
+	 	 * 如果要在fire() 后面加上lock 则会显示 aaa bbb 两个结果
+	 	 * 但是如果再执行 fire 的时候还是只执行一次
+	 	 */
+
+		function aaa() {
+			console.log("aaa")
+		}
+		function bbb() {
+			console.log("bbb");
+		}
+
+		var cb = $.Callbacks('memory');
+		
+		cb.add(aaa)
+		cb.fire()
+
+		// cb.disable()
+		cb.lock()
+		cb.add(bbb)
+
+		cb.fire()
+		
+	</script>
+	
+</body>
+</html>
+

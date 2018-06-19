@@ -18,6 +18,7 @@
 		var cb = $.Callbacks('memory');
 		
 		cb.fire()
+		// 虽然 在加参数 memory 后，在 fire 后面调用 add 方法。也会执行，当但是必须是先 fire()
 		cb.add(aaa)
 
 		// cb.add(bbb)
@@ -26,29 +27,6 @@
 		// 
 		// 观察着模式
 		
-	</script>
-	<script>
-		// 对不同作用域下的函数进行管理
-		// var C = $.Callbacks();
-
-		// function ccc() {
-		// 	console.log("c")
-		// }
-
-		// C.add(ccc);
-
-		// (function () {
-		// 	function ddd() {
-		// 		console.log("d");
-		// 	}
-
-		// 	C.add(ddd);
-		// })();
-
-		// // ccc();
-		// // ddd(); 在不同的作用域下
-		
-		// C.fire()
 	</script>
 </body>
 </html>

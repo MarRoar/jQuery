@@ -7,15 +7,23 @@
 <body>
 	<script src="../jquery-2.0.3.js"></script>
 	<script>
+
+	/**
+	 * 按照正常的逻辑来说
+	 * 先执行了 fire()
+	 * 但是在 a 里面又调用了 fire()
+	 * 这个时候没有又去调用 a 而是先调用 b 
+	 * 从源代码可以看出，
+	 * 它是把又要执行的放到了事件队列的后面
+	 * 所以说 执行a b 再 执行 a b
+	 */
+
 		var btn = true
 		function a() {
 			console.log("a")
 			if (btn) {
 
 				cb.fire();
-				
-				// 
-				// 
 				btn = false	
 			}
 		}

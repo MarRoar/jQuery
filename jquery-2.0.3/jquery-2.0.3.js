@@ -2941,7 +2941,7 @@ var optionsCache = {};
 function createOptions( options ) {
 	// console.log( core_rnotwhite )
 	// console.log( options.match(core_rnotwhite) )
-	var object = optionsCache[ options ] = {};
+	var object = optionsCache[ options ] = {}; // 把 options 也放在 optionsCache 缓存里面
 	/**
 	 * 如果是复合形式的话 optionsCache 的形式
 	 * optionsCache = {
@@ -3006,11 +3006,11 @@ jQuery.Callbacks = function( options ) {
 		// Stack of fire calls for repeatable lists
 		
 		// options.once 让 fire 只执行一次
-		stack = !options.once && [],
+		stack = !options.once && [], 
 		// Fire callbacks
 		fire = function( data ) {
 			memory = options.memory && data;
-			fired = true;
+			fired = true; // 执行过一次就为 true
 			firingIndex = firingStart || 0;
 			firingStart = 0;
 			firingLength = list.length;
@@ -3023,6 +3023,7 @@ jQuery.Callbacks = function( options ) {
 				}
 			}
 			firing = false;
+
 			if ( list ) {
 				if ( stack ) {
 					if ( stack.length ) {
@@ -3061,7 +3062,7 @@ jQuery.Callbacks = function( options ) {
 									// cb.add([a, b])
 									// 这种情况
 								
-								add( arg );
+								add( arg ); // 这个时候还是调用的自己 add 方法
 							}
 						});
 					})( arguments );
@@ -3075,6 +3076,7 @@ jQuery.Callbacks = function( options ) {
 					// 有 memory 这个参数的话 就会触发
 					} else if ( memory ) {
 						firingStart = start;
+						// 在 add 里面如果 memory 为 true 的话。则会去调用 执行函数
 						fire( memory );
 					}
 				}
@@ -3135,13 +3137,14 @@ jQuery.Callbacks = function( options ) {
 			},
 			// Call all callbacks with the given context and arguments
 			fireWith: function( context, args ) {
-				// 在第一次执行的时候 fired 为 false  !fired = true
-				// 第二次 fired = true  !fired = false 这个时候就需要看 stack 就看 once 这个参数了
-				// 
+				// 在第一次执行 fire() 的时候 fired 为 false  !fired = true
+				// 第二次 fire()的时候 fired = true  !fired = false 
+				// 这个时候就需要看 stack 就看 once 这个参数了
+				
+				// Callbacks('once') 第二次执行 fire() 就看 这个if里面 ( !fired || stack )
 				if ( list && ( !fired || stack ) ) {
 					args = args || [];
 					args = [ context, args.slice ? args.slice() : args ];
-					
 					// 把参数解析成有作用域和数组
 					
 					if ( firing ) {
@@ -3168,6 +3171,7 @@ jQuery.Callbacks = function( options ) {
 
 	return self;
 };
+//--------------------------------- 06-Deferred --------------------------------------------------------
 jQuery.extend({
 
 	Deferred: function( func ) {

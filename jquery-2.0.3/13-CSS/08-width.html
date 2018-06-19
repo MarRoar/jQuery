@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>尺寸</title>
+	<style>
+		div {
+			width: 100px;
+			height: 100px;
+			background-color: red;
+			padding: 10px;
+			border: 1px solid yellow;
+			margin: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div id="div1"></div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$(function () {
+			var oDiv = $("#div1")
+			/*
+			console.log( oDiv.width() )  // 100 width
+			console.log( oDiv.innerWidth() )  // 120 width + padding
+			console.log( oDiv.outerWidth() ) // 122 width + padding + border
+			console.log( oDiv.outerWidth(true) ) // 132 width + padding + border + margin
+			*/
+		
+			// 上面是获取的情况
+			
+			// 那么设置的情况呢?
+			// oDiv.width(200) // width = 200
+			// oDiv.innerWidth(200) // width = 200 - padding
+			// oDiv.outerWidth(200) // width = 200 - padding - border
+			oDiv.outerWidth(200, true) // width = 200 - padding - border - margin
+
+		})
+	</script>
+</body>
+</html>

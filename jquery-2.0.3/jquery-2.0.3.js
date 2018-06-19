@@ -6548,14 +6548,15 @@ jQuery.fn.extend({
 var curCSS, iframe,
 	// swappable if display is none or starts with table except "table", "table-cell", or "table-caption"
 	// see here for display values: https://developer.mozilla.org/en-US/docs/CSS/display
-	rdisplayswap = /^(none|table(?!-c[ea]).+)/,
+	rdisplayswap = /^(none|table(?!-c[ea]).+)/, // dispaly 的值
 	rmargin = /^margin/,
 	rnumsplit = new RegExp( "^(" + core_pnum + ")(.*)$", "i" ),
 	rnumnonpx = new RegExp( "^(" + core_pnum + ")(?!px)[a-z%]+$", "i" ), // 不去匹配带px 像素的值
 	rrelNum = new RegExp( "^([+-])=(" + core_pnum + ")", "i" ),
 	elemdisplay = { BODY: "block" },
 
-	cssShow = { position: "absolute", visibility: "hidden", display: "block" },
+	cssShow = { position: "absolute", visibility: "hidden", display: "block" },// 交换css 用的
+	// 用来获取隐藏元素的尺寸的时候用的
 	cssNormalTransform = {
 		letterSpacing: 0,
 		fontWeight: 400
@@ -6731,6 +6732,8 @@ jQuery.extend({
 				if ( computed ) {
 					// We should always get a number back from opacity
 					var ret = curCSS( elem, "opacity" );
+					// 当标签的透明度不写的时候，opacity 为 空.
+					// 在这里做个处理就是当透明度为 空的时候，返回1
 					return ret === "" ? "1" : ret;
 				}
 			}
@@ -6764,7 +6767,7 @@ jQuery.extend({
 		/**
 		 * elem => div
 		 * name => color等的属性值
-		 * value => yellow 等的属性值
+		 * value => yellow 等的属性值  
 		 * extra => 针对尺寸方法的 
 		 * 		比如 $().width() /height() 
 		 * 			/ innerWidth() / innerHeight() 
@@ -6944,6 +6947,7 @@ function setPositiveNumber( elem, value, subtract ) {
 	var matches = rnumsplit.exec( value );
 	return matches ?
 		// Guard against undefined "subtract", e.g., when used as in cssHooks
+		// 最小值为 0
 		Math.max( 0, matches[ 1 ] - ( subtract || 0 ) ) + ( matches[ 2 ] || "px" ) :
 		value;
 }
@@ -6953,16 +6957,18 @@ function augmentWidthOrHeight( elem, name, extra, isBorderBox, styles ) {
 		// If we already have the right measurement, avoid augmentation
 		4 :
 		// Otherwise initialize for horizontal or vertical properties
-		name === "width" ? 1 : 0,
+		name === "width" ? 1 : 0, // 1，3 和 0 2
 
 		val = 0;
 
 	for ( ; i < 4; i += 2 ) {
 		// both box models exclude margin, so add it if we want it
 		if ( extra === "margin" ) {
+			// 通过这个循环，来得到是 top,bottom 还是 left,right,也就是高还是宽
 			val += jQuery.css( elem, extra + cssExpand[ i ], true, styles );
 		}
 
+		// 怪异模式
 		if ( isBorderBox ) {
 			// border-box includes padding, so remove it if we want content
 			if ( extra === "content" ) {
@@ -6992,8 +6998,11 @@ function getWidthOrHeight( elem, name, extra ) {
 	// Start with offset property, which is equivalent to the border-box value
 	var valueIsBorderBox = true,
 		val = name === "width" ? elem.offsetWidth : elem.offsetHeight,
+		// offsetWidth和offsetHeight 获取到的值 width + padding + border 的组合
+		// 所以在 width() innerWidth() 时候
 		styles = getStyles( elem ),
 		isBorderBox = jQuery.support.boxSizing && jQuery.css( elem, "boxSizing", false, styles ) === "border-box";
+		// boxSizing 盒模型的处理
 
 	// some non-html elements return undefined for offsetWidth, so check for null/undefined
 	// svg - https://bugzilla.mozilla.org/show_bug.cgi?id=649285
@@ -7020,7 +7029,7 @@ function getWidthOrHeight( elem, name, extra ) {
 
 	// use the active box-sizing model to add/subtract irrelevant styles
 	return ( val +
-		augmentWidthOrHeight(
+		augmentWidthOrHeight( // 计算要加还是减值
 			elem,
 			name,
 			extra || ( isBorderBox ? "border" : "content" ),
@@ -7077,13 +7086,15 @@ function actualDisplay( name, doc ) {
 }
 
 jQuery.each([ "height", "width" ], function( i, name ) {
+	// cssHooks 就是来处理尺寸的宽和高
 	jQuery.cssHooks[ name ] = {
 		get: function( elem, computed, extra ) {
 			if ( computed ) {
 				// certain elements can have dimension info if we invisibly show them
 				// however, it must have a current display style that would benefit from this
+				// 处理隐藏元素获取尺寸的处理
 				return elem.offsetWidth === 0 && rdisplayswap.test( jQuery.css( elem, "display" ) ) ?
-					jQuery.swap( elem, cssShow, function() {
+					jQuery.swap( elem, cssShow, function() { // jQuery.swap() 交换 css 元素
 						return getWidthOrHeight( elem, name, extra );
 					}) :
 					getWidthOrHeight( elem, name, extra );
@@ -7111,6 +7122,7 @@ jQuery(function() {
 	// Support: Android 2.3
 	if ( !jQuery.support.reliableMarginRight ) {
 		jQuery.cssHooks.marginRight = {
+			// 获取 margin-right 值的兼容
 			get: function( elem, computed ) {
 				if ( computed ) {
 					// Support: Android 2.3
@@ -7126,6 +7138,7 @@ jQuery(function() {
 	// Webkit bug: https://bugs.webkit.org/show_bug.cgi?id=29084
 	// getComputedStyle returns percent when specified for top/left/bottom/right
 	// rather than make the css module depend on the offset module, we just check for it here
+	// 定位获取的值没有计算
 	if ( !jQuery.support.pixelPosition && jQuery.fn.position ) {
 		jQuery.each( [ "top", "left" ], function( i, prop ) {
 			jQuery.cssHooks[ prop ] = {
@@ -7144,6 +7157,9 @@ jQuery(function() {
 
 });
 
+// 隐藏元素和显示元素的获取
+// $('div:hidden') 获取隐藏的元素
+// $('div:visibel') 获取显示的元素
 if ( jQuery.expr && jQuery.expr.filters ) {
 	jQuery.expr.filters.hidden = function( elem ) {
 		// Support: Opera <= 12.12
@@ -7157,6 +7173,14 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 }
 
 // These hooks are used by animate to expand properties
+// 对运动的扩展
+// $('div').animate({ margin: '10px 20px 30px 40px'})
+// 上面那种复合的元素动画是没办法实现的需要把复合的转成单一的
+// marginTop -> 10px
+// marginRight -> 20px
+// marginBottom -> 30px
+// marginLeft -> 40px
+// 下面处理的就是这种转化
 jQuery.each({
 	margin: "",
 	padding: "",
@@ -7183,7 +7207,7 @@ jQuery.each({
 		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
 	}
 });
-//------------------------------------------------------
+//---------------------- 14---------------------------------------
 var r20 = /%20/g,
 	rbracket = /\[\]$/,
 	rCRLF = /\r?\n/g,
@@ -8419,6 +8443,7 @@ jQuery.ajaxTransport(function( options ) {
 		};
 	}
 });
+// ---------------------------------------------------------------------------
 var fxNow, timerId,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = new RegExp( "^(?:([+-])=|)(" + core_pnum + ")([a-z%]*)$", "i" ),
@@ -9149,6 +9174,7 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		}).length;
 	};
 }
+// ----------------------------------------------------------------------------------
 jQuery.fn.offset = function( options ) {
 	if ( arguments.length ) {
 		return options === undefined ?
@@ -9317,16 +9343,20 @@ function getWindow( elem ) {
 	return jQuery.isWindow( elem ) ? elem : elem.nodeType === 9 && elem.defaultView;
 }
 // Create innerHeight, innerWidth, height, width, outerHeight and outerWidth methods
+// 关于尺寸的操作
 jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 	jQuery.each( { padding: "inner" + name, content: type, "": "outer" + name }, function( defaultExtra, funcName ) {
 		// margin is only for outerHeight, outerWidth
 		jQuery.fn[ funcName ] = function( margin, value ) {
 			var chainable = arguments.length && ( defaultExtra || typeof margin !== "boolean" ),
+				// 下面如果 margin 和 value 都是 false 的话 extra 为 border, 否则为 margin
 				extra = defaultExtra || ( margin === true || value === true ? "margin" : "border" );
 
 			return jQuery.access( this, function( elem, type, value ) {
 				var doc;
 
+				// 计算浏览器器可视区的尺寸
+				// $(window).width() 可视区的宽
 				if ( jQuery.isWindow( elem ) ) {
 					// As of 5/8/2012 this will yield incorrect results for Mobile Safari, but there
 					// isn't a whole lot we can do. See pull request at this URL for discussion:
@@ -9335,6 +9365,7 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 				}
 
 				// Get document width or height
+				// $(document).width() 整个文档的宽度
 				if ( elem.nodeType === 9 ) {
 					doc = elem.documentElement;
 
@@ -9347,16 +9378,18 @@ jQuery.each( { Height: "height", Width: "width" }, function( name, type ) {
 					);
 				}
 
+				// 获取和设置的操作
 				return value === undefined ?
 					// Get width or height on the element, requesting but not forcing parseFloat
-					jQuery.css( elem, type, extra ) :
+					jQuery.css( elem, type, extra ) : // 获取
 
 					// Set width or height on the element
-					jQuery.style( elem, type, value, extra );
+					jQuery.style( elem, type, value, extra ); // 设置
 			}, type, chainable ? margin : undefined, chainable, null );
 		};
 	});
 });
+// ----------------------------------------------------------------------------
 // Limit scope pollution from any deprecated API
 // (function() {
 

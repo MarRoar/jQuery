@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>获取隐藏元素的宽度</title>
+	<style>
+		div {
+			width: 100px;
+			height: 100px;
+			background-color: red;
+			padding: 10px;
+			border: 1px solid yellow;
+			margin: 5px;
+		}
+	</style>
+</head>
+<body>
+	<div id="div1" style="display: none;"></div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$(function () {
+			var oDiv = $("#div1")
+
+			// console.log( oDiv.get(0).offsetWidth ) // 0 当元素隐藏的时候，原生offsetWidth 是拿不到值的, 这是原生的问题
+
+			console.log( oDiv.width() ) // 100 jQuery是可以得到的
+
+		})
+	</script>
+</body>
+</html>

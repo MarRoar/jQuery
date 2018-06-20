@@ -7208,8 +7208,8 @@ jQuery.each({
 		jQuery.cssHooks[ prefix + suffix ].set = setPositiveNumber;
 	}
 });
-//---------------------- 14---------------------------------------
-var r20 = /%20/g,
+//---------------------- 14-ajax ---------------------------------------------
+var r20 = /%20/g, // 空格的编码
 	rbracket = /\[\]$/,
 	rCRLF = /\r?\n/g,
 	rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
@@ -7218,11 +7218,13 @@ var r20 = /%20/g,
 jQuery.fn.extend({
 	serialize: function() {
 		return jQuery.param( this.serializeArray() );
+		// this.serializeArray() 做的应该是转成
+		// [ {name: a, value: 1}, {name: b, value: 2} ]
 	},
 	serializeArray: function() {
 		return this.map(function(){
 			// Can add propHook for "elements" to filter or add form elements
-			var elements = jQuery.prop( this, "elements" );
+			var elements = jQuery.prop( this, "elements" ); // 只有form 表单有 elements 这个属性
 			return elements ? jQuery.makeArray( elements ) : this;
 		})
 		.filter(function(){
@@ -7248,6 +7250,7 @@ jQuery.fn.extend({
 
 //Serialize an array of form elements or a set of
 //key/values into a query string
+//把对象或者数组转换成字符串的工具函数
 jQuery.param = function( a, traditional ) {
 	var prefix,
 		s = [],
@@ -7273,31 +7276,46 @@ jQuery.param = function( a, traditional ) {
 		// If traditional, encode the "old" way (the way 1.3.2 or older
 		// did it), otherwise encode params recursively.
 		for ( prefix in a ) {
+			// 比如 { a: [1, 2], b: 3}
+			// prefix => a
+			// a[ prefix ] => [1, 2]
+			// traditional => 是否是传统实行
+			// add => 回调函数
 			buildParams( prefix, a[ prefix ], traditional, add );
 		}
 	}
 
 	// Return the resulting serialization
-	return s.join( "&" ).replace( r20, "+" );
+	return s.join( "&" ).replace( r20, "+" ); // .replace()是把空格转换成+
 };
 
+// 来分支处理
+// 1> $.param({aa: [1, 2], bb: 3})
+//    $.param({aa: [1, 2], bb: 3}， true)
+//   参数的值是数组的情况
 function buildParams( prefix, obj, traditional, add ) {
 	var name;
 
 	if ( jQuery.isArray( obj ) ) {
 		// Serialize array item.
 		jQuery.each( obj, function( i, v ) {
+
+			// rbracket.test( prefix ) 这句话判断的是
+			// k值 末尾带着[]的情况  比如 {'a[]', [1,2]} 
 			if ( traditional || rbracket.test( prefix ) ) {
 				// Treat each array item as a scalar.
 				add( prefix, v );
 
 			} else {
 				// Item is non-scalar (array or object), encode its numeric index.
+				// 递归，给k末尾添加中括号
 				buildParams( prefix + "[" + ( typeof v === "object" ? i : "" ) + "]", v, traditional, add );
 			}
 		});
 
-	} else if ( !traditional && jQuery.type( obj ) === "object" ) {
+	} else if ( !traditional && jQuery.type( obj ) === "object" ) {// 对象的情况
+		// $.param( {aa: {a1: 1}, bb: 2} ) 这种情况走这里
+		// 
 		// Serialize object item.
 		for ( name in obj ) {
 			buildParams( prefix + "[" + name + "]", obj[ name ], traditional, add );

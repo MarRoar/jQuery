@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>表单数据串联化</title>
+</head>
+<body>
+	<form id="form1">
+		<input type="text" name="a" value="1">
+		<input type="text" name="b" value="2">
+		<!-- <span>sdfs</span> -->
+		<input type="submit">
+	</form>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+	/**
+	 * $().serialize()
+	 * $().serializeArray()
+	 */
+
+		console.log( $('#form1').serialize() ) // a=1&b=2
+		console.log( $('#form1').serializeArray() ) // a=1&b=2
+
+		// 只有表单元素才有 elements 这个属性
+		console.log( $("#form1").get(0).elements ) // 是一个数组
+	</script>
+</body>
+</html>

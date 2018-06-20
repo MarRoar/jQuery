@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>表单数据串联化</title>
+</head>
+<body>
+	<form>
+		<input type="text" name="a" value="1">
+		<input type="text" name="b" value="2">
+		<input type="submit">
+	</form>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		// http://localhost:8080/jQuery/jquery-2.0.3/14-ajax/02-example.html?a=1&b=2
+		// 虽然 name = a value = 1
+		// 但是在get提交的时候，会把这种形式解析成 a=1&b=2 这种形式
+		
+		console.log( $.param( {a: ' '} ) ) // 空格在解析的时候会被替换成 +
+
+		// 为什么空格会被替换呢？ 是因为后台在接收空格的时候，都是用+来接收的。
+	</script>
+</body>
+</html>

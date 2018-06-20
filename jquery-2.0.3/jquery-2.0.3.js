@@ -3181,9 +3181,9 @@ jQuery.extend({
 				// 就是将fire 和 add抽象出来这几种状态
 				// once 触发一次 成功和失败，只会触发一次
 				// memory 后面添加的都可以加进去
-				[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ],
-				[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ],
-				[ "notify", "progress", jQuery.Callbacks("memory") ]
+				[ "resolve", "done", jQuery.Callbacks("once memory"), "resolved" ], // 成功
+				[ "reject", "fail", jQuery.Callbacks("once memory"), "rejected" ], // 失败
+				[ "notify", "progress", jQuery.Callbacks("memory") ] // 消息
 			],
 			state = "pending",
 			promise = {
@@ -3191,7 +3191,7 @@ jQuery.extend({
 					return state;
 				},
 				always: function() {
-					// 失败和陈宫都会走always
+					// 失败和成功都会走always
 					deferred.done( arguments ).fail( arguments );
 					return this;
 				},
@@ -3332,6 +3332,7 @@ jQuery.extend({
 		return deferred.promise();
 	}
 });
+//--------------------------------- 07-jQuery.support ----------------------------------------------
 jQuery.support = (function( support ) {
 	var input = document.createElement("input"),
 		fragment = document.createDocumentFragment(),

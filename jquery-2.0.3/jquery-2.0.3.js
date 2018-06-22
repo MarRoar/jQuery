@@ -7212,8 +7212,8 @@ jQuery.each({
 var r20 = /%20/g, // 空格的编码
 	rbracket = /\[\]$/,
 	rCRLF = /\r?\n/g,
-	rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i,
-	rsubmittable = /^(?:input|select|textarea|keygen)/i;
+	rsubmitterTypes = /^(?:submit|button|image|reset|file)$/i, // 排除没有name的标签
+	rsubmittable = /^(?:input|select|textarea|keygen)/i; // 有 name 的元素
 
 jQuery.fn.extend({
 	serialize: function() {
@@ -7225,16 +7225,17 @@ jQuery.fn.extend({
 		return this.map(function(){
 			// Can add propHook for "elements" to filter or add form elements
 			var elements = jQuery.prop( this, "elements" ); // 只有form 表单有 elements 这个属性
-			return elements ? jQuery.makeArray( elements ) : this;
+			return elements ? jQuery.makeArray( elements ) : this; // 没有 elements 就返回他自身
 		})
-		.filter(function(){
+		.filter(function(){ // 过滤符合条件的
 			var type = this.type;
 			// Use .is(":disabled") so that fieldset[disabled] works
+			// 过滤
 			return this.name && !jQuery( this ).is( ":disabled" ) &&
 				rsubmittable.test( this.nodeName ) && !rsubmitterTypes.test( type ) &&
-				( this.checked || !manipulation_rcheckableType.test( type ) );
+				( this.checked || !manipulation_rcheckableType.test( type ) ); // 针对复选框和单选框
 		})
-		.map(function( i, elem ){
+		.map(function( i, elem ){ // 拼接数据
 			var val = jQuery( this ).val();
 
 			return val == null ?

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>回车和换行</title>
+</head>
+<body>
+	<button id="btn1">click\r</button>
+	<button id="btn2">click\n</button>
+	<textarea name="" id="inp" cols="30" rows="10"></textarea>
+	<script>
+		// 主要判断浏览器是否支持 \r \n 这样的换行操作
+		// 高版本的浏览器支持 \n ，不支持 \r
+		// 低版本的支持 \r 和 \n
+
+		window.onload = function () {
+			var btn1 = document.getElementById("btn1");
+			var btn2 = document.getElementById("btn2");
+			var inp = document.getElementById("inp");
+
+			btn1.onclick = function () {
+				var re = /\r/;
+				console.log( re.test( inp.value ) )
+			}
+
+			btn2.onclick = function () {
+				var re = /\n/;
+				console.log( re.test( inp.value ) )
+				
+			}
+		}
+	</script>
+</body>
+</html>

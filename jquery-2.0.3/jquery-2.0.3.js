@@ -7359,6 +7359,7 @@ jQuery.fn.extend({
 		return arguments.length === 1 ? this.off( selector, "**" ) : this.off( types, selector || "**", fn );
 	}
 });
+//-------------------------- 14-ajax --------------------------------------------------------------------------
 var
 	// Document location
 	ajaxLocParts,
@@ -7492,13 +7493,13 @@ function ajaxExtend( target, src ) {
 }
 
 jQuery.fn.load = function( url, params, callback ) {
-	if ( typeof url !== "string" && _load ) {
+	if ( typeof url !== "string" && _load ) { // 不等于字符串情况下，调用之前存储的load 方法
 		return _load.apply( this, arguments );
 	}
 
 	var selector, type, response,
 		self = this,
-		off = url.indexOf(" ");
+		off = url.indexOf(" "); // "./07-load-data.html ol"
 
 	if ( off >= 0 ) {
 		selector = url.slice( off );
@@ -7506,7 +7507,7 @@ jQuery.fn.load = function( url, params, callback ) {
 	}
 
 	// If it's a function
-	if ( jQuery.isFunction( params ) ) {
+	if ( jQuery.isFunction( params ) ) { // 做一下参数的处理
 
 		// We assume that it's the callback
 		callback = params;
@@ -7524,8 +7525,8 @@ jQuery.fn.load = function( url, params, callback ) {
 
 			// if "type" variable is undefined, then "GET" method will be used
 			type: type,
-			dataType: "html",
-			data: params
+			dataType: "html", //类型是 html
+			data: params //向后台传送数据
 		}).done(function( responseText ) {
 
 			// Save response for use in complete callback
@@ -7540,7 +7541,7 @@ jQuery.fn.load = function( url, params, callback ) {
 				// Otherwise use the full result
 				responseText );
 
-		}).complete( callback && function( jqXHR, status ) {
+		}).complete( callback && function( jqXHR, status ) { // 完成后的回调函数
 			self.each( callback, response || [ jqXHR.responseText, status, jqXHR ] );
 		});
 	}

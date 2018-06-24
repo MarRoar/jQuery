@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>load</title>
+</head>
+<body>
+	<p>load 方法的作用是，将指定的html 加载到指定位置，主要是获取功能的</p>
+	<div id="div1">
+		
+	</div>
+
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$(function () {
+			// 然后在服务器端打开就会看到里面有数据了，
+			// 
+			$('#div1').load('./07-load-data.html', function (a, b, c) {
+				console.log(a)
+				console.log(b)
+				console.log(c)
+			})
+			
+
+			// 地址后面还可以加参数，表示过滤
+			// $('#div1').load('./07-load-data.html ol', function () {
+			// 	console.log("over")
+			// })
+
+
+		})
+	</script>
+</body>
+</html>

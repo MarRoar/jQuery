@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>变量</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		ajaxSettings: {
+			global: true
+		}
+		//全局变量
+		$(document).on('ajaxStart', function () {
+
+			// 在所有的 ajax 请求之前会去执行这个方法
+			console.log("执行这个方法")
+		})
+
+		$.ajax({
+			url: '13-data.php',
+			// global: true,
+			global: false, //这个时候就不会去执行
+		})
+
+
+
+		$.ajax({
+			url: '13-data.php',
+			data: {
+				name: 'hello',
+				age: 20
+			},
+			processData: false // 请求数据不会串联化
+		})
+	</script>
+</body>
+</html>

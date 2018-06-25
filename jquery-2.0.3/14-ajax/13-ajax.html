@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ajax</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$.ajax({
+			// url: './13-data.php',
+			url: 'http://114.115.144.251:8001/WebApi/DataExchange/GetData/FRM_FireAlarmListByOrg?dataKey=00-00-00-00&OrganiseUnitID=3e9ce747-3ee8-11e8-a8ae-fa163e4635ff',
+			// dataType: 'jsonp', // 指定返回数据的类型
+			success: function (info) {
+				console.log("成功")
+			},
+			error: function (error) {
+				console.log("失败")
+			}
+		})
+
+		/**
+		 * 1
+		 */
+		// 指定类型 的地址
+		// http://127.0.0.1:8010/jQuery/jquery-2.0.3/14-ajax/13-data.php?callback=jQuery203019028175819143756_1529917776575&_=1529917776576
+		
+		// 位指定类型的地址
+		// http://127.0.0.1:8010/jQuery/jquery-2.0.3/14-ajax/13-data.php
+
+		// 这两个地址不同，肯定是在ajax请求之前做的处理，
+		// 那么处理这个函数是 ajaxPrefilter() ajax预处理
+		
+		/**
+		 * 2
+		 */
+		// 请求本地的url 和请求跨域的地址是不同的
+		// 请求本地的url 都是通过 jQuery 底层的 ajax 来完成的，
+		
+		// 通过动态创建script标签的来处理跨域
+		// 这个处理函数是 ajaxTransport()
+		
+
+		// 写一个ajax 的流程是
+		// ajaxSettings默认参数 => ajaxPrefilter 预备过滤器  => ajaxTransport分发处理器 => ajaxConvert 类型转换器
+
+	</script>
+</body>
+</html>

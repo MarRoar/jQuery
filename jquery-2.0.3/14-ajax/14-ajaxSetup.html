@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ajaxSetup</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		var url1 = '', 
+			url2 = '';
+		$.ajax(url1, {
+			type: 'post',
+			success: function (info) {
+				
+			}
+		})
+
+		$.ajax(url2, {
+			success: function (info) {
+				
+			}
+		})
+
+		// 上面两个一个是 post，一个是默认的 get 请求
+		// 由上面可以看出 post 的方法，只是影响到了它自己的请求，并没有影响其他的
+		// 也就是说其他请求还是默认的配置项,
+		
+		// jQuery.ajaxSetup() 两个参数和一个参数情况是不同的。
+		// 两个参数是 深拷贝 jQuery.ajaxSetup( {}, options ) 把默认的数据和输入进去的数据都拷贝到 {} 这个第一个对象上
+		// 如果是一个参数 jQuery.ajaxSetup( options ) 把数据合并到 默认的参数上。
+
+		$.ajaxSetup({
+			type: 'post'
+		})
+		// 这样就可以修改默认配置项, type 是 post 方式
+
+		$.ajaxSettings
+	</script>
+</body>
+</html>

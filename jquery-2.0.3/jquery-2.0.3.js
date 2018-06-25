@@ -7372,7 +7372,7 @@ var
 	rts = /([?&])_=[^&]*/,
 	rheaders = /^(.*?):[ \t]*([^\r\n]*)$/mg,
 	// #7653, #8125, #8152: local protocol detection
-	rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/,
+	rlocalProtocol = /^(?:about|app|app-storage|.+-extension|file|res|widget):$/, // 是否是本地的打开方式正则
 	rnoContent = /^(?:GET|HEAD)$/,
 	rprotocol = /^\/\//,
 	rurl = /^([\w.+-]+:)(?:\/\/([^\/?#:]*)(?::(\d+)|)|)/,
@@ -7403,6 +7403,8 @@ var
 
 // #8138, IE may throw an exception when accessing
 // a field from window.location if document.domain has been set
+// IE 下有问题 document.domain 跨域操作的情况下有bug
+// 所以IE下
 try {
 	ajaxLocation = location.href;
 } catch( e ) {
@@ -7476,6 +7478,7 @@ function inspectPrefiltersOrTransports( structure, options, originalOptions, jqX
 // A special extend for ajax options
 // that takes "flat" options (not to be deep extended)
 // Fixes #9887
+// 深拷贝的情况,防止内存泄漏的处理
 function ajaxExtend( target, src ) {
 	var key, deep,
 		flatOptions = jQuery.ajaxSettings.flatOptions || {};
@@ -7565,14 +7568,14 @@ jQuery.extend({
 	lastModified: {},
 	etag: {},
 
-	ajaxSettings: {
-		url: ajaxLocation,
+	ajaxSettings: { // 默认的参数
+		url: ajaxLocation, // 默认当前页面路径
 		type: "GET",
-		isLocal: rlocalProtocol.test( ajaxLocParts[ 1 ] ),
-		global: true,
-		processData: true,
-		async: true,
-		contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+		isLocal: rlocalProtocol.test( ajaxLocParts[ 1 ] ), // 判断是否是在本地打开
+		global: true, // 15-ajaxSetting.html
+		processData: true, // 请求数据串联化
+		async: true, // 是否异步 默认是异步的
+		contentType: "application/x-www-form-urlencoded; charset=UTF-8", // 对数据进行编码操作
 		/*
 		timeout: 0,
 		data: null,
@@ -7644,7 +7647,7 @@ jQuery.extend({
 			// Extending ajaxSettings
 			ajaxExtend( jQuery.ajaxSettings, target );
 	},
-
+	// ajax 预处理函数比如dataType输入和不输入的情况下，url地址不同
 	ajaxPrefilter: addToPrefiltersOrTransports( prefilters ),
 	ajaxTransport: addToPrefiltersOrTransports( transports ),
 
@@ -7652,7 +7655,7 @@ jQuery.extend({
 	ajax: function( url, options ) {
 
 		// If url is an object, simulate pre-1.5 signature
-		if ( typeof url === "object" ) {
+		if ( typeof url === "object" ) { //ajax({})
 			options = url;
 			url = undefined;
 		}
@@ -7675,7 +7678,7 @@ jQuery.extend({
 			// Loop variable
 			i,
 			// Create the final options object
-			s = jQuery.ajaxSetup( {}, options ),
+			s = jQuery.ajaxSetup( {}, options ), // 配置参数 覆盖默认参数的行为
 			// Callbacks context
 			callbackContext = s.context || s,
 			// Context for global events is callbackContext if it is a DOM node or jQuery collection
@@ -8125,6 +8128,9 @@ function ajaxHandleResponses( s, jqXHR, responses ) {
 /* Chain conversions given the request and the original response
  * Also sets the responseXXX fields on the jqXHR instance
  */
+// ajax 的类型转换器,就是接收到的数据和 dataType的值的类型进行匹配，
+// 如果返回的类型和输入的类型一样就为true
+// 13-ajax.html
 function ajaxConvert( s, response, jqXHR, isSuccess ) {
 	var conv2, current, conv, tmp, prev,
 		converters = {},

@@ -14,10 +14,10 @@
 
 
 		jQuery.extend({
-			ajaxSettings
-			ajaxSetup()
-			ajaxPrefilter: addToPrefiltersOrTransports()
-			ajaxTransport: addToPrefiltersOrTransports()
+			ajaxSettings   // 默认的参数
+			ajaxSetup() // 配置参数 覆盖默认参数的行为
+			ajaxPrefilter: addToPrefiltersOrTransports() // ajax 预过滤器
+			ajaxTransport: addToPrefiltersOrTransports() // 分发处理器，是走ajax 还是走动态创建script 标签
 			ajax()
 			getJSON()
 			getScript()
@@ -27,7 +27,7 @@
 
 		ajaxHandleResponses()
 
-		ajaxConvert()
+		ajaxConvert() // 类型转换器
 		
 	</script>
 </body>

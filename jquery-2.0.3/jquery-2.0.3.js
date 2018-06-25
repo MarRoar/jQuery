@@ -7399,7 +7399,7 @@ var
 	transports = {},
 
 	// Avoid comment-prolog char sequence (#10098); must appease lint and evade compression
-	allTypes = "*/".concat("*");
+	allTypes = "*/".concat("*"); // 这样写是因为压缩会有问题，所以要这样写
 
 // #8138, IE may throw an exception when accessing
 // a field from window.location if document.domain has been set
@@ -7419,6 +7419,7 @@ try {
 ajaxLocParts = rurl.exec( ajaxLocation.toLowerCase() ) || [];
 
 // Base "constructor" for jQuery.ajaxPrefilter and jQuery.ajaxTransport
+// js 科利华方式
 function addToPrefiltersOrTransports( structure ) {
 
 	// dataTypeExpression is optional and defaults to "*"
@@ -7553,6 +7554,7 @@ jQuery.fn.load = function( url, params, callback ) {
 };
 
 // Attach a bunch of functions for handling common AJAX events
+// 这里都是 ajax 的全局事件,然后在指定的位置触发
 jQuery.each( [ "ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend" ], function( i, type ){
 	jQuery.fn[ type ] = function( fn ){
 		return this.on( type, fn );
@@ -7577,18 +7579,18 @@ jQuery.extend({
 		async: true, // 是否异步 默认是异步的
 		contentType: "application/x-www-form-urlencoded; charset=UTF-8", // 对数据进行编码操作
 		/*
-		timeout: 0,
+		timeout: 0, // 超时
 		data: null,
-		dataType: null,
-		username: null,
-		password: null,
-		cache: null,
-		throws: false,
-		traditional: false,
-		headers: {},
+		dataType: null, //请求数据类型
+		username: null, // 服务器对身份验证
+		password: null, // 
+		cache: null, // 缓存,地址每次都会变化
+		throws: false, // 抛出异常错误
+		traditional: false, // 传统模式
+		headers: {}, // 头部信息
 		*/
 
-		accepts: {
+		accepts: { // 请求头信息的默认类型
 			"*": allTypes,
 			text: "text/plain",
 			html: "text/html",
@@ -7596,13 +7598,13 @@ jQuery.extend({
 			json: "application/json, text/javascript"
 		},
 
-		contents: {
+		contents: { // 响应头 信息内容类型
 			xml: /xml/,
 			html: /html/,
 			json: /json/
 		},
 
-		responseFields: {
+		responseFields: { // 响应的的数据, 原生自带的
 			xml: "responseXML",
 			text: "responseText",
 			json: "responseJSON"
@@ -7610,7 +7612,7 @@ jQuery.extend({
 
 		// Data converters
 		// Keys separate source (or catchall "*") and destination types with a single space
-		converters: {
+		converters: { // 检测响应头信息的类型，
 
 			// Convert anything to text
 			"* text": String,
@@ -7629,6 +7631,7 @@ jQuery.extend({
 		// you can add your own custom options here if
 		// and when you create one that shouldn't be
 		// deep extended (see ajaxExtend)
+		// 深拷贝防止内存泄漏
 		flatOptions: {
 			url: true,
 			context: true
@@ -7680,16 +7683,16 @@ jQuery.extend({
 			// Create the final options object
 			s = jQuery.ajaxSetup( {}, options ), // 配置参数 覆盖默认参数的行为
 			// Callbacks context
-			callbackContext = s.context || s,
+			callbackContext = s.context || s, // context也是参数，
 			// Context for global events is callbackContext if it is a DOM node or jQuery collection
 			globalEventContext = s.context && ( callbackContext.nodeType || callbackContext.jquery ) ?
 				jQuery( callbackContext ) :
-				jQuery.event,
+				jQuery.event, // 这句话作用是针对 全局事件 的
 			// Deferreds
-			deferred = jQuery.Deferred(),
+			deferred = jQuery.Deferred(), // 延迟对象的写法
 			completeDeferred = jQuery.Callbacks("once memory"),
 			// Status-dependent callbacks
-			statusCode = s.statusCode || {},
+			statusCode = s.statusCode || {}, // 状态码对应的操作
 			// Headers (they are sent all at once)
 			requestHeaders = {},
 			requestHeadersNames = {},
@@ -7698,7 +7701,7 @@ jQuery.extend({
 			// Default abort message
 			strAbort = "canceled",
 			// Fake xhr
-			jqXHR = {
+			jqXHR = { // 这个是模拟出来的 xhr 对象。
 				readyState: 0,
 
 				// Builds headers hashtable if needed
@@ -7732,6 +7735,7 @@ jQuery.extend({
 				},
 
 				// Overrides response content-type header
+				// 后台返回二进制流这样的数据的时候
 				overrideMimeType: function( type ) {
 					if ( !state ) {
 						s.mimeType = type;
@@ -7740,7 +7744,7 @@ jQuery.extend({
 				},
 
 				// Status-dependent callbacks
-				statusCode: function( map ) {
+				statusCode: function( map ) {  //statusCode { 404: fn}
 					var code;
 					if ( map ) {
 						if ( state < 2 ) {
@@ -7757,6 +7761,7 @@ jQuery.extend({
 				},
 
 				// Cancel the request
+				// 出现错误执行这个
 				abort: function( statusText ) {
 					var finalText = statusText || strAbort;
 					if ( transport ) {
@@ -7768,6 +7773,10 @@ jQuery.extend({
 			};
 
 		// Attach deferreds
+		// 把延迟对象融入到 jqXHR 中
+		// console.log(jqXHR)
+		// return false 
+		// 为什么会链式操作的，因为 return jqXHR
 		deferred.promise( jqXHR ).complete = completeDeferred.add;
 		jqXHR.success = jqXHR.done;
 		jqXHR.error = jqXHR.fail;
@@ -7776,18 +7785,24 @@ jQuery.extend({
 		// Add protocol if not provided (prefilters might expect it)
 		// Handle falsy url in the settings object (#10093: consistency with old signature)
 		// We also use the url parameter if available
+		// 对url处理 1. 哈希值设置为空 2. // 处理
 		s.url = ( ( url || s.url || ajaxLocation ) + "" ).replace( rhash, "" )
 			.replace( rprotocol, ajaxLocParts[ 1 ] + "//" );
 
 		// Alias method option to type as per ticket #12004
+		//  type = method 一样的 get post 等等
 		s.type = options.method || options.type || s.method || s.type;
 
 		// Extract dataTypes list
+		// dataType: 'json jsonp html' 这种情况
 		s.dataTypes = jQuery.trim( s.dataType || "*" ).toLowerCase().match( core_rnotwhite ) || [""];
 
 		// A cross-domain request is in order when we have a protocol:host:port mismatch
-		if ( s.crossDomain == null ) {
+		// 跨域处理
+		if ( s.crossDomain == null ) { 
 			parts = rurl.exec( s.url.toLowerCase() );
+			// 判断是是否是跨域操作
+			// 为后续的操作准备
 			s.crossDomain = !!( parts &&
 				( parts[ 1 ] !== ajaxLocParts[ 1 ] || parts[ 2 ] !== ajaxLocParts[ 2 ] ||
 					( parts[ 3 ] || ( parts[ 1 ] === "http:" ? "80" : "443" ) ) !==
@@ -7796,11 +7811,14 @@ jQuery.extend({
 		}
 
 		// Convert data if not already a string
+		// 对数据序列化操作
 		if ( s.data && s.processData && typeof s.data !== "string" ) {
 			s.data = jQuery.param( s.data, s.traditional );
 		}
 
 		// Apply prefilters
+		// 过滤器 和 分发处理器 回调函数的触发
+		// 但是这里是处理 预处理器
 		inspectPrefiltersOrTransports( prefilters, s, options, jqXHR );
 
 		// If request was aborted inside a prefilter, stop there
@@ -7813,7 +7831,7 @@ jQuery.extend({
 
 		// Watch for a new set of requests
 		if ( fireGlobals && jQuery.active++ === 0 ) {
-			jQuery.event.trigger("ajaxStart");
+			jQuery.event.trigger("ajaxStart"); //没有元素，所以只能在document上触发
 		}
 
 		// Uppercase the type
@@ -7891,6 +7909,7 @@ jQuery.extend({
 		}
 
 		// Get transport
+		// 分发处理
 		transport = inspectPrefiltersOrTransports( transports, s, options, jqXHR );
 
 		// If no transport, we auto-abort

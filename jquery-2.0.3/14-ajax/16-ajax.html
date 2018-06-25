@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>参数 context</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$.ajax({
+			url: './13-data.php',
+			success: function (info) {
+				console.log( this ) // 默认的情况下是这样的
+			}
+		})
+
+
+		$.ajax({
+			url: './13-data.php',
+			context: document,
+			success: function (info) {
+				console.log( this ) // 当context 指定的情况下，这个this
+				// 就是我们指定的 对象
+			}
+		})
+
+	</script>
+</body>
+</html>

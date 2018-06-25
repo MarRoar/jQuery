@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ajax的全局事件</title>
+</head>
+<body>
+	<div id="d"></div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+	/**
+		jQuery.each( [ "ajaxStart", "ajaxStop", "ajaxComplete", "ajaxError", "ajaxSuccess", "ajaxSend" ], function( i, type ){
+			jQuery.fn[ type ] = function( fn ){
+				return this.on( type, fn );
+			};
+		});
+	 */
+		// 上面定义了全局事件，
+		// 全局事件的触发只能在 document上，当放在 div 或者其他地方就不行了
+		// 但是并不是全部都在 document上触发
+		// 在docuemnt上触发
+			// ajaxStart   ajaxStop
+		// 在元素上触发(或者设置 context 执行上下文)
+			// ajaxComplete  ajaxError  ajaxSuccess  ajaxSend
+	
+		$(document).on("ajaxStart", function () {
+			console.log('ajaxStart')
+		})
+
+		$.ajax({
+			// url: './13-data.php',
+			url: './17-data.php',
+			success: function () {
+				
+			},
+			statusCode: { // 状态码对应的操作
+				404: function () {
+					alert("statusCode 404 没有找到")
+				}
+			}
+		})
+	</script>
+</body>
+</html>

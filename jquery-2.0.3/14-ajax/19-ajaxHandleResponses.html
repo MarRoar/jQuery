@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>ajax</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$.ajax({
+			url: './13-data.php',
+			dataType: 'jsonp', // 指定返回数据的类型
+			success: function (info) {
+				console.log( info )
+			}
+		})
+		//
+		//在源码里面查看 ajaxHandleResponses() 这个函数都做了哪些事情
+
+
+	</script>
+</body>
+</html>

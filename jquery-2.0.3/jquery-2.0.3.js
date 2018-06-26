@@ -7432,11 +7432,11 @@ function addToPrefiltersOrTransports( structure ) {
 
 		var dataType,
 			i = 0,
-			dataTypes = dataTypeExpression.toLowerCase().match( core_rnotwhite ) || [];
+			dataTypes = dataTypeExpression.toLowerCase().match( core_rnotwhite ) || []; // dataTypes 拆解
 
 		if ( jQuery.isFunction( func ) ) {
 			// For each dataType in the dataTypeExpression
-			while ( (dataType = dataTypes[i++]) ) {
+			while ( (dataType = dataTypes[i++]) ) { // 针对 prefilters ={} 里面有多回调的情况 处理
 				// Prepend if requested
 				if ( dataType[0] === "+" ) {
 					dataType = dataType.slice( 1 ) || "*";
@@ -7452,16 +7452,18 @@ function addToPrefiltersOrTransports( structure ) {
 }
 
 // Base inspection function for prefilters and transports
+// 触发回调函数
 function inspectPrefiltersOrTransports( structure, options, originalOptions, jqXHR ) {
 
 	var inspected = {},
-		seekingTransport = ( structure === transports );
+		seekingTransport = ( structure === transports ); // 是过滤的时候触发，还是分发的时候触发.
 
 	function inspect( dataType ) {
 		var selected;
 		inspected[ dataType ] = true;
-		jQuery.each( structure[ dataType ] || [], function( _, prefilterOrFactory ) {
-			var dataTypeOrTransport = prefilterOrFactory( options, originalOptions, jqXHR );
+		jQuery.each( structure[ dataType ] || [], function( _, prefilterOrFactory ) { // prefilterOrFactory 回调函数
+			var dataTypeOrTransport = prefilterOrFactory( options, originalOptions, jqXHR ); // 如果是 json 或者 jsonp 的话 return 'script'
+			//如果是 script 的话会走这里然后再执行 inspect 函数 
 			if( typeof dataTypeOrTransport === "string" && !seekingTransport && !inspected[ dataTypeOrTransport ] ) {
 				options.dataTypes.unshift( dataTypeOrTransport );
 				inspect( dataTypeOrTransport );
@@ -7822,7 +7824,7 @@ jQuery.extend({
 		inspectPrefiltersOrTransports( prefilters, s, options, jqXHR );
 
 		// If request was aborted inside a prefilter, stop there
-		if ( state === 2 ) {
+		if ( state === 2 ) { // 请求完成
 			return jqXHR;
 		}
 
@@ -7838,6 +7840,7 @@ jQuery.extend({
 		s.type = s.type.toUpperCase();
 
 		// Determine if request has content
+		// rnoContent = /^(?:GET|HEAD)$/  get 和 head 两种请求
 		s.hasContent = !rnoContent.test( s.type );
 
 		// Save the URL in case we're toying with the If-Modified-Since
@@ -7845,7 +7848,7 @@ jQuery.extend({
 		cacheURL = s.url;
 
 		// More options handling for requests with no content
-		if ( !s.hasContent ) {
+		if ( !s.hasContent ) { // get head 请求
 
 			// If data is available, append data to url
 			if ( s.data ) {
@@ -7855,7 +7858,7 @@ jQuery.extend({
 			}
 
 			// Add anti-cache in url if needed
-			if ( s.cache === false ) {
+			if ( s.cache === false ) { // 在地址后面加随机数字
 				s.url = rts.test( cacheURL ) ?
 
 					// If there is already a '_' parameter, set its value
@@ -7872,8 +7875,9 @@ jQuery.extend({
 				jqXHR.setRequestHeader( "If-Modified-Since", jQuery.lastModified[ cacheURL ] );
 			}
 			if ( jQuery.etag[ cacheURL ] ) {
-				jqXHR.setRequestHeader( "If-None-Match", jQuery.etag[ cacheURL ] );
+				jqXHR.setRequestHeader( "If-None-Match", jQuery.etag[ cacheURL ] ); 
 			}
+			// 这两个if 是否走缓存
 		}
 
 		// Set the correct header, if data is being sent
@@ -7895,6 +7899,7 @@ jQuery.extend({
 		}
 
 		// Allow custom headers/mimetypes and early abort
+		// 在请求前可以停止发送
 		if ( s.beforeSend && ( s.beforeSend.call( callbackContext, jqXHR, s ) === false || state === 2 ) ) {
 			// Abort if not done already and return
 			return jqXHR.abort();
@@ -7904,7 +7909,7 @@ jQuery.extend({
 		strAbort = "abort";
 
 		// Install callbacks on deferreds
-		for ( i in { success: 1, error: 1, complete: 1 } ) {
+		for ( i in { success: 1, error: 1, complete: 1 } ) { // 延迟操作的函数映射
 			jqXHR[ i ]( s[ i ] );
 		}
 
@@ -7919,11 +7924,11 @@ jQuery.extend({
 			jqXHR.readyState = 1;
 
 			// Send global event
-			if ( fireGlobals ) {
+			if ( fireGlobals ) { // 触发全局事件
 				globalEventContext.trigger( "ajaxSend", [ jqXHR, s ] );
 			}
-			// Timeout
-			if ( s.async && s.timeout > 0 ) {
+			// Timeout 
+			if ( s.async && s.timeout > 0 ) { // 判断延迟
 				timeoutTimer = setTimeout(function() {
 					jqXHR.abort("timeout");
 				}, s.timeout );
@@ -7931,7 +7936,7 @@ jQuery.extend({
 
 			try {
 				state = 1;
-				transport.send( requestHeaders, done );
+				transport.send( requestHeaders, done ); // 原生的 send
 			} catch ( e ) {
 				// Propagate exception as error if not done
 				if ( state < 2 ) {
@@ -7944,7 +7949,7 @@ jQuery.extend({
 		}
 
 		// Callback for when everything is done
-		function done( status, nativeStatusText, responses, headers ) {
+		function done( status, nativeStatusText, responses, headers ) { // 成功后的回调
 			var isSuccess, success, error, response, modified,
 				statusText = nativeStatusText;
 
@@ -7975,9 +7980,12 @@ jQuery.extend({
 			isSuccess = status >= 200 && status < 300 || status === 304;
 
 			// Get response data
-			if ( responses ) {
+			// console.log( response )
+			if ( responses ) { // responses 后端返回的数据
 				response = ajaxHandleResponses( s, jqXHR, responses );
 			}
+
+			// console.log( response )
 
 			// Convert no matter what (that way responseXXX fields are always set)
 			response = ajaxConvert( s, response, jqXHR, isSuccess );
@@ -8258,16 +8266,19 @@ jQuery.ajaxSetup({
 
 // Handle cache's special case and crossDomain
 jQuery.ajaxPrefilter( "script", function( s ) {
-	if ( s.cache === undefined ) {
+	if ( s.cache === undefined ) { // 缓存
 		s.cache = false;
 	}
-	if ( s.crossDomain ) {
+	if ( s.crossDomain ) { // 跨域情况下是 get 请求
 		s.type = "GET";
 	}
 });
 
 // Bind script tag hack transport
-jQuery.ajaxTransport( "script", function( s ) {
+// 在 dataType: jsonp 的情况下走了 script,
+// 那么我们可以看到在 jsonp 里面代码执行最后 return script
+jQuery.ajaxTransport( "script", function( s ) { // 调用情况
+
 	// This transport only deals with cross domain requests
 	if ( s.crossDomain ) {
 		var script, callback;
@@ -8289,7 +8300,7 @@ jQuery.ajaxTransport( "script", function( s ) {
 				);
 				document.head.appendChild( script[ 0 ] );
 			},
-			abort: function() {
+			abort: function() { // 错误情况
 				if ( callback ) {
 					callback();
 				}
@@ -8339,7 +8350,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 			if ( !responseContainer ) {
 				jQuery.error( callbackName + " was not called" );
 			}
-			return responseContainer[ 0 ];
+			return responseContainer[ 0 ]; // jsonP 当中的数据 success: function (info) { }
 		};
 
 		// force json dataType
@@ -8352,7 +8363,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 		};
 
 		// Clean-up function (fires after converters)
-		jqXHR.always(function() {
+		jqXHR.always(function() { // 对函数触发
 			// Restore preexisting value
 			window[ callbackName ] = overwritten;
 
@@ -8410,14 +8421,16 @@ if ( window.ActiveXObject ) {
 jQuery.support.cors = !!xhrSupported && ( "withCredentials" in xhrSupported );
 jQuery.support.ajax = xhrSupported = !!xhrSupported;
 
+// 分发处理普通的形式
 jQuery.ajaxTransport(function( options ) {
 	var callback;
 	// Cross domain only allowed if supported through XMLHttpRequest
+	// 不跨域 走原生的 ajax
 	if ( jQuery.support.cors || xhrSupported && !options.crossDomain ) {
 		return {
 			send: function( headers, complete ) {
 				var i, id,
-					xhr = options.xhr();
+					xhr = options.xhr(); // 原生的 xhr 
 				xhr.open( options.type, options.url, options.async, options.username, options.password );
 				// Apply custom fields if provided
 				if ( options.xhrFields ) {
@@ -8448,8 +8461,8 @@ jQuery.ajaxTransport(function( options ) {
 							delete xhrCallbacks[ id ];
 							callback = xhr.onload = xhr.onerror = null;
 							if ( type === "abort" ) {
-								xhr.abort();
-							} else if ( type === "error" ) {
+								xhr.abort(); // 终止
+							} else if ( type === "error" ) { // 错误
 								complete(
 									// file protocol always yields status 0, assume 404
 									xhr.status || 404,
@@ -8472,7 +8485,7 @@ jQuery.ajaxTransport(function( options ) {
 					};
 				};
 				// Listen to events
-				xhr.onload = callback();
+				xhr.onload = callback(); // 用 onload 没有用 onreadystatechange, 只有在成功的时候走 onload 
 				xhr.onerror = callback("error");
 				// Create the abort callback
 				callback = xhrCallbacks[( id = xhrId++ )] = callback("abort");
@@ -8489,7 +8502,7 @@ jQuery.ajaxTransport(function( options ) {
 		};
 	}
 });
-// ---------------------------------------------------------------------------
+// -------------------------- 15-animate ----------------------------------------------------------
 var fxNow, timerId,
 	rfxtypes = /^(?:toggle|show|hide)$/,
 	rfxnum = new RegExp( "^(?:([+-])=|)(" + core_pnum + ")([a-z%]*)$", "i" ),
@@ -9220,7 +9233,7 @@ if ( jQuery.expr && jQuery.expr.filters ) {
 		}).length;
 	};
 }
-// ----------------------------------------------------------------------------------
+// ---------------------------------------------------------------------------------------
 jQuery.fn.offset = function( options ) {
 	if ( arguments.length ) {
 		return options === undefined ?

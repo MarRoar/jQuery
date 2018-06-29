@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>结构</title>
+</head>
+<body>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		tweeners
+
+		function createFxNow() { }
+
+		function createTween( value, prop, animation ) { }
+		function Animation( elem, properties, options ) { }
+		function propFilter( props, specialEasing ) { }
+
+		jQuery.Animation = jQuery.extend( Animation, {
+			tweener(),
+			prefilter()
+		})
+
+		function defaultPrefilter( elem, props, opts ) { }
+		function Tween( elem, options, prop, end, easing ) { }
+
+		jQuery.Tween = Tween;
+
+		Tween.prototype = {
+			constructor,
+			init(),
+			cur()
+			run()
+		}
+
+		Tween.prototype.init.prototype = Tween.prototype;
+
+		Tween.propHooks = {
+			_default: { }
+		}
+
+		Tween.propHooks.scrollTop = Tween.propHooks.scrollLeft = { }
+
+		jQuery.each([ "toggle", "show", "hide" ], function( i, name ) {});
+
+		jQuery.fn.extend({
+			fadeTo()
+			animate()
+			stop()
+			finish()
+		})
+
+		function genFx( type, includeWidth ) {}
+
+		jQuery.each({
+			slideDown: genFx("show"),
+			slideUp: genFx("hide"),
+			slideToggle: genFx("toggle"),
+			fadeIn: { opacity: "show" },
+			fadeOut: { opacity: "hide" },
+			fadeToggle: { opacity: "toggle" }
+		}, function( name, props ) {})
+
+		jQuery.speed = function( speed, easing, fn ) {}
+
+		jQuery.easing = {
+			linear()
+			swing()
+		};
+
+		jQuery.timers = [];
+		jQuery.fx = Tween.prototype.init;
+		jQuery.fx.tick = function() { }
+		jQuery.fx.timer = function( timer ) {}
+		jQuery.fx.interval = 13;
+		jQuery.fx.start = function() {}
+		jQuery.fx.stop = function() {}
+		jQuery.fx.speeds = {}
+		jQuery.fx.step = {};
+
+	</script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>example</title>
+	<style>
+		div {
+			width: 200px;
+			height: 200px;
+			background-color: red;
+		}
+	</style>
+</head>
+<body>
+	<button id="btn">click</button>
+	<div id="div1">
+		
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$("#btn").on('click', function () {
+			// 在调用 $('#div1').hide(1000)
+			// 的时候 其实是调用的 底层的 animate
+			$("#div1").animate({
+				width: 'hide',
+				height: 'hide',
+				opacity: 'hide'
+			}, 1000)
+			// 这种效果和调用 hide 一样
+		})
+	</script>
+</body>
+</html>

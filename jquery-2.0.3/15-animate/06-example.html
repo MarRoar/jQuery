@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>example</title>
+	<style>
+		div {
+			width: 20px;
+			height: 200px;
+			background-color: red;
+			position: absolute;
+		}
+	</style>
+</head>
+<body>
+	<button id="btn">click</button>
+	<div id="div1">
+		
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$("#btn").on('click', function () {
+
+			// 在 style 里面可以看到设置的 width 的单位是 px
+			// 而在animate 里面的目标值是 百分比， 所以就需要将 px 转换成 %
+			// 用到的方法是 tweeners 里面的方法
+			// $('#div1').animate({ width: '50%'}, 2000)
+
+			// 20px 对应多少的 %
+			
+
+			// $('#div1').animate({ width: '+=200'}, 2000)
+
+		})
+	</script>
+</body>
+</html>

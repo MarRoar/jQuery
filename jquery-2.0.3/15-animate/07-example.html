@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>example</title>
+	<style>
+		div {
+			width: 20px;
+			height: 200px;
+			background-color: red;
+			position: absolute;
+		}
+	</style>
+</head>
+<body>
+	<button id="btn">click</button>
+	<div id="div1">
+		
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$("#btn").on('click', function () {
+
+			// 第二个值可以是数组的情况， 目的是让不同的属性有不同的，动画
+			// $('#div1').animate({ width: [200, 'linear'], height: [20, 'swing']}, 2000)
+
+			$('#div1').animate({ width: 200, height: 20}, {
+				specialEasing: { // 配置指定
+					width: 'linear',
+					height: 'swing'
+				}
+			})
+		})
+	</script>
+</body>
+</html>

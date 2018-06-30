@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>example</title>
+	<style>
+		div {
+			width: 200px;
+			height: 200px;
+			background-color: red;
+			position: absolute;
+		}
+	</style>
+</head>
+<body>
+	<button id="btn">click</button>
+	<div id="div1">
+		
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$("#btn").on('click', function () {
+			
+			// 发现下面三句话是，按照一定顺序执行的,那是因为事件队列
+			// $('#div1').animate({ width: '400px'}, 1000)
+			// $('#div1').animate({ height: '400px'}, 1000)
+			// $('#div1').animate({ left: '400px'}, 1000)
+
+
+			// 还有一种配置的写法
+			$('#div1').animate({ left: '400px'}, {
+				duration: 1000,
+				easing: 'linear',
+				complete: function () {
+					alert(1)
+				}
+			})
+
+			jQuery.fx.off = true // 关闭页面当中所有的运动
+
+		})
+	</script>
+</body>
+</html>

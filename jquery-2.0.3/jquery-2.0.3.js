@@ -8501,15 +8501,16 @@ var fxNow, timerId,
 			var tween = this.createTween( prop, value ),
 				target = tween.cur(),
 				parts = rfxnum.exec( value ),
-				unit = parts && parts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ),
+				unit = parts && parts[ 3 ] || ( jQuery.cssNumber[ prop ] ? "" : "px" ), // 得到单位
 
 				// Starting value computation is required for potential unit mismatches
 				start = ( jQuery.cssNumber[ prop ] || unit !== "px" && +target ) &&
-					rfxnum.exec( jQuery.css( tween.elem, prop ) ),
+					rfxnum.exec( jQuery.css( tween.elem, prop ) ), // 存下初始值
+				// console.log(start)
 				scale = 1,
 				maxIterations = 20;
 
-			if ( start && start[ 3 ] !== unit ) {
+			if ( start && start[ 3 ] !== unit ) { // 进行单位的换算
 				// Trust units reported by jQuery.css
 				unit = unit || start[ 3 ];
 
@@ -8526,7 +8527,8 @@ var fxNow, timerId,
 
 					// Adjust and apply
 					start = start / scale;
-					jQuery.style( tween.elem, prop, start + unit );
+					jQuery.style( tween.elem, prop, start + unit ); // 设置成 20% 
+					// tween.cur() 就可以拿到 20% 对应的像素值
 
 				// Update scale, tolerating zero or NaN from tween.cur()
 				// And breaking the loop if scale is unchanged or perfect, or if we've just had enough
@@ -8534,7 +8536,7 @@ var fxNow, timerId,
 			}
 
 			// Update tween properties
-			if ( parts ) {
+			if ( parts ) { // 运算的操作 $('#div1').animate({ width: '+=200'}, 2000)
 				start = tween.start = +start || +target || 0;
 				tween.unit = unit;
 				// If a +=/-= token was provided, we're doing a relative animation
@@ -8678,10 +8680,10 @@ function propFilter( props, specialEasing ) {
 
 	// camelCase, specialEasing and expand cssHook pass
 	for ( index in props ) {
-		name = jQuery.camelCase( index );
+		name = jQuery.camelCase( index ); // 转驼峰
 		easing = specialEasing[ name ];
 		value = props[ index ];
-		if ( jQuery.isArray( value ) ) {
+		if ( jQuery.isArray( value ) ) { // 值是数组  07-example
 			easing = value[ 1 ];
 			value = props[ index ] = value[ 0 ];
 		}
@@ -8692,7 +8694,7 @@ function propFilter( props, specialEasing ) {
 		}
 
 		hooks = jQuery.cssHooks[ name ];
-		if ( hooks && "expand" in hooks ) {
+		if ( hooks && "expand" in hooks ) { // 对复合样式进行操作
 			value = hooks.expand( value );
 			delete props[ name ];
 
@@ -8960,6 +8962,7 @@ Tween.propHooks.scrollTop = Tween.propHooks.scrollLeft = {
 jQuery.each([ "toggle", "show", "hide" ], function( i, name ) {
 	var cssFn = jQuery.fn[ name ];
 	jQuery.fn[ name ] = function( speed, easing, callback ) {
+		// 如果 toggle show hide 的参数为空的情况就走普通的 css 方法，如果有参数的话，就调用 animate 方法
 		return speed == null || typeof speed === "boolean" ?
 			cssFn.apply( this, arguments ) :
 			this.animate( genFx( name, true ), speed, easing, callback );
@@ -8970,14 +8973,14 @@ jQuery.fn.extend({
 	fadeTo: function( speed, to, easing, callback ) {
 
 		// show any hidden elements after setting opacity to 0
-		return this.filter( isHidden ).css( "opacity", 0 ).show()
+		return this.filter( isHidden ).css( "opacity", 0 ).show() // 先显示再运动
 
 			// animate to the value specified
 			.end().animate({ opacity: to }, speed, easing, callback );
 	},
 	animate: function( prop, speed, easing, callback ) {
 		var empty = jQuery.isEmptyObject( prop ),
-			optall = jQuery.speed( speed, easing, callback ),
+			optall = jQuery.speed( speed, easing, callback ), // 对参数进行配置
 			doAnimation = function() {
 				// Operate on a copy of prop so per-property easing won't be lost
 				var anim = Animation( this, jQuery.extend( {}, prop ), optall );
@@ -8989,7 +8992,7 @@ jQuery.fn.extend({
 			};
 			doAnimation.finish = doAnimation;
 
-		return empty || optall.queue === false ?
+		return empty || optall.queue === false ? // 不为空，有队列函数， 进行入队。
 			this.each( doAnimation ) :
 			this.queue( optall.queue, doAnimation );
 	},
@@ -9087,6 +9090,7 @@ jQuery.fn.extend({
 });
 
 // Generate parameters to create a standard animation
+// 下面函数的第二个参数 includeWidth  也就是要设置宽度和透明度
 function genFx( type, includeWidth ) {
 	var which,
 		attrs = { height: type },
@@ -9095,12 +9099,12 @@ function genFx( type, includeWidth ) {
 	// if we include width, step value is 1 to do all cssExpand values,
 	// if we don't include width, step value is 2 to skip over Left and Right
 	includeWidth = includeWidth? 1 : 0;
-	for( ; i < 4 ; i += 2 - includeWidth ) {
+	for( ; i < 4 ; i += 2 - includeWidth ) { // 对 margin 和 padding 
 		which = cssExpand[ i ];
 		attrs[ "margin" + which ] = attrs[ "padding" + which ] = type;
 	}
 
-	if ( includeWidth ) {
+	if ( includeWidth ) { // 有第二个参数就会有 width 和 opacity 
 		attrs.opacity = attrs.width = type;
 	}
 
@@ -9145,7 +9149,7 @@ jQuery.speed = function( speed, easing, fn ) {
 			opt.old.call( this );
 		}
 
-		if ( opt.queue ) {
+		if ( opt.queue ) { // 出队操作
 			jQuery.dequeue( this, opt.queue );
 		}
 	};

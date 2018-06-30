@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>hide</title>
+	<style>
+		div {
+			width: 200px;
+			height: 200px;
+			background-color: red;
+			/*display: none; */
+		}
+	</style>
+</head>
+<body>
+	<button id="btn">click</button>
+	<div id="div1">
+		
+	</div>
+	<script src="../jquery-2.0.3.js"></script>
+	<script>
+		$("#btn").on('click', function () {
+
+			$("#div1").fadeTo(1000, 0.5); // 可以对隐藏的元素进行操作
+			
+			// $('#div1').animate({ width: '400px'}, 4000, 'linear', function () {
+			// 	console.log("回调")
+			// })
+		})
+	</script>
+</body>
+</html>
